@@ -130,8 +130,30 @@ export interface Capture {
   createdAt: string;
 }
 
+export interface CompanyStrategy {
+  mission: string;
+  idealClient: string;
+  positioning: string;
+  differentiators: string;
+  quarterlyPriority: string;
+  lastReviewed: string;
+}
+
+export type TimelineHorizon = "Day" | "Week" | "Month";
+
+export const TIMELINE_HORIZONS: TimelineHorizon[] = ["Day", "Week", "Month"];
+
+export interface TimelineEntry {
+  id: string;
+  horizon: TimelineHorizon;
+  title: string;
+  date: string;
+  done: boolean;
+}
+
 export interface OsState {
   target: Target;
+  strategy: CompanyStrategy;
   opportunities: Opportunity[];
   mediums: Medium[];
   experiments: Experiment[];
@@ -140,10 +162,19 @@ export interface OsState {
   clients: Client[];
   moneyEvents: MoneyEvent[];
   captures: Capture[];
+  timeline: TimelineEntry[];
 }
 
 export const EMPTY_STATE: OsState = {
   target: { revenueGoal: 0, newClientsGoal: 0, qualifiedLeadsGoal: 0 },
+  strategy: {
+    mission: "",
+    idealClient: "",
+    positioning: "",
+    differentiators: "",
+    quarterlyPriority: "",
+    lastReviewed: "",
+  },
   opportunities: [],
   mediums: [],
   experiments: [],
@@ -152,6 +183,7 @@ export const EMPTY_STATE: OsState = {
   clients: [],
   moneyEvents: [],
   captures: [],
+  timeline: [],
 };
 
 export const WIP_LIMITS = {

@@ -12,6 +12,7 @@ import {
 import {
   Capture,
   Client,
+  CompanyStrategy,
   Deliverable,
   EMPTY_STATE,
   Experiment,
@@ -21,6 +22,7 @@ import {
   OsState,
   Playbook,
   Target,
+  TimelineEntry,
 } from "./types";
 
 const STORAGE_KEY = "alperis:os:v1";
@@ -45,6 +47,7 @@ interface OsStore {
   hydrated: boolean;
 
   setTarget: (target: Target) => void;
+  setStrategy: (strategy: CompanyStrategy) => void;
 
   addOpportunity: (o: Opportunity) => void;
   updateOpportunity: (id: string, patch: Partial<Opportunity>) => void;
@@ -76,6 +79,10 @@ interface OsStore {
 
   addCapture: (c: Capture) => void;
   removeCapture: (id: string) => void;
+
+  addTimelineEntry: (t: TimelineEntry) => void;
+  updateTimelineEntry: (id: string, patch: Partial<TimelineEntry>) => void;
+  removeTimelineEntry: (id: string) => void;
 }
 
 const OsContext = createContext<OsStore | null>(null);
@@ -130,11 +137,13 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
   const cli = useMemo(() => collection(setState, "clients"), [setState]);
   const money = useMemo(() => collection(setState, "moneyEvents"), [setState]);
   const cap = useMemo(() => collection(setState, "captures"), [setState]);
+  const tl = useMemo(() => collection(setState, "timeline"), [setState]);
 
   const value: OsStore = {
     state,
     hydrated,
     setTarget: (target) => setState((prev) => ({ ...prev, target })),
+    setStrategy: (strategy) => setState((prev) => ({ ...prev, strategy })),
 
     addOpportunity: opp.add,
     updateOpportunity: opp.update,
@@ -166,6 +175,10 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
 
     addCapture: cap.add,
     removeCapture: cap.remove,
+
+    addTimelineEntry: tl.add,
+    updateTimelineEntry: tl.update,
+    removeTimelineEntry: tl.remove,
   };
 
   return <OsContext.Provider value={value}>{children}</OsContext.Provider>;

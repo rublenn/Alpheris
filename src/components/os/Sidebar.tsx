@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import {
   IconClientSuccess,
+  IconCompanyStrategy,
   IconFinance,
   IconGrowth,
   IconOverview,
@@ -12,6 +13,7 @@ import {
   IconSales,
   IconStrategies,
   IconDeliverables,
+  IconTimeline,
 } from "./icons";
 
 type Lens = "leadership" | "working" | "operations";
@@ -33,8 +35,10 @@ const GROUPS: NavGroup[] = [
     lens: "leadership",
     label: "Leadership",
     items: [
+      { href: "/os/leadership/strategy", label: "Company Strategy", icon: IconCompanyStrategy },
       { href: "/os/leadership/sales", label: "Sales", icon: IconSales },
       { href: "/os/leadership/growth", label: "Growth", icon: IconGrowth },
+      { href: "/os/leadership/timeline", label: "Business Timeline", icon: IconTimeline },
     ],
   },
   {

@@ -22,6 +22,24 @@ export function IconSales({ className }: IconProps) {
   );
 }
 
+export function IconCompanyStrategy({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden="true">
+      <circle cx="10" cy="10" r="7" stroke="currentColor" strokeWidth={base} />
+      <path d="m12.6 7.4-1.8 3.7-3.7 1.8 1.8-3.7 3.7-1.8Z" stroke="currentColor" strokeWidth={base} strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function IconTimeline({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden="true">
+      <rect x="2.5" y="4" width="15" height="13" rx="1.6" stroke="currentColor" strokeWidth={base} />
+      <path d="M2.5 8h15M6.5 2.5v3M13.5 2.5v3" stroke="currentColor" strokeWidth={base} strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function IconGrowth({ className }: IconProps) {
   return (
     <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden="true">

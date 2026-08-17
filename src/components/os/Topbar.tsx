@@ -8,8 +8,10 @@ import { IconMenu, IconPlus } from "./icons";
 
 const TITLES: Record<string, string> = {
   "/os": "Overview",
+  "/os/leadership/strategy": "Company Strategy",
   "/os/leadership/sales": "Sales",
   "/os/leadership/growth": "Growth",
+  "/os/leadership/timeline": "Business Timeline",
   "/os/working/strategies": "Strategies",
   "/os/working/production": "Creative & Production",
   "/os/working/deliverables": "Deliverables",
