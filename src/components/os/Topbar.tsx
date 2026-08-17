@@ -36,7 +36,10 @@ export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-border bg-background/80 backdrop-blur px-4 sm:px-6 py-3">
+    <header
+      className="sticky top-0 z-30 flex items-center gap-3 border-b border-border bg-background/80 backdrop-blur px-4 sm:px-6 py-3"
+      style={{ paddingTop: "calc(env(safe-area-inset-top) + 0.75rem)" }}
+    >
       <button
         onClick={onMenuClick}
         aria-label="Open navigation"
