@@ -16,6 +16,7 @@ import {
   SectionHeader,
   SelectInput,
   StatTile,
+  Tabs,
   TextInput,
 } from "@/components/os/ui";
 import { IconPlus } from "@/components/os/icons";
@@ -37,11 +38,21 @@ function emptyDeliverable(): Deliverable {
     estimateHours: 0,
     loggedHours: 0,
     dueDate: todayISO(),
+    scheduledDate: "",
+    publishedDate: "",
+    publishedLink: "",
   };
+}
+
+function monthLabel(dateStr: string) {
+  if (!dateStr) return "No date";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
 }
 
 export default function DeliverablesPage() {
   const { state, hydrated, addDeliverable, updateDeliverable, removeDeliverable } = useOsStore();
+  const [tab, setTab] = useState<"All" | "Calendar" | "Scheduling" | "Publishing">("All");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<Deliverable>(emptyDeliverable());
@@ -72,6 +83,23 @@ export default function DeliverablesPage() {
 
   const sorted = [...state.deliverables].sort((a, b) => a.dueDate.localeCompare(b.dueDate));
 
+  const byMonth = new Map<string, Deliverable[]>();
+  for (const d of sorted) {
+    const key = monthLabel(d.dueDate);
+    if (!byMonth.has(key)) byMonth.set(key, []);
+    byMonth.get(key)!.push(d);
+  }
+
+  const scheduled = state.deliverables
+    .filter((d) => d.scheduledDate)
+    .slice()
+    .sort((a, b) => a.scheduledDate.localeCompare(b.scheduledDate));
+
+  const published = state.deliverables
+    .filter((d) => d.status === "Delivered" || d.publishedDate)
+    .slice()
+    .sort((a, b) => (b.publishedDate || "").localeCompare(a.publishedDate || ""));
+
   return (
     <div className="flex flex-col gap-8">
       <SectionHeader
@@ -99,7 +127,18 @@ export default function DeliverablesPage() {
         />
       </div>
 
-      {state.deliverables.length === 0 ? (
+      <Tabs
+        value={tab}
+        onChange={setTab}
+        options={[
+          { value: "All", label: "All Deliverables", count: state.deliverables.length },
+          { value: "Calendar", label: "Content Calendar" },
+          { value: "Scheduling", label: "Scheduling", count: scheduled.length },
+          { value: "Publishing", label: "Publishing", count: published.length },
+        ]}
+      />
+
+      {tab === "All" && (state.deliverables.length === 0 ? (
         <EmptyState
           title="No deliverables yet"
           body="This is the atomic unit everything else schedules and reports against. Add what you owe a client next."
@@ -144,7 +183,83 @@ export default function DeliverablesPage() {
             </table>
           </div>
         </Card>
-      )}
+      ))}
+
+      {tab === "Calendar" && (state.deliverables.length === 0 ? (
+        <EmptyState title="Nothing on the calendar" body="Deliverables appear here grouped by due month, earliest first." />
+      ) : (
+        <div className="flex flex-col gap-5">
+          {Array.from(byMonth.entries()).map(([month, items]) => (
+            <Card key={month}>
+              <p className="text-sm font-semibold mb-3">{month}</p>
+              <div className="flex flex-col gap-2">
+                {items.map((d) => (
+                  <div key={d.id} onClick={() => openEdit(d)} className="flex items-center justify-between gap-3 rounded-lg border border-border-soft bg-surface-2 px-3.5 py-2.5 cursor-pointer hover:border-muted transition">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium truncate">{d.title}</p>
+                      <p className="text-xs text-muted">{d.client}</p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-xs text-muted tabular-nums">{d.dueDate}</span>
+                      <Badge tone={STATUS_TONE[d.status]}>{d.status}</Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          ))}
+        </div>
+      ))}
+
+      {tab === "Scheduling" && (scheduled.length === 0 ? (
+        <EmptyState title="Nothing scheduled" body="Set a scheduled date on a deliverable to have it show up here as a publishing queue." />
+      ) : (
+        <div className="flex flex-col gap-2">
+          {scheduled.map((d) => (
+            <Card key={d.id} className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-sm font-medium truncate">{d.title}</p>
+                <p className="text-xs text-muted">{d.client}</p>
+              </div>
+              <input
+                type="date"
+                value={d.scheduledDate}
+                onChange={(e) => updateDeliverable(d.id, { scheduledDate: e.target.value })}
+                className="rounded-lg border border-border bg-surface-2 px-2.5 py-1.5 text-sm outline-none focus:border-accent transition shrink-0"
+              />
+            </Card>
+          ))}
+        </div>
+      ))}
+
+      {tab === "Publishing" && (published.length === 0 ? (
+        <EmptyState title="Nothing published yet" body="Deliverables marked Delivered, or with a published date set, show up here as your publishing log." />
+      ) : (
+        <div className="flex flex-col gap-2">
+          {published.map((d) => (
+            <Card key={d.id} className="flex flex-col sm:flex-row sm:items-center gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">{d.title}</p>
+                <p className="text-xs text-muted">{d.client}</p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <input
+                  type="date"
+                  value={d.publishedDate}
+                  onChange={(e) => updateDeliverable(d.id, { publishedDate: e.target.value })}
+                  className="rounded-lg border border-border bg-surface-2 px-2.5 py-1.5 text-sm outline-none focus:border-accent transition"
+                />
+                <input
+                  value={d.publishedLink}
+                  onChange={(e) => updateDeliverable(d.id, { publishedLink: e.target.value })}
+                  placeholder="Link"
+                  className="w-40 rounded-lg border border-border bg-surface-2 px-2.5 py-1.5 text-sm outline-none focus:border-accent transition"
+                />
+              </div>
+            </Card>
+          ))}
+        </div>
+      ))}
 
       <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)} title={editingId ? "Edit deliverable" : "New deliverable"}>
         <div className="flex flex-col gap-4">
@@ -183,6 +298,17 @@ export default function DeliverablesPage() {
           </div>
           <Field label="Due date">
             <TextInput type="date" value={form.dueDate} onChange={(v) => setForm({ ...form, dueDate: v })} />
+          </Field>
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Scheduled date">
+              <TextInput type="date" value={form.scheduledDate} onChange={(v) => setForm({ ...form, scheduledDate: v })} />
+            </Field>
+            <Field label="Published date">
+              <TextInput type="date" value={form.publishedDate} onChange={(v) => setForm({ ...form, publishedDate: v })} />
+            </Field>
+          </div>
+          <Field label="Published link">
+            <TextInput value={form.publishedLink} onChange={(v) => setForm({ ...form, publishedLink: v })} placeholder="https://…" />
           </Field>
 
           <div className="flex items-center gap-2 pt-2">

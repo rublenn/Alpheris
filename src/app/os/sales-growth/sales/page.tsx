@@ -102,7 +102,7 @@ export default function SalesPage() {
   return (
     <div className="flex flex-col gap-8">
       <SectionHeader
-        eyebrow="Leadership"
+        eyebrow="Sales & Growth"
         title="Sales"
         action={
           <Button variant="primary" onClick={openNew}>

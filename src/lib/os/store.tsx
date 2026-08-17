@@ -10,17 +10,24 @@ import {
   useState,
 } from "react";
 import {
+  Asset,
   Capture,
   Client,
+  ClientResearch,
   CompanyStrategy,
   Deliverable,
   EMPTY_STATE,
   Experiment,
+  Lead,
   Medium,
   MoneyEvent,
   Opportunity,
   OsState,
+  Outsource,
   Playbook,
+  ProductionPlan,
+  ProjectMilestone,
+  RelationshipNote,
   Target,
   TimelineEntry,
 } from "./types";
@@ -83,6 +90,33 @@ interface OsStore {
   addTimelineEntry: (t: TimelineEntry) => void;
   updateTimelineEntry: (id: string, patch: Partial<TimelineEntry>) => void;
   removeTimelineEntry: (id: string) => void;
+
+  addProjectMilestone: (m: ProjectMilestone) => void;
+  updateProjectMilestone: (id: string, patch: Partial<ProjectMilestone>) => void;
+  removeProjectMilestone: (id: string) => void;
+
+  addLead: (l: Lead) => void;
+  updateLead: (id: string, patch: Partial<Lead>) => void;
+  removeLead: (id: string) => void;
+
+  addClientResearch: (r: ClientResearch) => void;
+  updateClientResearch: (id: string, patch: Partial<ClientResearch>) => void;
+  removeClientResearch: (id: string) => void;
+
+  addProductionPlan: (p: ProductionPlan) => void;
+  updateProductionPlan: (id: string, patch: Partial<ProductionPlan>) => void;
+  removeProductionPlan: (id: string) => void;
+
+  addOutsource: (o: Outsource) => void;
+  updateOutsource: (id: string, patch: Partial<Outsource>) => void;
+  removeOutsource: (id: string) => void;
+
+  addRelationshipNote: (n: RelationshipNote) => void;
+  removeRelationshipNote: (id: string) => void;
+
+  addAsset: (a: Asset) => void;
+  updateAsset: (id: string, patch: Partial<Asset>) => void;
+  removeAsset: (id: string) => void;
 }
 
 const OsContext = createContext<OsStore | null>(null);
@@ -138,6 +172,13 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
   const money = useMemo(() => collection(setState, "moneyEvents"), [setState]);
   const cap = useMemo(() => collection(setState, "captures"), [setState]);
   const tl = useMemo(() => collection(setState, "timeline"), [setState]);
+  const pm = useMemo(() => collection(setState, "projectTimeline"), [setState]);
+  const lead = useMemo(() => collection(setState, "leads"), [setState]);
+  const research = useMemo(() => collection(setState, "clientResearch"), [setState]);
+  const prodPlan = useMemo(() => collection(setState, "productionPlans"), [setState]);
+  const outsource = useMemo(() => collection(setState, "outsources"), [setState]);
+  const relNote = useMemo(() => collection(setState, "relationshipNotes"), [setState]);
+  const asset = useMemo(() => collection(setState, "assets"), [setState]);
 
   const value: OsStore = {
     state,
@@ -179,6 +220,33 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
     addTimelineEntry: tl.add,
     updateTimelineEntry: tl.update,
     removeTimelineEntry: tl.remove,
+
+    addProjectMilestone: pm.add,
+    updateProjectMilestone: pm.update,
+    removeProjectMilestone: pm.remove,
+
+    addLead: lead.add,
+    updateLead: lead.update,
+    removeLead: lead.remove,
+
+    addClientResearch: research.add,
+    updateClientResearch: research.update,
+    removeClientResearch: research.remove,
+
+    addProductionPlan: prodPlan.add,
+    updateProductionPlan: prodPlan.update,
+    removeProductionPlan: prodPlan.remove,
+
+    addOutsource: outsource.add,
+    updateOutsource: outsource.update,
+    removeOutsource: outsource.remove,
+
+    addRelationshipNote: relNote.add,
+    removeRelationshipNote: relNote.remove,
+
+    addAsset: asset.add,
+    updateAsset: asset.update,
+    removeAsset: asset.remove,
   };
 
   return <OsContext.Provider value={value}>{children}</OsContext.Provider>;

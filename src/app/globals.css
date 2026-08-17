@@ -21,6 +21,8 @@
 
   --lens-leadership: #f2b134;
   --lens-leadership-soft: #f2b1341a;
+  --lens-sales: #7c9cf5;
+  --lens-sales-soft: #7c9cf51a;
   --lens-working: #ff5a3c;
   --lens-working-soft: #ff5a3c1a;
   --lens-operations: #34c3a6;
@@ -48,6 +50,8 @@
 
   --color-lens-leadership: var(--lens-leadership);
   --color-lens-leadership-soft: var(--lens-leadership-soft);
+  --color-lens-sales: var(--lens-sales);
+  --color-lens-sales-soft: var(--lens-sales-soft);
   --color-lens-working: var(--lens-working);
   --color-lens-working-soft: var(--lens-working-soft);
   --color-lens-operations: var(--lens-operations);

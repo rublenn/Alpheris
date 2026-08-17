@@ -37,7 +37,7 @@ const STATUS_TONE: Record<ExperimentStatus, "accent" | "good" | "critical"> = {
   Killed: "critical",
 };
 
-export default function GrowthPage() {
+export default function MarketingPage() {
   const {
     state,
     hydrated,
@@ -102,7 +102,7 @@ export default function GrowthPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <SectionHeader eyebrow="Leadership" title="Growth" />
+      <SectionHeader eyebrow="Sales & Growth" title="Marketing" />
 
       <Card>
         <div className="flex items-center justify-between mb-4">

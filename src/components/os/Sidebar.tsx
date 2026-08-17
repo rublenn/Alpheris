@@ -7,16 +7,19 @@ import {
   IconClientSuccess,
   IconCompanyStrategy,
   IconFinance,
-  IconGrowth,
+  IconFollowUp,
+  IconLeadGen,
+  IconMarketing,
   IconOverview,
   IconProduction,
+  IconProjectTimeline,
   IconSales,
   IconStrategies,
   IconDeliverables,
   IconTimeline,
 } from "./icons";
 
-type Lens = "leadership" | "working" | "operations";
+type Lens = "leadership" | "sales" | "working" | "operations";
 
 interface NavItem {
   href: string;
@@ -36,9 +39,18 @@ const GROUPS: NavGroup[] = [
     label: "Leadership",
     items: [
       { href: "/os/leadership/strategy", label: "Company Strategy", icon: IconCompanyStrategy },
-      { href: "/os/leadership/sales", label: "Sales", icon: IconSales },
-      { href: "/os/leadership/growth", label: "Growth", icon: IconGrowth },
       { href: "/os/leadership/timeline", label: "Business Timeline", icon: IconTimeline },
+      { href: "/os/leadership/project-timeline", label: "Project Timeline", icon: IconProjectTimeline },
+    ],
+  },
+  {
+    lens: "sales",
+    label: "Sales & Growth",
+    items: [
+      { href: "/os/sales-growth/marketing", label: "Marketing", icon: IconMarketing },
+      { href: "/os/sales-growth/lead-generation", label: "Lead Generation", icon: IconLeadGen },
+      { href: "/os/sales-growth/sales", label: "Sales", icon: IconSales },
+      { href: "/os/sales-growth/follow-ups", label: "Follow Ups", icon: IconFollowUp },
     ],
   },
   {
@@ -62,12 +74,14 @@ const GROUPS: NavGroup[] = [
 
 const lensText: Record<Lens, string> = {
   leadership: "text-lens-leadership",
+  sales: "text-lens-sales",
   working: "text-lens-working",
   operations: "text-lens-operations",
 };
 
 const lensBar: Record<Lens, string> = {
   leadership: "bg-lens-leadership",
+  sales: "bg-lens-sales",
   working: "bg-lens-working",
   operations: "bg-lens-operations",
 };

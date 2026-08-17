@@ -14,7 +14,16 @@ import {
   wip,
 } from "@/lib/os/calc";
 import { Badge, Card, DeleteButton, EmptyState, ProgressBar } from "@/components/os/ui";
-import { IconGrowth, IconSales, IconStrategies, IconProduction, IconDeliverables, IconClientSuccess, IconFinance } from "@/components/os/icons";
+import {
+  IconClientSuccess,
+  IconCompanyStrategy,
+  IconFinance,
+  IconLeadGen,
+  IconMarketing,
+  IconProduction,
+  IconSales,
+  IconStrategies,
+} from "@/components/os/icons";
 
 export default function OverviewPage() {
   const { state, hydrated, removeCapture } = useOsStore();
@@ -31,6 +40,8 @@ export default function OverviewPage() {
 
   const openDeliverables = state.deliverables.filter((d) => d.status !== "Delivered");
   const overdueInvoices = state.moneyEvents.filter((m) => m.status === "Overdue");
+  const openTimelineItems = state.timeline.filter((t) => !t.done).length;
+  const activeProjects = new Set(state.projectTimeline.map((m) => m.project)).size;
 
   return (
     <div className="flex flex-col gap-8">
@@ -43,13 +54,25 @@ export default function OverviewPage() {
         </h1>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <LensCard
           title="Leadership"
-          subtitle="Sales & growth"
-          icon={<IconSales className="h-4 w-4" />}
+          subtitle="Strategy & timeline"
+          icon={<IconCompanyStrategy className="h-4 w-4" />}
           tone="leadership"
-          href="/os/leadership/sales"
+          href="/os/leadership/strategy"
+          stats={[
+            { label: "Strategy", value: state.strategy.mission ? "Set" : "Not set", warn: !state.strategy.mission },
+            { label: "Open timeline items", value: openTimelineItems },
+            { label: "Active projects", value: activeProjects },
+          ]}
+        />
+        <LensCard
+          title="Sales & Growth"
+          subtitle="Pipeline, marketing & leads"
+          icon={<IconSales className="h-4 w-4" />}
+          tone="sales"
+          href="/os/sales-growth/sales"
           stats={[
             { label: "Open pipeline", value: formatCurrency(pipeline) },
             { label: "Win rate", value: formatPct(win) },
@@ -137,9 +160,9 @@ export default function OverviewPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <QuickLink href="/os/leadership/growth" icon={<IconGrowth className="h-4 w-4" />} label="Growth experiments" />
+        <QuickLink href="/os/sales-growth/marketing" icon={<IconMarketing className="h-4 w-4" />} label="Marketing" />
+        <QuickLink href="/os/sales-growth/lead-generation" icon={<IconLeadGen className="h-4 w-4" />} label="Lead generation" />
         <QuickLink href="/os/working/strategies" icon={<IconStrategies className="h-4 w-4" />} label="Playbooks" />
-        <QuickLink href="/os/working/deliverables" icon={<IconDeliverables className="h-4 w-4" />} label="Deliverables" />
         <QuickLink href="/os/operations/client-success" icon={<IconClientSuccess className="h-4 w-4" />} label="Client health" />
       </div>
     </div>
@@ -157,12 +180,13 @@ function LensCard({
   title: string;
   subtitle: string;
   icon: React.ReactNode;
-  tone: "leadership" | "working" | "operations";
+  tone: "leadership" | "sales" | "working" | "operations";
   href: string;
   stats: { label: string; value: React.ReactNode; warn?: boolean }[];
 }) {
   const toneBg: Record<string, string> = {
     leadership: "bg-lens-leadership-soft text-lens-leadership",
+    sales: "bg-lens-sales-soft text-lens-sales",
     working: "bg-lens-working-soft text-lens-working",
     operations: "bg-lens-operations-soft text-lens-operations",
   };

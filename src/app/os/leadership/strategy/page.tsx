@@ -91,7 +91,7 @@ export default function CompanyStrategyPage() {
         <Card className="text-center py-14">
           <p className="font-medium mb-1">No strategy set yet</p>
           <p className="text-sm text-muted max-w-sm mx-auto mb-5">
-            One page: who you serve, how you're positioned, and the one thing you're prioritizing this quarter. Everything else in Leadership should trace back to it.
+            One page: who you serve, how you&apos;re positioned, and the one thing you&apos;re prioritizing this quarter. Everything else in Leadership should trace back to it.
           </p>
           <Button variant="primary" onClick={startEdit}>Set strategy</Button>
         </Card>

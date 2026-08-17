@@ -40,6 +40,43 @@ export function IconTimeline({ className }: IconProps) {
   );
 }
 
+export function IconProjectTimeline({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden="true">
+      <path d="M3 5h14M3 10h9M3 15h5" stroke="currentColor" strokeWidth={base} strokeLinecap="round" />
+      <circle cx="17" cy="10" r="1.4" fill="currentColor" />
+      <circle cx="9" cy="15" r="1.4" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function IconMarketing({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden="true">
+      <path d="M3 8v4h3.5L11 15V5L6.5 8H3Z" stroke="currentColor" strokeWidth={base} strokeLinejoin="round" />
+      <path d="M14 7.5c.9.7 1.4 1.6 1.4 2.5s-.5 1.8-1.4 2.5" stroke="currentColor" strokeWidth={base} strokeLinecap="round" />
+      <path d="M16.2 5.3c1.4 1.1 2.3 2.7 2.3 4.7s-.9 3.6-2.3 4.7" stroke="currentColor" strokeWidth={base} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function IconLeadGen({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden="true">
+      <path d="M3 4.5h14l-5.5 6.5V16l-3 1.5v-6.5L3 4.5Z" stroke="currentColor" strokeWidth={base} strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function IconFollowUp({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden="true">
+      <circle cx="10" cy="10" r="7" stroke="currentColor" strokeWidth={base} />
+      <path d="M10 6v4l2.8 1.6" stroke="currentColor" strokeWidth={base} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function IconGrowth({ className }: IconProps) {
   return (
     <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden="true">

@@ -159,6 +159,39 @@ export function DeleteButton({ onClick, label }: { onClick: () => void; label: s
   );
 }
 
+// ---------- tabs ----------
+
+export function Tabs<T extends string>({
+  value,
+  onChange,
+  options,
+}: {
+  value: T;
+  onChange: (v: T) => void;
+  options: { value: T; label: string; count?: number }[];
+}) {
+  return (
+    <div className="flex items-center gap-1 rounded-full border border-border bg-surface p-1 w-fit overflow-x-auto max-w-full">
+      {options.map((o) => (
+        <button
+          key={o.value}
+          onClick={() => onChange(o.value)}
+          className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition ${
+            value === o.value ? "bg-accent text-white" : "text-muted hover:text-foreground"
+          }`}
+        >
+          {o.label}
+          {typeof o.count === "number" && o.count > 0 && (
+            <span className={`ml-1.5 text-xs tabular-nums ${value === o.value ? "text-white/80" : "text-muted"}`}>
+              {o.count}
+            </span>
+          )}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 // ---------- stat tile ----------
 
 export function StatTile({

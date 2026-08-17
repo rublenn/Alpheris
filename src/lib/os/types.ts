@@ -97,6 +97,9 @@ export interface Deliverable {
   estimateHours: number;
   loggedHours: number;
   dueDate: string;
+  scheduledDate: string;
+  publishedDate: string;
+  publishedLink: string;
 }
 
 export type ClientHealth = "Good" | "Watch" | "At risk";
@@ -107,7 +110,11 @@ export interface Client {
   monthlyValue: number;
   health: ClientHealth;
   lastReportDate: string;
+  lastReportNotes: string;
   notes: string;
+  currentProblem: string;
+  proposedSolution: string;
+  satisfaction: number;
 }
 
 export type MoneyKind = "Invoice" | "Expense";
@@ -151,6 +158,74 @@ export interface TimelineEntry {
   done: boolean;
 }
 
+export interface ProjectMilestone {
+  id: string;
+  project: string;
+  title: string;
+  date: string;
+  done: boolean;
+}
+
+export const LEAD_STATUSES = ["New", "Contacted", "Qualified"] as const;
+export type LeadStatus = (typeof LEAD_STATUSES)[number];
+
+export interface Lead {
+  id: string;
+  name: string;
+  source: Source;
+  contact: string;
+  status: LeadStatus;
+  capturedAt: string;
+}
+
+export interface ClientResearch {
+  id: string;
+  client: string;
+  background: string;
+  goals: string;
+  challenges: string;
+  questionnaire: string;
+}
+
+export const PRODUCTION_PLAN_STATUSES = ["Draft", "Approved"] as const;
+export type ProductionPlanStatus = (typeof PRODUCTION_PLAN_STATUSES)[number];
+
+export interface ProductionPlan {
+  id: string;
+  project: string;
+  title: string;
+  details: string;
+  shootDate: string;
+  status: ProductionPlanStatus;
+}
+
+export const OUTSOURCE_ROLES = ["Cameraman", "Editor", "Actor", "Other"] as const;
+export type OutsourceRole = (typeof OUTSOURCE_ROLES)[number];
+
+export interface Outsource {
+  id: string;
+  role: OutsourceRole;
+  name: string;
+  contact: string;
+  rate: string;
+  notes: string;
+}
+
+export interface RelationshipNote {
+  id: string;
+  client: string;
+  date: string;
+  note: string;
+}
+
+export interface Asset {
+  id: string;
+  name: string;
+  value: number;
+  purchasedDate: string;
+  notes: string;
+}
+
 export interface OsState {
   target: Target;
   strategy: CompanyStrategy;
@@ -163,6 +238,13 @@ export interface OsState {
   moneyEvents: MoneyEvent[];
   captures: Capture[];
   timeline: TimelineEntry[];
+  projectTimeline: ProjectMilestone[];
+  leads: Lead[];
+  clientResearch: ClientResearch[];
+  productionPlans: ProductionPlan[];
+  outsources: Outsource[];
+  relationshipNotes: RelationshipNote[];
+  assets: Asset[];
 }
 
 export const EMPTY_STATE: OsState = {
@@ -184,6 +266,13 @@ export const EMPTY_STATE: OsState = {
   moneyEvents: [],
   captures: [],
   timeline: [],
+  projectTimeline: [],
+  leads: [],
+  clientResearch: [],
+  productionPlans: [],
+  outsources: [],
+  relationshipNotes: [],
+  assets: [],
 };
 
 export const WIP_LIMITS = {
