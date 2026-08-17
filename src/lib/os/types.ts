@@ -226,6 +226,18 @@ export interface Asset {
   notes: string;
 }
 
+export type MarketingIdeaStatus = "Idea" | "Planned" | "Posted";
+export const MARKETING_IDEA_STATUSES: MarketingIdeaStatus[] = ["Idea", "Planned", "Posted"];
+
+export interface MarketingIdea {
+  id: string;
+  channel: Channel;
+  title: string;
+  notes: string;
+  date: string;
+  status: MarketingIdeaStatus;
+}
+
 export interface OsState {
   target: Target;
   strategy: CompanyStrategy;
@@ -245,6 +257,7 @@ export interface OsState {
   outsources: Outsource[];
   relationshipNotes: RelationshipNote[];
   assets: Asset[];
+  marketingIdeas: MarketingIdea[];
 }
 
 export const EMPTY_STATE: OsState = {
@@ -273,6 +286,7 @@ export const EMPTY_STATE: OsState = {
   outsources: [],
   relationshipNotes: [],
   assets: [],
+  marketingIdeas: [],
 };
 
 export const WIP_LIMITS = {

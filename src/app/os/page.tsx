@@ -18,7 +18,6 @@ import {
   IconClientSuccess,
   IconCompanyStrategy,
   IconFinance,
-  IconLeadGen,
   IconMarketing,
   IconProduction,
   IconSales,
@@ -68,8 +67,8 @@ export default function OverviewPage() {
           ]}
         />
         <LensCard
-          title="Sales & Growth"
-          subtitle="Pipeline, marketing & leads"
+          title="Sales & Marketing"
+          subtitle="Pipeline, leads & campaigns"
           icon={<IconSales className="h-4 w-4" />}
           tone="sales"
           href="/os/sales-growth/sales"
@@ -160,8 +159,8 @@ export default function OverviewPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <QuickLink href="/os/sales-growth/sales" icon={<IconSales className="h-4 w-4" />} label="Sales pipeline" />
         <QuickLink href="/os/sales-growth/marketing" icon={<IconMarketing className="h-4 w-4" />} label="Marketing" />
-        <QuickLink href="/os/sales-growth/lead-generation" icon={<IconLeadGen className="h-4 w-4" />} label="Lead generation" />
         <QuickLink href="/os/working/strategies" icon={<IconStrategies className="h-4 w-4" />} label="Playbooks" />
         <QuickLink href="/os/operations/client-success" icon={<IconClientSuccess className="h-4 w-4" />} label="Client health" />
       </div>

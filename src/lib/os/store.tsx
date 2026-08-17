@@ -19,6 +19,7 @@ import {
   EMPTY_STATE,
   Experiment,
   Lead,
+  MarketingIdea,
   Medium,
   MoneyEvent,
   Opportunity,
@@ -117,6 +118,10 @@ interface OsStore {
   addAsset: (a: Asset) => void;
   updateAsset: (id: string, patch: Partial<Asset>) => void;
   removeAsset: (id: string) => void;
+
+  addMarketingIdea: (m: MarketingIdea) => void;
+  updateMarketingIdea: (id: string, patch: Partial<MarketingIdea>) => void;
+  removeMarketingIdea: (id: string) => void;
 }
 
 const OsContext = createContext<OsStore | null>(null);
@@ -179,6 +184,7 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
   const outsource = useMemo(() => collection(setState, "outsources"), [setState]);
   const relNote = useMemo(() => collection(setState, "relationshipNotes"), [setState]);
   const asset = useMemo(() => collection(setState, "assets"), [setState]);
+  const idea = useMemo(() => collection(setState, "marketingIdeas"), [setState]);
 
   const value: OsStore = {
     state,
@@ -247,6 +253,10 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
     addAsset: asset.add,
     updateAsset: asset.update,
     removeAsset: asset.remove,
+
+    addMarketingIdea: idea.add,
+    updateMarketingIdea: idea.update,
+    removeMarketingIdea: idea.remove,
   };
 
   return <OsContext.Provider value={value}>{children}</OsContext.Provider>;

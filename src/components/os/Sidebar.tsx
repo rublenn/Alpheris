@@ -7,8 +7,6 @@ import {
   IconClientSuccess,
   IconCompanyStrategy,
   IconFinance,
-  IconFollowUp,
-  IconLeadGen,
   IconMarketing,
   IconOverview,
   IconProduction,
@@ -45,12 +43,10 @@ const GROUPS: NavGroup[] = [
   },
   {
     lens: "sales",
-    label: "Sales & Growth",
+    label: "Sales & Marketing",
     items: [
-      { href: "/os/sales-growth/marketing", label: "Marketing", icon: IconMarketing },
-      { href: "/os/sales-growth/lead-generation", label: "Lead Generation", icon: IconLeadGen },
       { href: "/os/sales-growth/sales", label: "Sales", icon: IconSales },
-      { href: "/os/sales-growth/follow-ups", label: "Follow Ups", icon: IconFollowUp },
+      { href: "/os/sales-growth/marketing", label: "Marketing", icon: IconMarketing },
     ],
   },
   {
