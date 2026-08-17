@@ -4,25 +4,75 @@
   --background: #0b0c10;
   --surface: #14161d;
   --surface-alt: #1c1f29;
+  --surface-2: #191c25;
   --foreground: #f4f4f5;
   --muted: #9ca0ab;
   --accent: #ff5a3c;
   --accent-soft: #ff5a3c1a;
   --border: #2a2d38;
+  --border-soft: #21242e;
+
+  --good: #34c3a6;
+  --good-soft: #34c3a61f;
+  --warn: #f2b134;
+  --warn-soft: #f2b1341f;
+  --critical: #ef5a5a;
+  --critical-soft: #ef5a5a1f;
+
+  --lens-leadership: #f2b134;
+  --lens-leadership-soft: #f2b1341a;
+  --lens-working: #ff5a3c;
+  --lens-working-soft: #ff5a3c1a;
+  --lens-operations: #34c3a6;
+  --lens-operations-soft: #34c3a61a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-surface-alt: var(--surface-alt);
+  --color-surface-2: var(--surface-2);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
   --color-border: var(--border);
+  --color-border-soft: var(--border-soft);
+
+  --color-good: var(--good);
+  --color-good-soft: var(--good-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-critical: var(--critical);
+  --color-critical-soft: var(--critical-soft);
+
+  --color-lens-leadership: var(--lens-leadership);
+  --color-lens-leadership-soft: var(--lens-leadership-soft);
+  --color-lens-working: var(--lens-working);
+  --color-lens-working-soft: var(--lens-working-soft);
+  --color-lens-operations: var(--lens-operations);
+  --color-lens-operations-soft: var(--lens-operations-soft);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--foreground);
+}
+
+* {
+  scrollbar-color: var(--border) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }
