@@ -1,0 +1,1090 @@
+<title>Agency of One</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&display=swap">
+
+<style>
+:root {
+  --ground: #F3F4F2;
+  --surface: #FFFFFF;
+  --surface-2: #ECEEEC;
+  --ink: #111820;
+  --ink-2: #38434E;
+  --muted: #5D6A75;
+  --rule: #D9DEE1;
+  --rule-soft: #E6EAEC;
+  --accent: #12456E;
+  --accent-soft: #E2EAF1;
+  --signal: #B14B24;
+  --signal-soft: #F6E7DF;
+  --good: #14675A;
+  --good-soft: #DEEBE7;
+  --warn: #8A5D0C;
+  --warn-soft: #F4EBD8;
+  --shadow: 0 1px 2px rgba(17, 24, 32, .05), 0 8px 24px -16px rgba(17, 24, 32, .22);
+
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Newsreader", Georgia, "Times New Roman", serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --col: 40rem;
+  --band: 66rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0D1218;
+    --surface: #151C24;
+    --surface-2: #1C242D;
+    --ink: #E7ECF0;
+    --ink-2: #C2CCD4;
+    --muted: #93A1AC;
+    --rule: #28323C;
+    --rule-soft: #1F2831;
+    --accent: #86B5DE;
+    --accent-soft: #17293A;
+    --signal: #E68A5F;
+    --signal-soft: #33211A;
+    --good: #56B5A0;
+    --good-soft: #142A27;
+    --warn: #D2A950;
+    --warn-soft: #2C2517;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .8);
+  }
+}
+
+:root[data-theme="dark"] {
+  --ground: #0D1218;
+  --surface: #151C24;
+  --surface-2: #1C242D;
+  --ink: #E7ECF0;
+  --ink-2: #C2CCD4;
+  --muted: #93A1AC;
+  --rule: #28323C;
+  --rule-soft: #1F2831;
+  --accent: #86B5DE;
+  --accent-soft: #17293A;
+  --signal: #E68A5F;
+  --signal-soft: #33211A;
+  --good: #56B5A0;
+  --good-soft: #142A27;
+  --warn: #D2A950;
+  --warn-soft: #2C2517;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -16px rgba(0, 0, 0, .8);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.0625rem;
+  line-height: 1.68;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  padding: 0 1.25rem 6rem;
+}
+
+.wrap { width: 100%; max-width: var(--band); margin: 0 auto; }
+
+/* ---------- masthead ---------- */
+
+.masthead {
+  border-bottom: 1px solid var(--rule);
+  padding: 4.5rem 0 2.75rem;
+  margin-bottom: 3rem;
+}
+.masthead .wrap { display: grid; gap: 1.5rem; }
+
+.kicker {
+  font-family: var(--f-mono);
+  font-size: .6875rem;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1.25rem;
+  align-items: baseline;
+}
+.kicker span:not(:first-child) { color: var(--muted); }
+
+h1 {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: clamp(2.6rem, 7vw, 4.4rem);
+  line-height: 1.02;
+  letter-spacing: -.03em;
+  margin: 0;
+  text-wrap: balance;
+  max-width: 16ch;
+}
+h1 em {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -.01em;
+  color: var(--accent);
+}
+
+.standfirst {
+  max-width: 44rem;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+  margin: 0;
+}
+
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  font-family: var(--f-mono);
+  font-size: .75rem;
+}
+.meta-row b {
+  font-weight: 500;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: .3rem .55rem;
+  color: var(--muted);
+}
+.meta-row b i { font-style: normal; color: var(--ink); }
+
+/* ---------- layout ---------- */
+
+main { display: grid; gap: 4.5rem; }
+
+section { display: grid; gap: 1.5rem; }
+
+.col { width: 100%; max-width: var(--col); }
+.col > * + * { margin-top: 1.1em; }
+
+.sec-head { display: grid; gap: .6rem; max-width: 48rem; }
+
+.eyebrow {
+  font-family: var(--f-mono);
+  font-size: .6875rem;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+.eyebrow::before {
+  content: "";
+  width: 1.6rem;
+  height: 1px;
+  background: var(--accent);
+  flex: none;
+}
+
+h2 {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: clamp(1.7rem, 3.6vw, 2.3rem);
+  line-height: 1.12;
+  letter-spacing: -.022em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+h3 {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: -.01em;
+  line-height: 1.3;
+  margin: 0;
+}
+
+h4 {
+  font-family: var(--f-mono);
+  font-weight: 600;
+  font-size: .75rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0;
+}
+
+p { margin: 0; }
+a { color: var(--accent); text-underline-offset: .18em; text-decoration-thickness: 1px; }
+a:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+strong { font-weight: 600; color: var(--ink); }
+em.term { font-style: normal; font-family: var(--f-mono); font-size: .9em; color: var(--accent); }
+
+/* ---------- gap list ---------- */
+
+.gaps { display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; }
+.gap {
+  background: var(--surface);
+  padding: 1.5rem 1.5rem 1.6rem;
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: .3rem 1rem;
+  align-items: start;
+}
+.gap .num {
+  font-family: var(--f-mono);
+  font-size: .8125rem;
+  font-weight: 600;
+  color: var(--signal);
+  padding-top: .15rem;
+}
+.gap .body { display: grid; gap: .7rem; max-width: 46rem; }
+.gap .body > p { font-size: 1rem; }
+.gap-tag {
+  font-family: var(--f-mono);
+  font-size: .6875rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  grid-column: 2;
+}
+.fix {
+  border-left: 2px solid var(--good);
+  background: var(--good-soft);
+  padding: .7rem .9rem;
+  border-radius: 0 3px 3px 0;
+  font-size: .95rem;
+  color: var(--ink-2);
+}
+.fix b { font-family: var(--f-mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--good); display: block; margin-bottom: .2rem; }
+
+/* ---------- verdict table ---------- */
+
+.scroller { overflow-x: auto; border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); }
+
+table { border-collapse: collapse; width: 100%; font-size: .9375rem; min-width: 40rem; }
+th, td { text-align: left; padding: .8rem 1rem; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+thead th {
+  font-family: var(--f-mono);
+  font-size: .6875rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--rule);
+  position: sticky;
+  top: 0;
+}
+tbody tr:last-child td { border-bottom: 0; }
+td.num, th.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+td b { font-family: var(--f-display); font-weight: 600; }
+
+.chip {
+  font-family: var(--f-mono);
+  font-size: .625rem;
+  font-weight: 600;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  padding: .22rem .45rem;
+  border-radius: 2px;
+  white-space: nowrap;
+  display: inline-block;
+}
+.chip.keep { background: var(--good-soft); color: var(--good); }
+.chip.change { background: var(--warn-soft); color: var(--warn); }
+.chip.add { background: var(--accent-soft); color: var(--accent); }
+.chip.drop { background: var(--signal-soft); color: var(--signal); }
+
+/* ---------- evidence ---------- */
+
+.evidence { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; }
+.ev { background: var(--surface); padding: 1.25rem 1.25rem 1.4rem; display: grid; gap: .55rem; align-content: start; }
+.ev-top { display: flex; justify-content: space-between; align-items: baseline; gap: .75rem; }
+.ev-stat {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 1.75rem;
+  letter-spacing: -.03em;
+  line-height: 1;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.grade {
+  font-family: var(--f-mono);
+  font-size: .625rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: .18rem .35rem;
+  color: var(--muted);
+  white-space: nowrap;
+  flex: none;
+}
+.grade.a { border-color: var(--good); color: var(--good); }
+.grade.b { border-color: var(--warn); color: var(--warn); }
+.grade.c { border-color: var(--signal); color: var(--signal); }
+.ev p { font-size: .9375rem; line-height: 1.55; color: var(--ink-2); }
+.ev .src { font-family: var(--f-mono); font-size: .6875rem; color: var(--muted); line-height: 1.5; }
+.ev .src a { color: var(--muted); }
+
+.grade-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem 1.25rem;
+  font-family: var(--f-mono);
+  font-size: .6875rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ---------- loop diagram ---------- */
+
+.loop { background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; padding: 1.75rem 1.5rem; display: grid; gap: 1.25rem; }
+.loop-track { display: flex; flex-wrap: wrap; gap: .45rem; align-items: stretch; }
+.stage {
+  flex: 1 1 7.5rem;
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--lens, var(--accent));
+  border-radius: 2px;
+  padding: .6rem .65rem .7rem;
+  display: grid;
+  gap: .25rem;
+  align-content: start;
+  background: var(--surface);
+}
+.stage .n { font-family: var(--f-mono); font-size: .625rem; color: var(--muted); letter-spacing: .06em; }
+.stage .t { font-family: var(--f-display); font-weight: 600; font-size: .8125rem; line-height: 1.25; letter-spacing: -.005em; }
+.stage .g { font-family: var(--f-mono); font-size: .625rem; color: var(--lens, var(--accent)); letter-spacing: .04em; }
+.lens-lead { --lens: var(--accent); }
+.lens-work { --lens: var(--signal); }
+.lens-ops  { --lens: var(--good); }
+
+.loop-foot { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; align-items: center; font-family: var(--f-mono); font-size: .6875rem; color: var(--muted); letter-spacing: .04em; }
+.lgd { display: inline-flex; align-items: center; gap: .4rem; }
+.lgd i { width: .7rem; height: .7rem; border-radius: 1px; display: inline-block; background: var(--lens); flex: none; }
+
+/* ---------- architecture layers ---------- */
+
+.layers { display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; }
+.layer { background: var(--surface); padding: 1.5rem; display: grid; grid-template-columns: minmax(0, 13rem) minmax(0, 1fr); gap: 1rem 1.75rem; }
+.layer-id { display: grid; gap: .35rem; align-content: start; }
+.layer-id .lid { font-family: var(--f-mono); font-size: .6875rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.layer-id p { font-size: .875rem; color: var(--muted); line-height: 1.5; }
+.layer-body { display: grid; gap: .9rem; }
+
+.objs { display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: .6rem; }
+.obj { border: 1px solid var(--rule); border-radius: 2px; padding: .6rem .7rem; display: grid; gap: .25rem; background: var(--surface); }
+.obj .on { font-family: var(--f-mono); font-size: .8125rem; font-weight: 600; color: var(--ink); }
+.obj .od { font-size: .8125rem; line-height: 1.45; color: var(--muted); }
+
+.tree {
+  font-family: var(--f-mono);
+  font-size: .8125rem;
+  line-height: 1.75;
+  white-space: pre;
+  overflow-x: auto;
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 1.1rem 1.25rem;
+  margin: 0;
+  color: var(--ink-2);
+  tab-size: 2;
+}
+.tree b { color: var(--accent); font-weight: 600; }
+.tree i { color: var(--muted); font-style: normal; }
+
+/* ---------- ritual cards ---------- */
+
+.rituals { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; }
+.ritual { background: var(--surface); padding: 1.35rem 1.25rem 1.5rem; display: grid; gap: .7rem; align-content: start; }
+.ritual .rt { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; }
+.ritual .rn { font-family: var(--f-display); font-weight: 600; font-size: 1.05rem; letter-spacing: -.01em; }
+.ritual .rd { font-family: var(--f-mono); font-size: .6875rem; color: var(--muted); white-space: nowrap; }
+.ritual ul { margin: 0; padding-left: 1.05rem; display: grid; gap: .3rem; font-size: .9rem; color: var(--ink-2); line-height: 1.5; }
+.ritual .out { font-family: var(--f-mono); font-size: .6875rem; letter-spacing: .05em; color: var(--accent); border-top: 1px dashed var(--rule); padding-top: .6rem; line-height: 1.55; }
+
+/* ---------- phases ---------- */
+
+.phases { display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; }
+.phase { background: var(--surface); padding: 1.4rem 1.5rem; display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: .8rem 1.75rem; }
+.phase-id { display: grid; gap: .3rem; align-content: start; }
+.phase-id .pn { font-family: var(--f-mono); font-size: .75rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.phase-id .pw { font-family: var(--f-mono); font-size: .6875rem; color: var(--muted); }
+.phase-body { display: grid; gap: .6rem; }
+.phase-body p { font-size: .95rem; color: var(--ink-2); }
+.ships { display: flex; flex-wrap: wrap; gap: .35rem; }
+.ships span { font-family: var(--f-mono); font-size: .6875rem; border: 1px solid var(--rule); background: var(--surface-2); border-radius: 2px; padding: .25rem .45rem; color: var(--ink-2); }
+.gate { font-family: var(--f-mono); font-size: .6875rem; color: var(--muted); letter-spacing: .03em; }
+.gate b { color: var(--signal); font-weight: 600; }
+
+/* ---------- callout ---------- */
+
+.callout {
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--signal);
+  background: var(--surface);
+  border-radius: 0 3px 3px 0;
+  padding: 1.15rem 1.35rem;
+  display: grid;
+  gap: .5rem;
+  max-width: 48rem;
+}
+.callout h4 { color: var(--signal); }
+.callout p { font-size: .975rem; color: var(--ink-2); }
+
+/* ---------- notlist ---------- */
+
+.notlist { display: grid; gap: .5rem; max-width: 48rem; }
+.not { display: grid; grid-template-columns: auto 1fr; gap: .8rem; align-items: baseline; border-bottom: 1px solid var(--rule-soft); padding-bottom: .5rem; }
+.not .x { font-family: var(--f-mono); color: var(--signal); font-size: .8125rem; }
+.not p { font-size: .95rem; color: var(--ink-2); }
+.not b { font-family: var(--f-display); font-weight: 600; color: var(--ink); }
+
+/* ---------- sources ---------- */
+
+.sources { columns: 2 19rem; column-gap: 2.5rem; font-size: .875rem; }
+.sources li { break-inside: avoid; margin-bottom: .7rem; line-height: 1.5; }
+ol.sources { padding-left: 1.2rem; }
+
+footer {
+  border-top: 1px solid var(--rule);
+  margin-top: 5rem;
+  padding-top: 1.5rem;
+  font-family: var(--f-mono);
+  font-size: .6875rem;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 48rem;
+}
+
+@media (max-width: 46rem) {
+  .layer, .phase { grid-template-columns: 1fr; }
+  .gap { grid-template-columns: 1.75rem 1fr; }
+  .masthead { padding-top: 3rem; }
+  main { gap: 3.5rem; }
+}
+</style>
+
+<div class="page">
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="kicker">
+      <span>System review &amp; architecture</span>
+      <span>Alpheris · solo marketing agency</span>
+      <span>17 Aug 2026</span>
+    </div>
+    <h1>You don't have three departments. You have <em>one loop.</em></h1>
+    <p class="standfirst">Your split — Leadership, Working, Operations — is the right mental model and the wrong app structure. Here is what the research supports, what your outline is missing, and the object model to build against.</p>
+    <div class="meta-row">
+      <b><i>14</i> sources</b>
+      <b><i>6</i> structural gaps</b>
+      <b><i>13</i> core objects</b>
+      <b><i>4</i> build phases</b>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ============ 1. VERDICT ============ -->
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">The verdict</div>
+    <h2>What survives, what changes</h2>
+    <p class="col">Start here. Everything below argues one of these rows. Nothing you wrote is wasted — but four things need renaming, and six things are missing that will decide whether the app actually stops you losing work.</p>
+  </div>
+
+  <div class="scroller">
+    <table>
+      <thead>
+        <tr>
+          <th>Your item</th>
+          <th class="num">Call</th>
+          <th>Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Leadership / Working / Operations</b></td>
+          <td class="num"><span class="chip keep">Keep</span> <span class="chip change">Demote</span></td>
+          <td>Excellent as a <em class="term">review lens</em>. Terrible as navigation — you will never click "Leadership" at 9am. Keep the three as report groupings; navigate by object instead.</td>
+        </tr>
+        <tr>
+          <td><b>Month / Week / Day timetable</b></td>
+          <td class="num"><span class="chip keep">Keep</span> <span class="chip change">Redefine</span></td>
+          <td>Right instinct, strongly evidence-backed. But each horizon needs a different <em>job</em>, not the same list at three zoom levels. Add a quarterly layer.</td>
+        </tr>
+        <tr>
+          <td><b>Incumbents / Leads / Reach / Final</b></td>
+          <td class="num"><span class="chip change">Rebuild</span></td>
+          <td>This mixes a <em>numeric target</em> with a <em>list of accounts</em> with a <em>pipeline stage</em>. Three different objects sharing names. Split them or the funnel maths will never work.</td>
+        </tr>
+        <tr>
+          <td><b>Growth: mediums + 1–2 strategies</b></td>
+          <td class="num"><span class="chip keep">Keep</span> <span class="chip change">Formalize</span></td>
+          <td>"One or two, precise" is correct and matches how expert entrepreneurs actually behave. Make each one an <em>Experiment</em> with an affordable-loss budget and kill criteria.</td>
+        </tr>
+        <tr>
+          <td><b>Strategies = your website's process</b></td>
+          <td class="num"><span class="chip keep">Keep</span> <span class="chip change">Reframe</span></td>
+          <td>Don't embed the website. Turn each service into a versioned <em class="term">Playbook</em> — an ordered checklist with gates — and instantiate a live copy per engagement.</td>
+        </tr>
+        <tr>
+          <td><b>Creative &amp; Production ("equipment and stuff")</b></td>
+          <td class="num"><span class="chip change">Split</span></td>
+          <td>Three unrelated things in one box: client brand assets, your tools/subscriptions, and the production queue. Only the third belongs in the work flow.</td>
+        </tr>
+        <tr>
+          <td><b>Deliverables</b></td>
+          <td class="num"><span class="chip keep">Keep</span></td>
+          <td>This is your true atomic unit. Promote it: everything schedules, prices, and reports against Deliverables.</td>
+        </tr>
+        <tr>
+          <td><b>Client success = monthly report</b></td>
+          <td class="num"><span class="chip change">Expand</span></td>
+          <td>A monthly report is a <em>lagging</em> artifact. Add leading health signals so you learn a client is leaving before the renewal call, not during it.</td>
+        </tr>
+        <tr>
+          <td><b>Finance = made / spent / remaining</b></td>
+          <td class="num"><span class="chip change">Expand</span></td>
+          <td>That's a P&amp;L snapshot. What actually kills one-person firms is <em>timing</em> and <em>concentration</em>, neither of which appears in those three numbers.</td>
+        </tr>
+        <tr>
+          <td><b>Capacity ledger</b></td>
+          <td class="num"><span class="chip add">Add</span></td>
+          <td>Missing entirely, and it is the single most important object in a one-person agency. See gap 01.</td>
+        </tr>
+        <tr>
+          <td><b>Estimate vs. actual</b></td>
+          <td class="num"><span class="chip add">Add</span></td>
+          <td>Without it you can never price the next job correctly, and scope creep is invisible until the year is over.</td>
+        </tr>
+        <tr>
+          <td><b>Capture inbox</b></td>
+          <td class="num"><span class="chip add">Add</span></td>
+          <td>One text box, everywhere, triaged weekly. This is the actual answer to "getting lost in tons of work."</td>
+        </tr>
+        <tr>
+          <td><b>Built-in invoicing, email, chat, file storage</b></td>
+          <td class="num"><span class="chip drop">Don't</span></td>
+          <td>You will spend six months rebuilding tools you already pay for and never ship the part only you can build.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ 2. EVIDENCE ============ -->
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">The evidence base</div>
+    <h2>What the research actually says</h2>
+    <p class="col">You asked for real studies, so grades matter more than numbers. Peer-reviewed findings and primary transaction data are load-bearing. Industry surveys are directional. Vendor blog statistics — including several that circulate constantly in agency content — I've marked as weak, and one popular claim I could not trace to a primary source at all.</p>
+  </div>
+
+  <div class="grade-key">
+    <span><b>A</b> — meta-analysis, peer-reviewed, or primary data</span>
+    <span><b>B</b> — industry survey with stated methodology</span>
+    <span><b>C</b> — secondary citation; directional only</span>
+  </div>
+
+  <div class="evidence">
+
+    <article class="ev">
+      <div class="ev-top"><div class="ev-stat">d = 0.65</div><span class="grade a">A</span></div>
+      <h3>Deciding when and where beats deciding what</h3>
+      <p>Meta-analysis of 94 tests (8,000+ participants): stating "if situation Y, then I do X" produced a medium-to-large effect on goal attainment versus holding the same goal without a plan. Replicated across 642 tests by 2024.</p>
+      <p class="src">Gollwitzer &amp; Sheeran 2006; Sheeran, Listrom &amp; Gollwitzer 2024 <a href="https://www.sciencedirect.com/science/chapter/bookseries/abs/pii/S0065260106380021">[1]</a></p>
+    </article>
+
+    <article class="ev">
+      <div class="ev-top"><div class="ev-stat">158 studies</div><span class="grade a">A</span></div>
+      <h3>Time management works — mostly on wellbeing</h3>
+      <p>A 2021 meta-analysis (53,957 participants) found time-management practice reliably improves performance and, more strongly, wellbeing. Read that carefully: the app's job is to reduce your load, not to squeeze more hours out of you.</p>
+      <p class="src">Aeon &amp; Faber, PLOS ONE 2021 <a href="https://hbr.org/2018/12/how-timeboxing-works-and-why-it-will-make-you-more-productive">[2]</a></p>
+    </article>
+
+    <article class="ev">
+      <div class="ev-top"><div class="ev-stat">~23 min</div><span class="grade a">A</span></div>
+      <h3>The cost of switching context</h3>
+      <p>Gloria Mark's UC Irvine work found workers take roughly 23 minutes to return to an interrupted task. For a solo operator running sales, delivery and admin off one brain, every unnecessary switch is billable time destroyed.</p>
+      <p class="src">Mark et al., UC Irvine <a href="https://www.daylox.com/blog/how-freelancers-can-build-a-sustainable-workflow-and-earn-more-in-2024/">[3]</a></p>
+    </article>
+
+    <article class="ev">
+      <div class="ev-top"><div class="ev-stat">27 days</div><span class="grade a">A</span></div>
+      <h3>Median cash buffer of a small business</h3>
+      <p>From 470M transactions across 597,000 firms: the median small business holds 27 days of cash. A quarter hold 13 or fewer. This is real banking data, not a survey — and it's why "how much is remaining" is the wrong finance question.</p>
+      <p class="src">JPMorgan Chase Institute <a href="https://www.jpmorganchase.com/institute/all-topics/business-growth-and-entrepreneurship/report-cash-flows-balances-and-buffer-days">[4]</a></p>
+    </article>
+
+    <article class="ev">
+      <div class="ev-top"><div class="ev-stat">90%</div><span class="grade a">A</span></div>
+      <h3>Specific + hard beats "do your best"</h3>
+      <p>Locke &amp; Latham's goal-setting research, validated across 88+ task types: specific, challenging goals outperformed vague ones in ~90% of studies, but only with clarity, acceptance and <strong>feedback</strong>. A target with no feedback loop does nothing.</p>
+      <p class="src">Locke &amp; Latham, goal-setting theory <a href="https://home.ubalt.edu/tmitch/642/articles%20syllabus/locke%20latham%20new%20dir%20gs%20curr%20dir%20psy%20sci%202006.pdf">[5]</a></p>
+    </article>
+
+    <article class="ev">
+      <div class="ev-top"><div class="ev-stat">LT = WIP / TP</div><span class="grade a">A</span></div>
+      <h3>Little's Law: fewer open jobs, faster delivery</h3>
+      <p>Lead time equals work-in-progress divided by throughput. The fastest way to deliver sooner is not to work harder — it's to have fewer things open at once. In knowledge work the penalty for parallelism is worse than linear.</p>
+      <p class="src">Little's Law / flow metrics <a href="https://kanbanzone.com/resources/lean/littles-law/">[6]</a></p>
+    </article>
+
+    <article class="ev">
+      <div class="ev-top"><div class="ev-stat">5 principles</div><span class="grade a">A</span></div>
+      <h3>How expert entrepreneurs actually decide</h3>
+      <p>Sarasvathy's study of expert founders found they don't forecast — they start from means at hand ("bird in hand") and cap downside ("affordable loss"). For growth bets with no data, budget what you can lose rather than projecting a return.</p>
+      <p class="src">Sarasvathy, effectuation <a href="https://www.researchgate.net/publication/228786046_Effectuation_Elements_of_Entrepreneurial_Expertise">[7]</a></p>
+    </article>
+
+    <article class="ev">
+      <div class="ev-top"><div class="ev-stat">outside view</div><span class="grade a">A</span></div>
+      <h3>Your estimates are optimistic, predictably</h3>
+      <p>The planning fallacy is systematic, not random. The fix — reference-class forecasting — is to estimate from a distribution of your own past similar jobs rather than reasoning about this one. That requires logging actuals from day one.</p>
+      <p class="src">Kahneman &amp; Tversky; Flyvbjerg <a href="https://arxiv.org/pdf/1302.3642">[8]</a></p>
+    </article>
+
+    <article class="ev">
+      <div class="ev-top"><div class="ev-stat">75%</div><span class="grade b">B</span></div>
+      <h3>Referrals are the primary new-business source</h3>
+      <p>RSW/US 2025 agency survey: referrals from existing and past clients remain the number one driver of new business, unchanged year over year — yet very few firms have any formal process for harvesting them. Your "mediums" list omits it.</p>
+      <p class="src">RSW/US 2025, via SparkToro <a href="https://sparktoro.com/blog/digital-agency-new-business-still-a-concern-referrals-still-rule-for-lead-gen-and-are-sales-pipelines-finally-recovering/">[9]</a></p>
+    </article>
+
+    <article class="ev">
+      <div class="ev-top"><div class="ev-stat">68.9%</div><span class="grade b">B</span></div>
+      <h3>Billable utilization, and its ceiling</h3>
+      <p>SPI Research put 2024 billable utilization at 68.9%, below the ~75% considered healthy. The more useful half: above 85% a team is one illness from failed delivery, and 90%+ makes burnout structural. Solo, you have no bench at all.</p>
+      <p class="src">SPI Research 2025 benchmark <a href="https://bennettfinancials.com/utilization-vs-realization-marketing-agencies">[10]</a></p>
+    </article>
+
+    <article class="ev">
+      <div class="ev-top"><div class="ev-stat">52%</div><span class="grade b">B</span></div>
+      <h3>Projects that suffer scope creep</h3>
+      <p>PMI's Pulse of the Profession: 52% of projects experienced uncontrolled scope change, up from 43% five years earlier. On a fixed fee, a quiet 15% overrun on a ₹100k project is ₹15k of free work you never see recorded.</p>
+      <p class="src">PMI Pulse of the Profession <a href="https://trcr.pro/insights/project-scope-creep-statistics">[11]</a></p>
+    </article>
+
+    <article class="ev">
+      <div class="ev-top"><div class="ev-stat">25–95%</div><span class="grade c">C</span></div>
+      <h3>The retention statistic, handled honestly</h3>
+      <p>Reichheld &amp; Sasser (HBR 1990) found a 5-point defection cut raised profits 25–85% <em>in the firms studied</em>. It's directionally sound and endlessly misquoted: it describes a ceiling, not a floor, and scales with your margin. Use it as motivation, not as a forecast.</p>
+      <p class="src">Reichheld &amp; Sasser 1990 <a href="https://hbr.org/2014/10/the-value-of-keeping-the-right-customers">[12]</a></p>
+    </article>
+
+    <article class="ev">
+      <div class="ev-top"><div class="ev-stat">~1%</div><span class="grade a">A</span></div>
+      <h3>Don't build your client dashboard on NPS</h3>
+      <p>Independent research has repeatedly failed to validate NPS as a predictor of growth; one analysis across 650 brands found it explains roughly 1% of variance in share of wallet, and plain satisfaction predicts better. Track behaviour instead.</p>
+      <p class="src">Peer-reviewed NPS validation work <a href="https://www.emerald.com/tqm/article/35/9/191/378999/Statistical-validation-of-critical-aspects-of-the">[13]</a></p>
+    </article>
+
+    <article class="ev">
+      <div class="ev-top"><div class="ev-stat">unverified</div><span class="grade c">C</span></div>
+      <h3>The claim I'd ignore</h3>
+      <p>"Freelancers with formal workflow systems earn 47% more per billable hour (MIT Sloan, 2022)" circulates widely in freelance content. I could not trace it to a primary MIT Sloan publication. Build the system for the A-grade reasons above, not this one.</p>
+      <p class="src">Untraced secondary citation — treat as folklore</p>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============ 3. THE LOOP ============ -->
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">The core correction</div>
+    <h2>One record travelling through eleven stages</h2>
+    <p class="col">A department structure is an org chart, and an org chart for a company of one is theatre. Worse, it fragments the app: six lists that don't know about each other, so a won deal doesn't reserve capacity and a late invoice doesn't flag a client at risk. Model the <strong>loop</strong> instead. Your three parts are simply which segment of it you're standing in.</p>
+  </div>
+
+  <div class="loop">
+    <div class="loop-track">
+      <div class="stage lens-lead"><span class="n">01</span><span class="t">Target</span><span class="g">Leadership</span></div>
+      <div class="stage lens-lead"><span class="n">02</span><span class="t">Reach out</span><span class="g">Leadership</span></div>
+      <div class="stage lens-lead"><span class="n">03</span><span class="t">Qualify</span><span class="g">Leadership</span></div>
+      <div class="stage lens-lead"><span class="n">04</span><span class="t">Propose</span><span class="g">Leadership</span></div>
+      <div class="stage lens-work"><span class="n">05</span><span class="t">Kick off</span><span class="g">Working</span></div>
+      <div class="stage lens-work"><span class="n">06</span><span class="t">Plan</span><span class="g">Working</span></div>
+      <div class="stage lens-work"><span class="n">07</span><span class="t">Produce</span><span class="g">Working</span></div>
+      <div class="stage lens-work"><span class="n">08</span><span class="t">Review gate</span><span class="g">Working</span></div>
+      <div class="stage lens-work"><span class="n">09</span><span class="t">Deliver</span><span class="g">Working</span></div>
+      <div class="stage lens-ops"><span class="n">10</span><span class="t">Invoice &amp; collect</span><span class="g">Operations</span></div>
+      <div class="stage lens-ops"><span class="n">11</span><span class="t">Report, renew, ask</span><span class="g">Operations</span></div>
+    </div>
+    <div class="loop-foot">
+      <span class="lgd lens-lead"><i></i> Leadership — sales &amp; growth</span>
+      <span class="lgd lens-work"><i></i> Working — strategy, production, delivery</span>
+      <span class="lgd lens-ops"><i></i> Operations — client success &amp; finance</span>
+      <span>↺ stage 11 feeds stage 01 — the referral loop closes here</span>
+    </div>
+  </div>
+
+  <div class="callout">
+    <h4>The join that makes it work</h4>
+    <p>Stage 04 must read the <strong>capacity ledger</strong> before you can send a proposal, and stage 11 must write back into stage 01 as a referral source. Those two joins are the difference between an app that reports on your business and an app that runs it. Neither is possible in a three-department layout.</p>
+  </div>
+</section>
+
+<!-- ============ 4. GAPS ============ -->
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Where the outline breaks</div>
+    <h2>Six gaps, in the order they'll hurt you</h2>
+    <p class="col">These are not features to add later. Each one is a place where your current structure silently permits a failure that a one-person agency cannot absorb.</p>
+  </div>
+
+  <div class="gaps">
+
+    <div class="gap">
+      <span class="num">01</span>
+      <span class="gap-tag">Missing object · highest severity</span>
+      <div class="body">
+        <h3>There is no capacity ledger, so nothing stops you selling time you don't have</h3>
+        <p>Your model can happily hold four signed retainers and a full production queue and never once compare them to the hours in the month. Utilization benchmarks of 65–80% assume a person who <em>only</em> delivers. You also sell, quote, chase invoices, write reports and do your own admin — so realistic billable capacity for a solo operator is closer to <strong>40–55% of working hours</strong>, and above 85% you have no absorption left for a sick day.</p>
+        <div class="fix"><b>Fix</b> A first-class <em class="term">CapacityBlock</em> object: hours available per week, split into billable / sales / admin / growth. Every Engagement reserves against it. The proposal screen refuses to generate a quote that pushes the month over your ceiling — or forces you to name what gets moved.</div>
+      </div>
+    </div>
+
+    <div class="gap">
+      <span class="num">02</span>
+      <span class="gap-tag">Naming collision · blocks all reporting</span>
+      <div class="body">
+        <h3>"Incumbents, Leads, Reach, Final" are three different kinds of thing wearing one coat</h3>
+        <p>A monthly revenue target is a number. A list of companies you want to work with is a set of records. "Has interacted with us" is a stage on a record. Fusing them means you can never compute a conversion rate, because you can't tell what the denominator is.</p>
+        <div class="fix"><b>Fix</b> Split into <em class="term">Target</em> (a period goal: revenue, new clients, qualified leads), <em class="term">Account</em> (a company, with a source and a fit score) and <em class="term">Stage</em> on the Opportunity: New → Contacted → Engaged → Qualified → Proposed → Won / Lost, with a lost-reason. Then stage-to-stage conversion falls out for free, and you can compare it to the benchmark set — roughly 15% MQL→SQL and 6–9% closed-won across B2B.</div>
+      </div>
+    </div>
+
+    <div class="gap">
+      <span class="num">03</span>
+      <span class="gap-tag">Missing feedback loop · compounds monthly</span>
+      <div class="body">
+        <h3>Nothing records what a job was supposed to cost versus what it actually cost</h3>
+        <p>This is the loop that makes every future quote better, and it's absent. Without logged actuals you're estimating from the inside view, which is systematically optimistic — and with 52% of projects taking uncontrolled scope change, the gap is not small. On a fixed fee it comes straight out of your margin, invisibly.</p>
+        <div class="fix"><b>Fix</b> Every Deliverable carries <em class="term">estimated_hours</em> and accumulates <em class="term">logged_hours</em> from Sessions. Variance is shown live, and at quote time the app offers the actual distribution from your last N similar deliverables — reference-class forecasting on your own history. Also log every out-of-scope request as a <em class="term">ScopeChange</em>: approved, absorbed, or declined. "Absorbed" is your real discount rate.</div>
+      </div>
+    </div>
+
+    <div class="gap">
+      <span class="num">04</span>
+      <span class="gap-tag">Wrong metric family · finance</span>
+      <div class="body">
+        <h3>"Made, spent, remaining" can't see the two things that actually end solo agencies</h3>
+        <p>Those three numbers are a snapshot of profit. Businesses die of <strong>timing</strong> and <strong>concentration</strong>. The median small business runs on 27 days of cash and a quarter on 13 or fewer, so a single 45-day-late invoice is an existential event, not an annoyance. And one client at 40% of revenue means their budget freeze is your budget freeze.</p>
+        <div class="fix"><b>Fix</b> Add four numbers to the money view: <em class="term">cash buffer days</em> (cash ÷ average daily outflow), <em class="term">AR aging</em> (per invoice: sent → due → paid, with days overdue), <em class="term">revenue concentration</em> (largest client as % of trailing 3-month revenue) and <em class="term">effective hourly rate</em> (fee ÷ logged hours, per engagement). Agencies target no client above 10–12%; solo that's unreachable, so set your own trigger — at 35% the app tells you to go find one more client.</div>
+      </div>
+    </div>
+
+    <div class="gap">
+      <span class="num">05</span>
+      <span class="gap-tag">Lagging-only signals · client success</span>
+      <div class="body">
+        <h3>A monthly report tells you a client left; it doesn't warn you they're leaving</h3>
+        <p>Client success as you've scoped it is a reporting function. Retention is worth defending — the classic finding is a 25–85% profit lift from a 5-point defection cut, though that's a ceiling and scales with margin — but you can only defend it with <em>leading</em> signals. And don't reach for NPS: it explains around 1% of variance in share of wallet and predicts worse than plain satisfaction.</p>
+        <div class="fix"><b>Fix</b> A computed <em class="term">health score</em> per client from behaviour you already have: days since last approval, reply latency trend, revision rounds vs. their baseline, invoice payment lateness, scope-change friction, days since you last showed them a result. Three ambers = a flag on the weekly review, with a named recovery action.</div>
+      </div>
+    </div>
+
+    <div class="gap">
+      <span class="num">06</span>
+      <span class="gap-tag">Unbounded work · the "getting lost" problem</span>
+      <div class="body">
+        <h3>Nothing in the model can ever say "no, not yet"</h3>
+        <p>You described the fear precisely — missing things, drowning in volume — but every container in your outline is an unbounded list. Little's Law is the direct answer: lead time is WIP divided by throughput, so with a fixed throughput of one person, the only lever you have is holding fewer things open. Combined with a ~23-minute recovery cost per context switch, parallel work is the thing quietly eating your week.</p>
+        <div class="fix"><b>Fix</b> Hard WIP limits, enforced in the UI, not suggested: max <strong>3–5 active engagements</strong>, max <strong>2 deliverables in Produce</strong> at once, max <strong>1 growth experiment</strong> per quarter. Exceeding one requires explicitly parking something else. Plus a single <em class="term">Capture</em> inbox — one keystroke, no fields, triaged in the weekly review — so nothing needs holding in your head between reviews.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 5. ARCHITECTURE ============ -->
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">The structure to build</div>
+    <h2>Four layers</h2>
+    <p class="col">Objects are what exists. Rituals are when you touch them. Signals are what the app says back. Views are the only four screens you actually need. Your Leadership / Working / Operations split lives in the Signals layer, as report groupings — exactly where it earns its keep.</p>
+  </div>
+
+  <div class="layers">
+
+    <div class="layer">
+      <div class="layer-id">
+        <span class="lid">Layer 1 — Spine</span>
+        <h3>Objects</h3>
+        <p>Thirteen records. If something can't attach to one of these, it doesn't belong in v1.</p>
+      </div>
+      <div class="layer-body">
+        <div class="objs">
+          <div class="obj"><span class="on">Account</span><span class="od">A company. Source, fit score, notes.</span></div>
+          <div class="obj"><span class="on">Contact</span><span class="od">A person at an account.</span></div>
+          <div class="obj"><span class="on">Opportunity</span><span class="od">A possible deal. Stage, value, next action, lost reason.</span></div>
+          <div class="obj"><span class="on">Client</span><span class="od">A won account. Health score, brand kit, access list.</span></div>
+          <div class="obj"><span class="on">Engagement</span><span class="od">Retainer or project. Fee, term, scope, capacity reserved.</span></div>
+          <div class="obj"><span class="on">Deliverable</span><span class="od">The atomic unit. Due date, estimate, status, owner-of-approval.</span></div>
+          <div class="obj"><span class="on">Session</span><span class="od">Logged work: deliverable, minutes, date, type.</span></div>
+          <div class="obj"><span class="on">Playbook</span><span class="od">Versioned process template with steps and gates.</span></div>
+          <div class="obj"><span class="on">PlaybookRun</span><span class="od">A live instance of a playbook on one engagement.</span></div>
+          <div class="obj"><span class="on">CapacityBlock</span><span class="od">Hours available in a week, by type.</span></div>
+          <div class="obj"><span class="on">MoneyEvent</span><span class="od">Invoice or expense. Dated, due-dated, settled-dated.</span></div>
+          <div class="obj"><span class="on">Experiment</span><span class="od">One growth bet. Hypothesis, affordable loss, kill date.</span></div>
+          <div class="obj"><span class="on">Capture</span><span class="od">Raw thought. Triaged into anything above.</span></div>
+        </div>
+
+<pre class="tree"><b>Account</b>
+├── Contact ×n
+└── <b>Opportunity</b>          <i>stage · value · source · next action</i>
+    └── on Won → <b>Client</b>
+        ├── brand kit · access checklist · <i>health score</i>
+        ├── <b>Engagement</b>   <i>fee · term · scope · capacity reserved</i>
+        │   ├── <b>PlaybookRun</b>   <i>← instantiated from Playbook vN</i>
+        │   ├── <b>Deliverable</b> ×n
+        │   │   ├── <b>Session</b> ×n      <i>→ logged_hours</i>
+        │   │   ├── ScopeChange ×n     <i>approved | absorbed | declined</i>
+        │   │   └── ReviewGate         <i>definition of done</i>
+        │   └── <b>MoneyEvent</b> ×n     <i>invoice · expense</i>
+        └── MonthlyReport ×n       <i>→ renewal · referral ask</i>
+
+<b>CapacityBlock</b> ⇄ Engagement + Deliverable   <i>the reservation join</i>
+<b>Experiment</b>  → Account.source                <i>closes growth → pipeline</i>
+<b>Capture</b>     → anything                      <i>triaged in weekly review</i></pre>
+      </div>
+    </div>
+
+    <div class="layer">
+      <div class="layer-id">
+        <span class="lid">Layer 2 — Cadence</span>
+        <h3>Rituals</h3>
+        <p>Your month/week/day instinct, with a distinct job per horizon and a required output each time.</p>
+      </div>
+      <div class="layer-body">
+        <div class="rituals">
+          <div class="ritual">
+            <div class="rt"><span class="rn">Daily</span><span class="rd">10 min · 2×</span></div>
+            <ul>
+              <li>Open: timebox the day against blocks already set on Sunday</li>
+              <li>No decisions — decisions were made at the weekly</li>
+              <li>Close: log sessions, empty capture, set tomorrow's first block</li>
+            </ul>
+            <div class="out">Output → a closed day. Nothing held in your head overnight.</div>
+          </div>
+          <div class="ritual">
+            <div class="rt"><span class="rn">Weekly</span><span class="rd">45 min · the load-bearing one</span></div>
+            <ul>
+              <li>Triage capture inbox to zero</li>
+              <li>Check WIP against limits; park what's over</li>
+              <li>Allocate next week's capacity blocks</li>
+              <li>Pipeline: every opportunity has a dated next action</li>
+              <li>Health flags and overdue invoices</li>
+            </ul>
+            <div class="out">Output → next week's timeboxes, as if-then commitments.</div>
+          </div>
+          <div class="ritual">
+            <div class="rt"><span class="rn">Monthly</span><span class="rd">2 hrs</span></div>
+            <ul>
+              <li>Client reports out; renewal and referral asks</li>
+              <li>Close the books: cash buffer, AR, concentration</li>
+              <li>Estimate vs. actual across the month's deliverables</li>
+              <li>Set next month's targets (specific and hard, per Locke)</li>
+            </ul>
+            <div class="out">Output → target sheet + one pricing or process change.</div>
+          </div>
+          <div class="ritual">
+            <div class="rt"><span class="rn">Quarterly</span><span class="rd">half day · you're missing this</span></div>
+            <ul>
+              <li>Positioning, offer and pricing review</li>
+              <li>Kill or continue the growth experiment</li>
+              <li>Update playbooks from what you learned</li>
+              <li>Fire or renegotiate the worst-fit client</li>
+            </ul>
+            <div class="out">Output → one new experiment with an affordable-loss budget.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="layer">
+      <div class="layer-id">
+        <span class="lid">Layer 3 — Feedback</span>
+        <h3>Signals</h3>
+        <p>Twelve numbers, thresholds attached. A goal without feedback does nothing — this is the feedback.</p>
+      </div>
+      <div class="layer-body">
+        <div class="scroller">
+          <table>
+            <thead>
+              <tr><th>Lens</th><th>Signal</th><th class="num">Watch</th><th>Reads</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Leadership</td><td><b>Qualified leads added</b></td><td class="num">vs. target</td><td>Leading. The only pipeline number you control directly.</td></tr>
+              <tr><td>Leadership</td><td><b>Stage conversion %</b></td><td class="num">~15% Q→P<br>6–9% won</td><td>Where you leak. Compare to your own trailing average first, benchmarks second.</td></tr>
+              <tr><td>Leadership</td><td><b>Pipeline coverage</b></td><td class="num">≥ 3× gap</td><td>Weighted open value vs. remaining revenue target.</td></tr>
+              <tr><td>Leadership</td><td><b>Referral share</b></td><td class="num">track, don't cap</td><td>Referrals are ~75% of agency new business; if yours is 0%, you have no ask ritual.</td></tr>
+              <tr><td>Working</td><td><b>Active WIP</b></td><td class="num">≤ 5 eng / 2 prod</td><td>Hard limit. Breach blocks new starts.</td></tr>
+              <tr><td>Working</td><td><b>On-time delivery %</b></td><td class="num">≥ 90%</td><td>Against the date promised, not the date rescheduled.</td></tr>
+              <tr><td>Working</td><td><b>Estimate variance</b></td><td class="num">±20%</td><td>Consistently over means your price is wrong, not your speed.</td></tr>
+              <tr><td>Working</td><td><b>Billable utilization</b></td><td class="num">40–55% solo<br>hard stop 70%</td><td>Team benchmarks (65–80%) don't apply to you — you have no one else doing sales and admin.</td></tr>
+              <tr><td>Operations</td><td><b>Cash buffer days</b></td><td class="num">≥ 60</td><td>Median small business sits at 27. Aim higher; you have no credit line.</td></tr>
+              <tr><td>Operations</td><td><b>AR overdue</b></td><td class="num">0 over 30d</td><td>One late invoice is a large share of a solo month.</td></tr>
+              <tr><td>Operations</td><td><b>Revenue concentration</b></td><td class="num">&lt; 35%</td><td>Largest client, trailing 3 months. Above it, prospecting becomes non-optional.</td></tr>
+              <tr><td>Operations</td><td><b>Clients flagged</b></td><td class="num">0</td><td>Behavioural health score. Not NPS.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="layer">
+      <div class="layer-id">
+        <span class="lid">Layer 4 — Surface</span>
+        <h3>Views</h3>
+        <p>Named for when you open them, not for what department owns them.</p>
+      </div>
+      <div class="layer-body">
+        <div class="objs">
+          <div class="obj"><span class="on">Today</span><span class="od">Timeboxes, due deliverables, next actions, capture box. The default screen. 90% of your opens land here.</span></div>
+          <div class="obj"><span class="on">Pipeline</span><span class="od">Board by stage. Every card shows next action + date. Proposals check capacity before they can be sent.</span></div>
+          <div class="obj"><span class="on">Work</span><span class="od">Clients → engagements → deliverables, with the playbook run alongside and WIP counters at the top.</span></div>
+          <div class="obj"><span class="on">Money &amp; Health</span><span class="od">The twelve signals, AR aging, concentration, flagged clients. Opened weekly and monthly, never daily.</span></div>
+          <div class="obj"><span class="on">Review</span><span class="od">Not a page — a guided mode that walks the weekly/monthly agenda and writes its output back into the objects.</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 6. PLAYBOOKS ============ -->
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Your website-as-process idea</div>
+    <h2>Make it a playbook, not an embed</h2>
+    <p class="col">This was one of your better instincts and it deserves a sharper form. Checklists work in aviation and surgery because complexity has outgrown memory — the failure mode isn't ignorance, it's skipping a step you know. That's exactly a solo operator running six clients through the same process.</p>
+  </div>
+  <div class="col">
+    <p>Structure each service on your site as a <em class="term">Playbook</em>: an ordered list of steps, each with inputs, output, an owner (you or the client) and an optional <strong>gate</strong> that blocks progress until satisfied. Version it. When you win a deal, the app creates a <em class="term">PlaybookRun</em> — a live copy pinned to version N, so improving the template never disturbs work in flight.</p>
+    <p>Three gates are worth enforcing from day one, because each maps to a delay you're already having:</p>
+  </div>
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Gate</th><th>Blocks</th><th>Why it exists</th></tr></thead>
+      <tbody>
+        <tr><td><b>Access received</b></td><td>Production start</td><td>Missing logins and asset access is the most common kickoff delay in solo delivery. Make it a blocking checklist item, not a polite reminder.</td></tr>
+        <tr><td><b>Brief approved</b></td><td>Creative production</td><td>Producing against an unapproved brief is how one round of revisions becomes four. The approval timestamp is also your scope-change baseline.</td></tr>
+        <tr><td><b>Definition of done</b></td><td>Marking delivered</td><td>Written per deliverable type at template level: formats, dimensions, captions, filenames. Stops the "one more small thing" tail.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ 7. BUILD ============ -->
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Sequencing</div>
+    <h2>Build order, and the gate on each phase</h2>
+    <p class="col">Numbered because the order genuinely matters — each phase produces the data the next one needs. Don't start phase 2 until phase 1 has run for real weeks, or you'll be building screens for data you don't have yet.</p>
+  </div>
+
+  <div class="phases">
+    <div class="phase">
+      <div class="phase-id"><span class="pn">Phase 1 · Spine</span><span class="pw">~2 weeks</span></div>
+      <div class="phase-body">
+        <p>Objects, one database, and the two screens you'll live in. No metrics yet — you have no data to compute them from. The goal is simply that everything lands somewhere and nothing lives in your head.</p>
+        <div class="ships"><span>Account / Opportunity / Client</span><span>Engagement / Deliverable</span><span>Session logging</span><span>Capture inbox</span><span>Today view</span><span>Work view</span></div>
+        <p class="gate"><b>Gate →</b> four consecutive weeks where every hour worked is logged against a deliverable. Without this, phase 3 computes nothing.</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-id"><span class="pn">Phase 2 · Control</span><span class="pw">~2 weeks</span></div>
+      <div class="phase-body">
+        <p>The constraints that make it an operating system rather than a list app. This is where WIP limits and the capacity ledger arrive, and where the weekly review becomes a guided mode instead of a good intention.</p>
+        <div class="ships"><span>CapacityBlock + reservation</span><span>WIP limits enforced</span><span>Pipeline board with stages</span><span>Weekly review mode</span><span>Timeboxing on Today</span></div>
+        <p class="gate"><b>Gate →</b> you've been blocked by your own WIP limit at least once and respected it.</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-id"><span class="pn">Phase 3 · Feedback</span><span class="pw">~2 weeks</span></div>
+      <div class="phase-body">
+        <p>Now the logged data pays off. Estimate-vs-actual, conversion rates, the money signals. Quotes start drawing on your own history instead of your optimism.</p>
+        <div class="ships"><span>Estimate vs. actual + variance</span><span>Reference-class quoting</span><span>MoneyEvent + AR aging</span><span>Cash buffer + concentration</span><span>Signals dashboard</span><span>Client health score</span></div>
+        <p class="gate"><b>Gate →</b> one quote priced from your own historical distribution rather than a guess.</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-id"><span class="pn">Phase 4 · Leverage</span><span class="pw">ongoing</span></div>
+      <div class="phase-body">
+        <p>Only now: playbooks, client reporting, growth experiments. These are the parts that compound, and they're all worth more once there's real data under them.</p>
+        <div class="ships"><span>Playbook + PlaybookRun</span><span>Gates &amp; definition of done</span><span>Monthly client report generator</span><span>Experiment tracking</span><span>Referral ask ritual</span></div>
+        <p class="gate"><b>Gate →</b> none. This is where the app stops being a project and becomes a habit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. DON'T BUILD ============ -->
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">Scope discipline</div>
+    <h2>What not to build</h2>
+    <p class="col">You're one person building a tool for one person while also running the agency that pays for it. Every one of these is a month you don't have, replacing something you can already buy.</p>
+  </div>
+  <div class="notlist">
+    <div class="not"><span class="x">✕</span><p><b>Invoicing and accounting.</b> Keep issuing invoices where you do now. Record a MoneyEvent with the amount, due date and paid date — that's all the signals need.</p></div>
+    <div class="not"><span class="x">✕</span><p><b>File storage and asset hosting.</b> Store links. Your drive already does versioning, sharing and backup better than you will.</p></div>
+    <div class="not"><span class="x">✕</span><p><b>A client portal.</b> Zero clients have asked. Build the monthly report generator instead — same value, a tenth of the work, and it forces the review to happen.</p></div>
+    <div class="not"><span class="x">✕</span><p><b>Email and messaging integration.</b> A "next action + date" field on the opportunity does 90% of what a CRM inbox does, at 2% of the build.</p></div>
+    <div class="not"><span class="x">✕</span><p><b>Credential storage.</b> Track <em>whether</em> access was granted, never the secret itself. Keep secrets in a password manager.</p></div>
+    <div class="not"><span class="x">✕</span><p><b>Multi-user roles and permissions.</b> Add them the week you hire someone, not before. It's a rewrite either way.</p></div>
+    <div class="not"><span class="x">✕</span><p><b>An NPS survey module.</b> It explains around 1% of variance in share of wallet. The behavioural health score is free and predicts better.</p></div>
+  </div>
+</section>
+
+<!-- ============ 9. SOURCES ============ -->
+<section>
+  <div class="sec-head">
+    <div class="eyebrow">References</div>
+    <h2>Sources</h2>
+    <p class="col">Grades as used above: <strong>A</strong> peer-reviewed, meta-analytic or primary data · <strong>B</strong> industry survey with stated methodology · <strong>C</strong> secondary citation, directional only.</p>
+  </div>
+  <ol class="sources">
+    <li><span class="grade a">A</span> Gollwitzer &amp; Sheeran, <em>Implementation Intentions and Goal Achievement: A Meta-Analysis of Effects and Processes</em>, 2006 — <a href="https://www.sciencedirect.com/science/chapter/bookseries/abs/pii/S0065260106380021">sciencedirect.com</a></li>
+    <li><span class="grade a">A</span> Aeon &amp; Faber, time-management meta-analysis (PLOS ONE, 2021), summarised alongside Zao-Sanders, <em>How Timeboxing Works</em>, HBR — <a href="https://hbr.org/2018/12/how-timeboxing-works-and-why-it-will-make-you-more-productive">hbr.org</a></li>
+    <li><span class="grade a">A</span> Mark et al. (UC Irvine) on interruption recovery time — <a href="https://www.daylox.com/blog/how-freelancers-can-build-a-sustainable-workflow-and-earn-more-in-2024/">secondary summary</a></li>
+    <li><span class="grade a">A</span> JPMorgan Chase Institute, <em>Cash is King: Flows, Balances, and Buffer Days</em> — <a href="https://www.jpmorganchase.com/institute/all-topics/business-growth-and-entrepreneurship/report-cash-flows-balances-and-buffer-days">jpmorganchase.com</a></li>
+    <li><span class="grade a">A</span> Locke &amp; Latham, <em>New Directions in Goal-Setting Theory</em>, 2006 — <a href="https://home.ubalt.edu/tmitch/642/articles%20syllabus/locke%20latham%20new%20dir%20gs%20curr%20dir%20psy%20sci%202006.pdf">ubalt.edu (PDF)</a></li>
+    <li><span class="grade a">A</span> Little's Law and WIP limits in knowledge work — <a href="https://kanbanzone.com/resources/lean/littles-law/">kanbanzone.com</a></li>
+    <li><span class="grade a">A</span> Sarasvathy, <em>Effectuation: Elements of Entrepreneurial Expertise</em> — <a href="https://www.researchgate.net/publication/228786046_Effectuation_Elements_of_Entrepreneurial_Expertise">researchgate.net</a></li>
+    <li><span class="grade a">A</span> Flyvbjerg, <em>From Nobel Prize to Project Management: Getting Risks Right</em> (reference-class forecasting) — <a href="https://arxiv.org/pdf/1302.3642">arxiv.org (PDF)</a></li>
+    <li><span class="grade b">B</span> RSW/US 2025 Agency Survey, via SparkToro — <a href="https://sparktoro.com/blog/digital-agency-new-business-still-a-concern-referrals-still-rule-for-lead-gen-and-are-sales-pipelines-finally-recovering/">sparktoro.com</a></li>
+    <li><span class="grade b">B</span> SPI Research, <em>2025 Professional Services Maturity Benchmark</em> (utilization) — <a href="https://bennettfinancials.com/utilization-vs-realization-marketing-agencies">summary</a></li>
+    <li><span class="grade b">B</span> PMI <em>Pulse of the Profession</em> on scope creep — <a href="https://trcr.pro/insights/project-scope-creep-statistics">summary</a></li>
+    <li><span class="grade c">C</span> Reichheld &amp; Sasser, <em>Zero Defections</em> (HBR 1990); see also <em>The Value of Keeping the Right Customers</em> — <a href="https://hbr.org/2014/10/the-value-of-keeping-the-right-customers">hbr.org</a></li>
+    <li><span class="grade a">A</span> <em>Statistical validation of critical aspects of the Net Promoter Score</em>, The TQM Journal — <a href="https://www.emerald.com/tqm/article/35/9/191/378999/Statistical-validation-of-critical-aspects-of-the">emerald.com</a></li>
+    <li><span class="grade b">B</span> B2B stage conversion benchmarks (MQL→SQL, closed-won ranges) — <a href="https://prospeo.io/s/b2b-lead-conversion-rates">prospeo.io</a></li>
+  </ol>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <p>Prepared for Alpheris · a review of the proposed Leadership / Working / Operations structure against published research, and a target architecture for the app.<br>
+  Benchmarks from industry surveys describe multi-person agencies unless noted; solo thresholds here are adjusted and marked as such. Where a widely-circulated statistic could not be traced to a primary source, it is flagged rather than repeated.</p>
+</footer>
+
+</div>
