@@ -21,6 +21,7 @@ import {
   CompanyStrategy,
   CreativeScript,
   createClientLearn,
+  createClientRecord,
   createClientTimeline,
   EMPTY_STATE,
   Experiment,
@@ -47,6 +48,10 @@ function readState(): OsState {
     const parsed = { ...EMPTY_STATE, ...(JSON.parse(raw) as Partial<OsState>) };
     parsed.creativeScripts = (parsed.creativeScripts ?? []).map(normalizeCreativeScript);
     parsed.adReports = (parsed.adReports ?? []).map(normalizeAdReport);
+    const missingClients = (parsed.leads ?? [])
+      .filter((l) => l.stage === "Client" && !parsed.clients.some((c) => c.name === l.name))
+      .map((l) => createClientRecord(l.name));
+    if (missingClients.length > 0) parsed.clients = [...parsed.clients, ...missingClients];
     return parsed;
   } catch {
     return EMPTY_STATE;
@@ -198,6 +203,9 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
         if (!prev.clientLearn.some((l) => l.client === newLead.name)) {
           next.clientLearn = [...prev.clientLearn, createClientLearn(newLead.name)];
         }
+        if (!prev.clients.some((c) => c.name === newLead.name)) {
+          next.clients = [...prev.clients, createClientRecord(newLead.name)];
+        }
         return next;
       });
     },
@@ -218,6 +226,9 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
         }
         if (!prev.clientLearn.some((l) => l.client === clientName)) {
           next.clientLearn = [...prev.clientLearn, createClientLearn(clientName)];
+        }
+        if (!prev.clients.some((c) => c.name === clientName)) {
+          next.clients = [...prev.clients, createClientRecord(clientName)];
         }
         return next;
       });

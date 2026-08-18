@@ -61,6 +61,19 @@ export interface Client {
   organicViews: number;
 }
 
+export function createClientRecord(name: string): Client {
+  return {
+    id: newId(),
+    name,
+    monthlyValue: 0,
+    health: "Good",
+    notes: "",
+    satisfaction: 0,
+    roi: 0,
+    organicViews: 0,
+  };
+}
+
 export interface ProblemSolution {
   id: string;
   client: string;
