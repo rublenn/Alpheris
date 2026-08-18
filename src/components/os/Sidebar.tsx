@@ -38,7 +38,7 @@ const GROUPS: NavGroup[] = [
     items: [
       { href: "/os/leadership/strategy", label: "Company Strategy", icon: IconCompanyStrategy },
       { href: "/os/leadership/timeline", label: "Business Timeline", icon: IconTimeline },
-      { href: "/os/leadership/project-timeline", label: "Project Timeline", icon: IconProjectTimeline },
+      { href: "/os/leadership/client-timeline", label: "Client Timeline", icon: IconProjectTimeline },
     ],
   },
   {

@@ -10,7 +10,7 @@ const TITLES: Record<string, string> = {
   "/os": "Overview",
   "/os/leadership/strategy": "Company Strategy",
   "/os/leadership/timeline": "Business Timeline",
-  "/os/leadership/project-timeline": "Project Timeline",
+  "/os/leadership/client-timeline": "Client Timeline",
   "/os/sales-growth/sales": "Sales",
   "/os/sales-growth/marketing": "Marketing",
   "/os/working/strategies": "Strategies",

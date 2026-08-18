@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useOsStore } from "@/lib/os/store";
 import { DELIVERABLE_STATUSES, Deliverable, DeliverableStatus, newId, todayISO } from "@/lib/os/types";
 import { estimateVariance, onTimeRate } from "@/lib/os/calc";
@@ -51,8 +53,19 @@ function monthLabel(dateStr: string) {
 }
 
 export default function DeliverablesPage() {
+  return (
+    <Suspense>
+      <DeliverablesPageInner />
+    </Suspense>
+  );
+}
+
+function DeliverablesPageInner() {
   const { state, hydrated, addDeliverable, updateDeliverable, removeDeliverable } = useOsStore();
-  const [tab, setTab] = useState<"All" | "Calendar" | "Scheduling" | "Publishing">("All");
+  const searchParams = useSearchParams();
+  const focusClient = searchParams.get("client") || "";
+  const initialTab = searchParams.get("tab") === "calendar" ? "Calendar" : "All";
+  const [tab, setTab] = useState<"All" | "Calendar" | "Scheduling" | "Publishing">(initialTab);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<Deliverable>(emptyDeliverable());
@@ -63,7 +76,7 @@ export default function DeliverablesPage() {
   const onTime = onTimeRate(state.deliverables);
 
   function openNew() {
-    setForm(emptyDeliverable());
+    setForm({ ...emptyDeliverable(), client: focusClient });
     setEditingId(null);
     setDrawerOpen(true);
   }
@@ -83,8 +96,12 @@ export default function DeliverablesPage() {
 
   const sorted = [...state.deliverables].sort((a, b) => a.dueDate.localeCompare(b.dueDate));
 
+  const calendarSource = focusClient
+    ? sorted.filter((d) => d.client.toLowerCase() === focusClient.toLowerCase())
+    : sorted;
+
   const byMonth = new Map<string, Deliverable[]>();
-  for (const d of sorted) {
+  for (const d of calendarSource) {
     const key = monthLabel(d.dueDate);
     if (!byMonth.has(key)) byMonth.set(key, []);
     byMonth.get(key)!.push(d);
@@ -185,8 +202,28 @@ export default function DeliverablesPage() {
         </Card>
       ))}
 
-      {tab === "Calendar" && (state.deliverables.length === 0 ? (
-        <EmptyState title="Nothing on the calendar" body="Deliverables appear here grouped by due month, earliest first." />
+      {tab === "Calendar" && focusClient && (
+        <div className="flex items-center gap-2 text-sm -mt-2">
+          <span className="text-muted">Filtered to</span>
+          <Badge tone="accent">{focusClient}</Badge>
+          <Link href="/os/working/deliverables?tab=calendar" className="text-accent hover:opacity-80">
+            Clear
+          </Link>
+        </div>
+      )}
+
+      {tab === "Calendar" && (calendarSource.length === 0 ? (
+        <EmptyState
+          title={focusClient ? `Nothing on the calendar for ${focusClient}` : "Nothing on the calendar"}
+          body="Deliverables appear here grouped by due month, earliest first."
+          action={
+            focusClient ? (
+              <Button variant="primary" onClick={openNew}>
+                <IconPlus className="h-4 w-4" /> Add a deliverable for {focusClient}
+              </Button>
+            ) : undefined
+          }
+        />
       ) : (
         <div className="flex flex-col gap-5">
           {Array.from(byMonth.entries()).map(([month, items]) => (

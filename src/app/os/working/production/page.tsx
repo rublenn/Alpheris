@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useOsStore } from "@/lib/os/store";
 import {
   DeliverableStatus,
@@ -44,6 +45,14 @@ function emptyOutsource(): Outsource {
 }
 
 export default function ProductionPage() {
+  return (
+    <Suspense>
+      <ProductionPageInner />
+    </Suspense>
+  );
+}
+
+function ProductionPageInner() {
   const {
     state,
     hydrated,
@@ -56,7 +65,10 @@ export default function ProductionPage() {
     removeOutsource,
   } = useOsStore();
 
-  const [tab, setTab] = useState<"Board" | "Workflow" | "Plan" | "Outsources">("Board");
+  const searchParams = useSearchParams();
+  const focusClient = searchParams.get("client") || "";
+  const initialTab = searchParams.get("focus") === "plan" ? "Plan" : searchParams.get("focus") === "board" ? "Board" : "Board";
+  const [tab, setTab] = useState<"Board" | "Workflow" | "Plan" | "Outsources">(initialTab);
 
   const [planDrawer, setPlanDrawer] = useState(false);
   const [editingPlanId, setEditingPlanId] = useState<string | null>(null);
@@ -70,7 +82,12 @@ export default function ProductionPage() {
 
   const inProduction = inProductionCount(state.deliverables);
   const overLimit = inProduction > WIP_LIMITS.inProduction;
-  const queue = state.deliverables.filter((d) => d.status !== "Delivered");
+  const queue = state.deliverables.filter(
+    (d) => d.status !== "Delivered" && (!focusClient || d.client.toLowerCase() === focusClient.toLowerCase())
+  );
+  const visiblePlans = focusClient
+    ? state.productionPlans.filter((p) => p.project.toLowerCase() === focusClient.toLowerCase())
+    : state.productionPlans;
 
   function moveTo(id: string, status: DeliverableStatus) {
     if (status === "Production" && inProduction >= WIP_LIMITS.inProduction) {
@@ -86,7 +103,7 @@ export default function ProductionPage() {
   }
 
   function openNewPlan() {
-    setPlanForm(emptyPlan());
+    setPlanForm({ ...emptyPlan(), project: focusClient });
     setEditingPlanId(null);
     setPlanDrawer(true);
   }
@@ -151,6 +168,16 @@ export default function ProductionPage() {
           { value: "Outsources", label: "Outsources", count: state.outsources.length },
         ]}
       />
+
+      {focusClient && (tab === "Board" || tab === "Plan") && (
+        <div className="flex items-center gap-2 text-sm">
+          <span className="text-muted">Filtered to</span>
+          <Badge tone="accent">{focusClient}</Badge>
+          <Link href="/os/working/production" className="text-accent hover:opacity-80">
+            Clear
+          </Link>
+        </div>
+      )}
 
       {tab === "Board" && (
         <>
@@ -227,9 +254,9 @@ export default function ProductionPage() {
         />
       )}
 
-      {tab === "Plan" && (state.productionPlans.length === 0 ? (
+      {tab === "Plan" && (visiblePlans.length === 0 ? (
         <EmptyState
-          title="No production plans yet"
+          title={focusClient ? `No production plan yet for ${focusClient}` : "No production plans yet"}
           body="The final, locked plan for a shoot or build — what's being made, when, and the details that matter on the day."
           action={
             <Button variant="primary" onClick={openNewPlan}>
@@ -239,7 +266,7 @@ export default function ProductionPage() {
         />
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
-          {state.productionPlans.map((p) => (
+          {visiblePlans.map((p) => (
             <Card key={p.id} className="cursor-pointer flex flex-col gap-2" padded>
               <div onClick={() => openEditPlan(p)}>
                 <div className="flex items-center justify-between mb-1">

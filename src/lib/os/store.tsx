@@ -14,7 +14,11 @@ import {
   Capture,
   Client,
   ClientResearch,
+  ClientTimeline,
+  ClientTimelineStage,
+  ClientTimelineStep,
   CompanyStrategy,
+  createClientTimeline,
   Deliverable,
   EMPTY_STATE,
   Experiment,
@@ -27,7 +31,6 @@ import {
   Outsource,
   Playbook,
   ProductionPlan,
-  ProjectMilestone,
   RelationshipNote,
   Target,
   TimelineEntry,
@@ -92,9 +95,9 @@ interface OsStore {
   updateTimelineEntry: (id: string, patch: Partial<TimelineEntry>) => void;
   removeTimelineEntry: (id: string) => void;
 
-  addProjectMilestone: (m: ProjectMilestone) => void;
-  updateProjectMilestone: (id: string, patch: Partial<ProjectMilestone>) => void;
-  removeProjectMilestone: (id: string) => void;
+  addClientTimeline: (t: ClientTimeline) => void;
+  removeClientTimeline: (id: string) => void;
+  updateClientTimelineStep: (timelineId: string, stage: ClientTimelineStage, patch: Partial<ClientTimelineStep>) => void;
 
   addLead: (l: Lead) => void;
   updateLead: (id: string, patch: Partial<Lead>) => void;
@@ -177,7 +180,7 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
   const money = useMemo(() => collection(setState, "moneyEvents"), [setState]);
   const cap = useMemo(() => collection(setState, "captures"), [setState]);
   const tl = useMemo(() => collection(setState, "timeline"), [setState]);
-  const pm = useMemo(() => collection(setState, "projectTimeline"), [setState]);
+  const ct = useMemo(() => collection(setState, "clientTimelines"), [setState]);
   const lead = useMemo(() => collection(setState, "leads"), [setState]);
   const research = useMemo(() => collection(setState, "clientResearch"), [setState]);
   const prodPlan = useMemo(() => collection(setState, "productionPlans"), [setState]);
@@ -186,6 +189,39 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
   const asset = useMemo(() => collection(setState, "assets"), [setState]);
   const idea = useMemo(() => collection(setState, "marketingIdeas"), [setState]);
 
+  const updateOpportunityAndMaybeCreateTimeline = useCallback(
+    (id: string, patch: Partial<Opportunity>) => {
+      setState((prev) => {
+        const target = prev.opportunities.find((o) => o.id === id);
+        const opportunities = prev.opportunities.map((o) => (o.id === id ? { ...o, ...patch } : o));
+        const becomingWon = !!target && target.stage !== "Won" && patch.stage === "Won";
+        if (!becomingWon) return { ...prev, opportunities };
+        const alreadyHasTimeline = prev.clientTimelines.some((t) => t.client === target!.name);
+        if (alreadyHasTimeline) return { ...prev, opportunities };
+        return {
+          ...prev,
+          opportunities,
+          clientTimelines: [...prev.clientTimelines, createClientTimeline(target!.name)],
+        };
+      });
+    },
+    [setState]
+  );
+
+  const updateClientTimelineStep = useCallback(
+    (timelineId: string, stage: ClientTimelineStage, patch: Partial<ClientTimelineStep>) => {
+      setState((prev) => ({
+        ...prev,
+        clientTimelines: prev.clientTimelines.map((t) =>
+          t.id === timelineId
+            ? { ...t, steps: t.steps.map((s) => (s.stage === stage ? { ...s, ...patch } : s)) }
+            : t
+        ),
+      }));
+    },
+    [setState]
+  );
+
   const value: OsStore = {
     state,
     hydrated,
@@ -193,7 +229,7 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
     setStrategy: (strategy) => setState((prev) => ({ ...prev, strategy })),
 
     addOpportunity: opp.add,
-    updateOpportunity: opp.update,
+    updateOpportunity: updateOpportunityAndMaybeCreateTimeline,
     removeOpportunity: opp.remove,
 
     addMedium: med.add,
@@ -227,9 +263,9 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
     updateTimelineEntry: tl.update,
     removeTimelineEntry: tl.remove,
 
-    addProjectMilestone: pm.add,
-    updateProjectMilestone: pm.update,
-    removeProjectMilestone: pm.remove,
+    addClientTimeline: ct.add,
+    removeClientTimeline: ct.remove,
+    updateClientTimelineStep,
 
     addLead: lead.add,
     updateLead: lead.update,

@@ -127,3 +127,20 @@ export function daysUntil(dateStr: string) {
   const now = new Date().setHours(0, 0, 0, 0);
   return Math.round((target - now) / 86400000);
 }
+
+export function addDays(dateStr: string, days: number): string {
+  const base = dateStr ? new Date(dateStr) : new Date();
+  base.setDate(base.getDate() + days);
+  return base.toISOString().slice(0, 10);
+}
+
+export type TimelineBucket = "Today" | "Tomorrow" | "This Week" | "This Month";
+export const TIMELINE_BUCKETS: TimelineBucket[] = ["Today", "Tomorrow", "This Week", "This Month"];
+
+export function bucketForDate(dateStr: string): TimelineBucket {
+  const diff = daysUntil(dateStr) ?? 0;
+  if (diff <= 0) return "Today";
+  if (diff === 1) return "Tomorrow";
+  if (diff <= 7) return "This Week";
+  return "This Month";
+}

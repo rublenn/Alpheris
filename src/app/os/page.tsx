@@ -40,7 +40,7 @@ export default function OverviewPage() {
   const openDeliverables = state.deliverables.filter((d) => d.status !== "Delivered");
   const overdueInvoices = state.moneyEvents.filter((m) => m.status === "Overdue");
   const openTimelineItems = state.timeline.filter((t) => !t.done).length;
-  const activeProjects = new Set(state.projectTimeline.map((m) => m.project)).size;
+  const activeClientTimelines = state.clientTimelines.filter((t) => t.steps.some((s) => !s.done)).length;
 
   return (
     <div className="flex flex-col gap-8">
@@ -63,7 +63,7 @@ export default function OverviewPage() {
           stats={[
             { label: "Strategy", value: state.strategy.mission ? "Set" : "Not set", warn: !state.strategy.mission },
             { label: "Open timeline items", value: openTimelineItems },
-            { label: "Active projects", value: activeProjects },
+            { label: "Client timelines in progress", value: activeClientTimelines },
           ]}
         />
         <LensCard

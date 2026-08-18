@@ -80,3 +80,24 @@ body {
     transition-duration: 0.001ms !important;
   }
 }
+
+@keyframes milestone-ping {
+  0% { box-shadow: 0 0 0 0 var(--ring-color, var(--accent-soft)); }
+  70% { box-shadow: 0 0 0 12px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+@keyframes milestone-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+.milestone-node-dot {
+  transition: transform 0.18s ease;
+}
+
+.milestone-node-dot:hover,
+.milestone-node-dot.is-touched {
+  transform: scale(1.12);
+  animation: milestone-ping 700ms ease-out, milestone-blink 700ms ease-in-out;
+}

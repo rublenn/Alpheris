@@ -146,24 +146,87 @@ export interface CompanyStrategy {
   lastReviewed: string;
 }
 
-export type TimelineHorizon = "Day" | "Week" | "Month";
-
-export const TIMELINE_HORIZONS: TimelineHorizon[] = ["Day", "Week", "Month"];
-
 export interface TimelineEntry {
   id: string;
-  horizon: TimelineHorizon;
   title: string;
   date: string;
   done: boolean;
 }
 
-export interface ProjectMilestone {
-  id: string;
-  project: string;
-  title: string;
+export const CLIENT_TIMELINE_STAGES = [
+  "Client",
+  "Strategy",
+  "Workflow",
+  "Production",
+  "Post-Production",
+  "Deliverables",
+] as const;
+export type ClientTimelineStage = (typeof CLIENT_TIMELINE_STAGES)[number];
+
+export const CLIENT_TIMELINE_STAGE_INFO: Record<
+  ClientTimelineStage,
+  { description: string; href: (client: string) => string }
+> = {
+  Client: {
+    description: "Onboarded and kicked off",
+    href: (client) => `/os/operations/client-success?client=${encodeURIComponent(client)}`,
+  },
+  Strategy: {
+    description: "Research + client data",
+    href: (client) => `/os/working/strategies?tab=research&client=${encodeURIComponent(client)}`,
+  },
+  Workflow: {
+    description: "Runs through the playbook to produce scripts",
+    href: (client) => `/os/working/strategies?tab=playbooks&client=${encodeURIComponent(client)}`,
+  },
+  Production: {
+    description: "Production requirements set",
+    href: (client) => `/os/working/production?focus=plan&client=${encodeURIComponent(client)}`,
+  },
+  "Post-Production": {
+    description: "Editing, finalizing, captions, tags",
+    href: (client) => `/os/working/production?focus=board&client=${encodeURIComponent(client)}`,
+  },
+  Deliverables: {
+    description: "Content calendar, scheduling, posting",
+    href: (client) => `/os/working/deliverables?tab=calendar&client=${encodeURIComponent(client)}`,
+  },
+};
+
+export interface ClientTimelineStep {
+  stage: ClientTimelineStage;
   date: string;
   done: boolean;
+}
+
+export interface ClientTimeline {
+  id: string;
+  client: string;
+  createdAt: string;
+  steps: ClientTimelineStep[];
+}
+
+const STAGE_OFFSET_DAYS: Record<ClientTimelineStage, number> = {
+  Client: 0,
+  Strategy: 2,
+  Workflow: 5,
+  Production: 9,
+  "Post-Production": 14,
+  Deliverables: 18,
+};
+
+export function createClientTimeline(client: string): ClientTimeline {
+  const base = new Date(todayISO());
+  return {
+    id: newId(),
+    client,
+    createdAt: todayISO(),
+    steps: CLIENT_TIMELINE_STAGES.map((stage) => {
+      const d = new Date(base);
+      d.setDate(d.getDate() + STAGE_OFFSET_DAYS[stage]);
+      return { stage, date: d.toISOString().slice(0, 10), done: stage === "Client" };
+    }),
+  };
 }
 
 export const LEAD_STATUSES = ["New", "Contacted", "Qualified"] as const;
@@ -250,7 +313,7 @@ export interface OsState {
   moneyEvents: MoneyEvent[];
   captures: Capture[];
   timeline: TimelineEntry[];
-  projectTimeline: ProjectMilestone[];
+  clientTimelines: ClientTimeline[];
   leads: Lead[];
   clientResearch: ClientResearch[];
   productionPlans: ProductionPlan[];
@@ -279,7 +342,7 @@ export const EMPTY_STATE: OsState = {
   moneyEvents: [],
   captures: [],
   timeline: [],
-  projectTimeline: [],
+  clientTimelines: [],
   leads: [],
   clientResearch: [],
   productionPlans: [],

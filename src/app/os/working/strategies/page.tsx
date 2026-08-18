@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useOsStore } from "@/lib/os/store";
 import { ClientResearch, Playbook, PlaybookStep, newId } from "@/lib/os/types";
 import {
@@ -23,11 +24,19 @@ function emptyPlaybook(): Playbook {
   return { id: newId(), name: "", version: 1, steps: [] };
 }
 
-function emptyResearch(): ClientResearch {
-  return { id: newId(), client: "", background: "", goals: "", challenges: "", questionnaire: "" };
+function emptyResearch(client = ""): ClientResearch {
+  return { id: newId(), client, background: "", goals: "", challenges: "", questionnaire: "" };
 }
 
 export default function StrategiesPage() {
+  return (
+    <Suspense>
+      <StrategiesPageInner />
+    </Suspense>
+  );
+}
+
+function StrategiesPageInner() {
   const {
     state,
     hydrated,
@@ -38,7 +47,10 @@ export default function StrategiesPage() {
     updateClientResearch,
     removeClientResearch,
   } = useOsStore();
-  const [tab, setTab] = useState<"Playbooks" | "Research">("Playbooks");
+  const searchParams = useSearchParams();
+  const focusClient = searchParams.get("client") || "";
+  const initialTab = searchParams.get("tab") === "research" ? "Research" : "Playbooks";
+  const [tab, setTab] = useState<"Playbooks" | "Research">(initialTab);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -50,8 +62,12 @@ export default function StrategiesPage() {
 
   if (!hydrated) return null;
 
-  function openNewResearch() {
-    setResearchForm(emptyResearch());
+  const focusedResearch = focusClient
+    ? state.clientResearch.find((r) => r.client.toLowerCase() === focusClient.toLowerCase())
+    : undefined;
+
+  function openNewResearch(prefillClient = "") {
+    setResearchForm(emptyResearch(prefillClient));
     setEditingResearchId(null);
     setResearchDrawer(true);
   }
@@ -177,29 +193,49 @@ export default function StrategiesPage() {
         </div>
       ))}
 
-      {tab === "Research" && (state.clientResearch.length === 0 ? (
-        <EmptyState
-          title="No client research yet"
-          body="Background, goals, challenges, and a questionnaire — go through this before every new planning cycle, per the playbook."
-          action={
-            <Button variant="primary" onClick={openNewResearch}>
-              <IconPlus className="h-4 w-4" /> Add research
-            </Button>
-          }
-        />
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
-          {state.clientResearch.map((r) => (
-            <Card key={r.id} className="flex flex-col gap-2 cursor-pointer" padded>
-              <div onClick={() => openEditResearch(r)}>
-                <p className="font-semibold mb-2">{r.client}</p>
-                {r.goals && <p className="text-sm text-muted line-clamp-2 mb-1"><span className="text-foreground">Goals:</span> {r.goals}</p>}
-                {r.challenges && <p className="text-sm text-muted line-clamp-2"><span className="text-foreground">Challenges:</span> {r.challenges}</p>}
-              </div>
+      {tab === "Research" && (
+        <>
+          {focusClient && !focusedResearch && (
+            <Card className="border-accent/30 bg-accent-soft flex items-center justify-between flex-wrap gap-3">
+              <p className="text-sm">No research yet for <span className="font-medium">{focusClient}</span>.</p>
+              <Button variant="primary" onClick={() => openNewResearch(focusClient)}>
+                <IconPlus className="h-4 w-4" /> Add research for {focusClient}
+              </Button>
             </Card>
-          ))}
-        </div>
-      ))}
+          )}
+
+          {state.clientResearch.length === 0 ? (
+            <EmptyState
+              title="No client research yet"
+              body="Background, goals, challenges, and a questionnaire — go through this before every new planning cycle, per the playbook."
+              action={
+                <Button variant="primary" onClick={() => openNewResearch()}>
+                  <IconPlus className="h-4 w-4" /> Add research
+                </Button>
+              }
+            />
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2">
+              {state.clientResearch.map((r) => {
+                const focused = focusClient && r.client.toLowerCase() === focusClient.toLowerCase();
+                return (
+                  <Card
+                    key={r.id}
+                    className={`flex flex-col gap-2 cursor-pointer ${focused ? "border-accent" : ""}`}
+                    padded
+                  >
+                    <div onClick={() => openEditResearch(r)}>
+                      <p className="font-semibold mb-2">{r.client}</p>
+                      {r.goals && <p className="text-sm text-muted line-clamp-2 mb-1"><span className="text-foreground">Goals:</span> {r.goals}</p>}
+                      {r.challenges && <p className="text-sm text-muted line-clamp-2"><span className="text-foreground">Challenges:</span> {r.challenges}</p>}
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
 
       <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)} title={editingId ? "Edit playbook" : "New playbook"}>
         <div className="flex flex-col gap-4">
