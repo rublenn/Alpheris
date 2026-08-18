@@ -176,6 +176,15 @@ export function IconTrash({ className }: IconProps) {
   );
 }
 
+export function IconEdit({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden="true">
+      <path d="M12.5 3.5 16.5 7.5 7 17H3v-4L12.5 3.5Z" stroke="currentColor" strokeWidth={base} strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M10.5 5.5 14.5 9.5" stroke="currentColor" strokeWidth={base} strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function IconChevron({ className }: IconProps) {
   return (
     <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden="true">

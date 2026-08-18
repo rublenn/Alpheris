@@ -4,13 +4,17 @@ import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useOsStore } from "@/lib/os/store";
 import {
-  AD_REPORT_IMPROVEMENT_FIELDS,
-  AD_REPORT_METRIC_FIELDS,
-  AdReport,
   Client,
   ClientHealth,
-  emptyAdReport,
+  CreativeScript,
+  emptyMonthlyReport,
+  emptyPostPerformance,
+  IMPROVEMENT_SUGGESTED_QUESTIONS,
+  MONTHLY_REPORT_FIELDS,
+  MonthlyReport,
   newId,
+  POST_PERFORMANCE_FIELDS,
+  PostPerformance,
 } from "@/lib/os/types";
 import { formatCurrency, formatPct, revenueConcentration } from "@/lib/os/calc";
 import {
@@ -21,6 +25,7 @@ import {
   Drawer,
   EmptyState,
   Field,
+  IconButton,
   NumberInput,
   SectionHeader,
   SelectInput,
@@ -29,7 +34,7 @@ import {
   TextArea,
   TextInput,
 } from "@/components/os/ui";
-import { IconPlus } from "@/components/os/icons";
+import { IconChevron, IconEdit, IconPlus } from "@/components/os/icons";
 
 const HEALTH_TONE: Record<ClientHealth, "good" | "warn" | "critical"> = {
   Good: "good",
@@ -68,8 +73,13 @@ function ClientSuccessPageInner() {
     addProblemSolution,
     updateProblemSolution,
     removeProblemSolution,
-    addAdReport,
-    updateAdReport,
+    addImprovementNote,
+    updateImprovementNote,
+    removeImprovementNote,
+    addPostPerformance,
+    updatePostPerformance,
+    addMonthlyReport,
+    updateMonthlyReport,
   } = useOsStore();
 
   const searchParams = useSearchParams();
@@ -81,10 +91,12 @@ function ClientSuccessPageInner() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<Client>(emptyClient());
 
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [reportClientSel, setReportClient] = useState("");
-  const [reportScriptId, setReportScriptId] = useState("");
   const [newProblem, setNewProblem] = useState<Record<string, string>>({});
   const [newSolution, setNewSolution] = useState<Record<string, string>>({});
+  const [newQuestion, setNewQuestion] = useState<Record<string, string>>({});
+  const [newAnswer, setNewAnswer] = useState<Record<string, string>>({});
 
   if (!hydrated) return null;
 
@@ -112,19 +124,32 @@ function ClientSuccessPageInner() {
     setDrawerOpen(false);
   }
 
-  const reportClient = reportClientSel || queryClient || state.clients[0]?.name || "";
-  const postedScripts = reportClient
-    ? state.creativeScripts.filter((s) => s.client === reportClient && s.posted)
-    : [];
-  const activeScript = postedScripts.find((s) => s.id === reportScriptId) ?? postedScripts[0];
-  const activeReport: AdReport | undefined = activeScript
-    ? state.adReports.find((r) => r.creativeScriptId === activeScript.id)
-    : undefined;
+  function toggleExpand(id: string) {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
 
-  function patchReport(patch: Partial<AdReport>) {
-    if (!activeScript) return;
-    if (activeReport) updateAdReport(activeReport.id, patch);
-    else addAdReport({ ...emptyAdReport(activeScript.client, activeScript.id), ...patch });
+  function postPerformanceFor(scriptId: string) {
+    return state.postPerformance.find((p) => p.creativeScriptId === scriptId);
+  }
+
+  function patchPerformance(script: CreativeScript, patch: Partial<PostPerformance>) {
+    const existing = postPerformanceFor(script.id);
+    if (existing) updatePostPerformance(existing.id, patch);
+    else addPostPerformance({ ...emptyPostPerformance(script.client, script.id), ...patch });
+  }
+
+  const reportClient = reportClientSel || queryClient || state.clients[0]?.name || "";
+  const activeMonthlyReport = state.monthlyReports.find((r) => r.client === reportClient);
+
+  function patchMonthlyReport(patch: Partial<MonthlyReport>) {
+    if (!reportClient) return;
+    if (activeMonthlyReport) updateMonthlyReport(activeMonthlyReport.id, patch);
+    else addMonthlyReport({ ...emptyMonthlyReport(reportClient), ...patch });
   }
 
   return (
@@ -175,98 +200,92 @@ function ClientSuccessPageInner() {
         />
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
-          {state.clients.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => openEdit(c)}
-              className="text-left rounded-xl border border-border bg-surface p-4 transition hover:border-muted"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <p className="font-medium text-sm">{c.name}</p>
-                <Badge tone={HEALTH_TONE[c.health]}>{c.health}</Badge>
-              </div>
-              <p className="text-xs text-muted">{formatCurrency(c.monthlyValue)} / month</p>
-            </button>
-          ))}
+          {state.clients.map((c) => {
+            const posts = state.creativeScripts.filter((s) => s.client === c.name && s.posted);
+            const isOpen = expanded.has(c.id);
+            return (
+              <Card key={c.id} className="flex flex-col gap-3">
+                <div className="flex items-center justify-between gap-2">
+                  <button
+                    onClick={() => toggleExpand(c.id)}
+                    className="flex flex-1 items-center gap-2 text-left min-w-0"
+                  >
+                    <IconChevron
+                      className={`h-3.5 w-3.5 shrink-0 text-muted transition-transform duration-[250ms] ease-[var(--ease-smooth)] ${
+                        isOpen ? "rotate-90" : ""
+                      }`}
+                    />
+                    <span className="font-medium text-sm truncate">{c.name}</span>
+                    <Badge tone={HEALTH_TONE[c.health]}>{c.health}</Badge>
+                  </button>
+                  <IconButton label="Edit client" onClick={() => openEdit(c)}>
+                    <IconEdit className="h-4 w-4" />
+                  </IconButton>
+                </div>
+                <p className="text-xs text-muted">{formatCurrency(c.monthlyValue)} / month</p>
+
+                <div className={`collapsible ${isOpen ? "is-open" : ""}`}>
+                  <div className={isOpen ? "pt-3 border-t border-border-soft flex flex-col gap-3" : ""}>
+                    {posts.length === 0 ? (
+                      <p className="text-xs text-muted">
+                        Nothing posted yet — check Posted in Deliverables to see ads/posts here.
+                      </p>
+                    ) : (
+                      posts.map((s) => {
+                        const perf = postPerformanceFor(s.id);
+                        return (
+                          <div key={s.id} className="rounded-lg border border-border-soft bg-surface-2 p-3 flex flex-col gap-2">
+                            <p className="text-sm font-medium">{s.name.trim() || s.genre}</p>
+                            <div className="grid grid-cols-2 gap-2">
+                              {POST_PERFORMANCE_FIELDS.map((f) => (
+                                <Field key={f.key} label={f.label}>
+                                  <NumberInput
+                                    value={perf?.[f.key] ?? 0}
+                                    onChange={(v) => patchPerformance(s, { [f.key]: v })}
+                                  />
+                                </Field>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
         </div>
       ))}
 
       {tab === "Reports" && (state.clients.length === 0 ? (
-        <EmptyState title="No clients yet" body="Add a client first — monthly reports are logged per posted ad/post." />
+        <EmptyState title="No clients yet" body="Add a client first — the monthly report is logged per client." />
       ) : (
         <div className="flex flex-col gap-6">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Client">
-              <SelectInput
-                value={reportClient}
-                onChange={(v) => {
-                  setReportClient(v);
-                  setReportScriptId("");
-                }}
-                options={state.clients.map((c) => c.name)}
-              />
-            </Field>
-            <Field label="Ad / post">
-              <select
-                value={activeScript?.id ?? ""}
-                onChange={(e) => setReportScriptId(e.target.value)}
-                disabled={postedScripts.length === 0}
-                className="w-full rounded-lg border border-border bg-surface-2 px-3.5 py-2.5 text-sm outline-none focus:border-accent transition appearance-none disabled:opacity-50"
-              >
-                <option value="">Select a posted ad or post</option>
-                {postedScripts.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name.trim() || s.genre}
-                  </option>
-                ))}
-              </select>
-            </Field>
-          </div>
-
-          {reportClient && postedScripts.length === 0 && (
-            <EmptyState
-              title={`Nothing posted yet for ${reportClient}`}
-              body="Check Posted for an ad/post in Deliverables first — it shows up here automatically for reporting."
+          <Field label="Client">
+            <SelectInput
+              value={reportClient}
+              onChange={setReportClient}
+              options={state.clients.map((c) => c.name)}
             />
-          )}
+          </Field>
 
-          {activeScript && (
-            <div className="grid gap-4 lg:grid-cols-2">
-              <Card className="flex flex-col gap-4">
-                <div>
-                  <p className="font-semibold">Monthly report</p>
-                  <p className="text-xs text-muted">{activeScript.name.trim() || activeScript.genre} · {activeScript.client}</p>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  {AD_REPORT_METRIC_FIELDS.map((f) => (
-                    <Field key={f.key} label={f.label}>
-                      <NumberInput
-                        value={activeReport?.[f.key] ?? 0}
-                        onChange={(v) => patchReport({ [f.key]: v })}
-                      />
-                    </Field>
-                  ))}
-                </div>
-              </Card>
-
-              <Card className="flex flex-col gap-4">
-                <div>
-                  <p className="font-semibold">Improvement</p>
-                  <p className="text-xs text-muted">What to test or fix next month</p>
-                </div>
-                <div className="flex flex-col gap-3">
-                  {AD_REPORT_IMPROVEMENT_FIELDS.map((f) => (
-                    <Field key={f.key} label={f.label}>
-                      <TextArea
-                        value={activeReport?.[f.key] ?? ""}
-                        onChange={(v) => patchReport({ [f.key]: v })}
-                      />
-                    </Field>
-                  ))}
-                </div>
-              </Card>
+          <Card className="flex flex-col gap-4">
+            <div>
+              <p className="font-semibold">Monthly report</p>
+              <p className="text-xs text-muted">Overall month & profile — {reportClient}</p>
             </div>
-          )}
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {MONTHLY_REPORT_FIELDS.map((f) => (
+                <Field key={f.key} label={f.label}>
+                  <NumberInput
+                    value={activeMonthlyReport?.[f.key] ?? 0}
+                    onChange={(v) => patchMonthlyReport({ [f.key]: v })}
+                  />
+                </Field>
+              ))}
+            </div>
+          </Card>
         </div>
       ))}
 
@@ -276,6 +295,7 @@ function ClientSuccessPageInner() {
         <div className="flex flex-col gap-5">
           {state.clients.map((c) => {
             const pairs = state.problemSolutions.filter((p) => p.client === c.name);
+            const notes = state.improvementNotes.filter((n) => n.client === c.name);
             return (
               <Card key={c.id} className="flex flex-col gap-3">
                 <p className="font-medium text-sm">{c.name}</p>
@@ -332,6 +352,74 @@ function ClientSuccessPageInner() {
                 >
                   <IconPlus className="h-4 w-4" /> Add block
                 </Button>
+
+                <div className="mt-2 rounded-xl border border-dashed border-border-soft bg-surface-2/60 p-3 flex flex-col gap-2.5">
+                  <p className="text-xs font-medium tracking-wide uppercase text-muted">Improvement notes</p>
+
+                  {notes.length > 0 && (
+                    <div className="flex flex-col gap-2">
+                      {notes.map((n) => (
+                        <div key={n.id} className="flex items-start justify-between gap-2 rounded-lg border border-border-soft bg-surface px-3 py-2">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-medium">{n.question}</p>
+                            <textarea
+                              value={n.answer}
+                              onChange={(e) => updateImprovementNote(n.id, { answer: e.target.value })}
+                              placeholder="Answer / notes"
+                              className="w-full bg-transparent text-sm outline-none resize-y min-h-8 mt-1"
+                            />
+                          </div>
+                          <DeleteButton label="Remove" onClick={() => removeImprovementNote(n.id)} />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap gap-1.5">
+                    {IMPROVEMENT_SUGGESTED_QUESTIONS.map((q) => (
+                      <button
+                        key={q}
+                        type="button"
+                        onClick={() => setNewQuestion({ ...newQuestion, [c.name]: q })}
+                        className="rounded-full border border-border-soft bg-surface px-2.5 py-1 text-xs text-muted hover:text-foreground hover:border-muted transition"
+                      >
+                        {q}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <input
+                      value={newQuestion[c.name] ?? ""}
+                      onChange={(e) => setNewQuestion({ ...newQuestion, [c.name]: e.target.value })}
+                      placeholder="Question"
+                      className="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-accent transition"
+                    />
+                    <input
+                      value={newAnswer[c.name] ?? ""}
+                      onChange={(e) => setNewAnswer({ ...newAnswer, [c.name]: e.target.value })}
+                      placeholder="Answer (optional)"
+                      className="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-accent transition"
+                    />
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        const question = (newQuestion[c.name] ?? "").trim();
+                        if (!question) return;
+                        addImprovementNote({
+                          id: newId(),
+                          client: c.name,
+                          question,
+                          answer: (newAnswer[c.name] ?? "").trim(),
+                        });
+                        setNewQuestion({ ...newQuestion, [c.name]: "" });
+                        setNewAnswer({ ...newAnswer, [c.name]: "" });
+                      }}
+                    >
+                      <IconPlus className="h-4 w-4" /> Add
+                    </Button>
+                  </div>
+                </div>
               </Card>
             );
           })}

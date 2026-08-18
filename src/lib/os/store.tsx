@@ -10,7 +10,6 @@ import {
   useState,
 } from "react";
 import {
-  AdReport,
   Asset,
   Capture,
   Client,
@@ -25,14 +24,18 @@ import {
   createClientTimeline,
   EMPTY_STATE,
   Experiment,
+  ImprovementNote,
   Lead,
   MarketingIdea,
   Medium,
+  MonthlyReport,
   MoneyEvent,
-  normalizeAdReport,
   normalizeCreativeScript,
+  normalizeMonthlyReport,
+  normalizePostPerformance,
   OsState,
   Playbook,
+  PostPerformance,
   ProblemSolution,
   Target,
   TimelineEntry,
@@ -47,7 +50,8 @@ function readState(): OsState {
     if (!raw) return EMPTY_STATE;
     const parsed = { ...EMPTY_STATE, ...(JSON.parse(raw) as Partial<OsState>) };
     parsed.creativeScripts = (parsed.creativeScripts ?? []).map(normalizeCreativeScript);
-    parsed.adReports = (parsed.adReports ?? []).map(normalizeAdReport);
+    parsed.postPerformance = (parsed.postPerformance ?? []).map(normalizePostPerformance);
+    parsed.monthlyReports = (parsed.monthlyReports ?? []).map(normalizeMonthlyReport);
     const missingClients = (parsed.leads ?? [])
       .filter((l) => l.stage === "Client" && !parsed.clients.some((c) => c.name === l.name))
       .map((l) => createClientRecord(l.name));
@@ -118,9 +122,17 @@ interface OsStore {
   updateProblemSolution: (id: string, patch: Partial<ProblemSolution>) => void;
   removeProblemSolution: (id: string) => void;
 
-  addAdReport: (r: AdReport) => void;
-  updateAdReport: (id: string, patch: Partial<AdReport>) => void;
-  removeAdReport: (id: string) => void;
+  addImprovementNote: (n: ImprovementNote) => void;
+  updateImprovementNote: (id: string, patch: Partial<ImprovementNote>) => void;
+  removeImprovementNote: (id: string) => void;
+
+  addPostPerformance: (p: PostPerformance) => void;
+  updatePostPerformance: (id: string, patch: Partial<PostPerformance>) => void;
+  removePostPerformance: (id: string) => void;
+
+  addMonthlyReport: (r: MonthlyReport) => void;
+  updateMonthlyReport: (id: string, patch: Partial<MonthlyReport>) => void;
+  removeMonthlyReport: (id: string) => void;
 
   addAsset: (a: Asset) => void;
   updateAsset: (id: string, patch: Partial<Asset>) => void;
@@ -187,7 +199,9 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
   const learn = useMemo(() => collection(setState, "clientLearn"), [setState]);
   const script = useMemo(() => collection(setState, "creativeScripts"), [setState]);
   const probSol = useMemo(() => collection(setState, "problemSolutions"), [setState]);
-  const adReport = useMemo(() => collection(setState, "adReports"), [setState]);
+  const improveNote = useMemo(() => collection(setState, "improvementNotes"), [setState]);
+  const postPerf = useMemo(() => collection(setState, "postPerformance"), [setState]);
+  const monthlyReport = useMemo(() => collection(setState, "monthlyReports"), [setState]);
   const asset = useMemo(() => collection(setState, "assets"), [setState]);
   const idea = useMemo(() => collection(setState, "marketingIdeas"), [setState]);
 
@@ -315,9 +329,17 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
     updateProblemSolution: probSol.update,
     removeProblemSolution: probSol.remove,
 
-    addAdReport: adReport.add,
-    updateAdReport: adReport.update,
-    removeAdReport: adReport.remove,
+    addImprovementNote: improveNote.add,
+    updateImprovementNote: improveNote.update,
+    removeImprovementNote: improveNote.remove,
+
+    addPostPerformance: postPerf.add,
+    updatePostPerformance: postPerf.update,
+    removePostPerformance: postPerf.remove,
+
+    addMonthlyReport: monthlyReport.add,
+    updateMonthlyReport: monthlyReport.update,
+    removeMonthlyReport: monthlyReport.remove,
 
     addAsset: asset.add,
     updateAsset: asset.update,

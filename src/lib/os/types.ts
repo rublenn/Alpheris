@@ -353,10 +353,43 @@ export const DEFAULT_EQUIPMENT: Record<CreativeGenre, string[]> = {
   "Photo + Storytelling Caption": ["Camera", "Notebook for caption draft"],
 };
 
-export interface AdReport {
+export interface PostPerformance {
   id: string;
   client: string;
   creativeScriptId: string;
+  views: number;
+  comments: number;
+  retentionTime: number;
+  profileVisits: number;
+}
+
+export function emptyPostPerformance(client: string, creativeScriptId: string): PostPerformance {
+  return {
+    id: newId(),
+    client,
+    creativeScriptId,
+    views: 0,
+    comments: 0,
+    retentionTime: 0,
+    profileVisits: 0,
+  };
+}
+
+export function normalizePostPerformance(p: Partial<PostPerformance>): PostPerformance {
+  const empty = emptyPostPerformance(p.client ?? "", p.creativeScriptId ?? "");
+  return { ...empty, ...p, id: p.id ?? empty.id };
+}
+
+export const POST_PERFORMANCE_FIELDS = [
+  { key: "views", label: "Views" },
+  { key: "comments", label: "Comments" },
+  { key: "retentionTime", label: "Retention time" },
+  { key: "profileVisits", label: "Profile visits" },
+] as const satisfies { key: keyof PostPerformance; label: string }[];
+
+export interface MonthlyReport {
+  id: string;
+  client: string;
   views: number;
   engagement: number;
   budget: number;
@@ -367,17 +400,12 @@ export interface AdReport {
   conversions: number;
   totalSale: number;
   roi: number;
-  improveCpm: string;
-  improveConversion: string;
-  improveAov: string;
-  improveRetention: string;
 }
 
-export function emptyAdReport(client: string, creativeScriptId: string): AdReport {
+export function emptyMonthlyReport(client: string): MonthlyReport {
   return {
     id: newId(),
     client,
-    creativeScriptId,
     views: 0,
     engagement: 0,
     budget: 0,
@@ -388,19 +416,15 @@ export function emptyAdReport(client: string, creativeScriptId: string): AdRepor
     conversions: 0,
     totalSale: 0,
     roi: 0,
-    improveCpm: "",
-    improveConversion: "",
-    improveAov: "",
-    improveRetention: "",
   };
 }
 
-export function normalizeAdReport(r: Partial<AdReport>): AdReport {
-  const empty = emptyAdReport(r.client ?? "", r.creativeScriptId ?? "");
+export function normalizeMonthlyReport(r: Partial<MonthlyReport>): MonthlyReport {
+  const empty = emptyMonthlyReport(r.client ?? "");
   return { ...empty, ...r, id: r.id ?? empty.id };
 }
 
-export const AD_REPORT_METRIC_FIELDS = [
+export const MONTHLY_REPORT_FIELDS = [
   { key: "views", label: "Views" },
   { key: "engagement", label: "Engagement" },
   { key: "budget", label: "Budget" },
@@ -411,14 +435,21 @@ export const AD_REPORT_METRIC_FIELDS = [
   { key: "conversions", label: "Conversions" },
   { key: "totalSale", label: "Total Sale" },
   { key: "roi", label: "ROI" },
-] as const satisfies { key: keyof AdReport; label: string }[];
+] as const satisfies { key: keyof MonthlyReport; label: string }[];
 
-export const AD_REPORT_IMPROVEMENT_FIELDS = [
-  { key: "improveCpm", label: "Can we decrease CPM?" },
-  { key: "improveConversion", label: "How can we increase conversion?" },
-  { key: "improveAov", label: "How can we improve average order value?" },
-  { key: "improveRetention", label: "Can we increase retention?" },
-] as const satisfies { key: keyof AdReport; label: string }[];
+export interface ImprovementNote {
+  id: string;
+  client: string;
+  question: string;
+  answer: string;
+}
+
+export const IMPROVEMENT_SUGGESTED_QUESTIONS = [
+  "Can we decrease CPM?",
+  "How can we increase conversion?",
+  "How can we improve average order value?",
+  "Can we increase retention?",
+] as const;
 
 export interface Asset {
   id: string;
@@ -456,7 +487,9 @@ export interface OsState {
   creativeScripts: CreativeScript[];
   equipmentDefaults: Record<string, string[]>;
   problemSolutions: ProblemSolution[];
-  adReports: AdReport[];
+  improvementNotes: ImprovementNote[];
+  postPerformance: PostPerformance[];
+  monthlyReports: MonthlyReport[];
   assets: Asset[];
   marketingIdeas: MarketingIdea[];
 }
@@ -484,7 +517,9 @@ export const EMPTY_STATE: OsState = {
   creativeScripts: [],
   equipmentDefaults: { ...DEFAULT_EQUIPMENT },
   problemSolutions: [],
-  adReports: [],
+  improvementNotes: [],
+  postPerformance: [],
+  monthlyReports: [],
   assets: [],
   marketingIdeas: [],
 };
