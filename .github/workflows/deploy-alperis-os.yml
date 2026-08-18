@@ -1,9 +1,11 @@
 name: Deploy Alpheris OS
 
+# Push-triggering is paused: the Netlify account is blocked on exceeded
+# credit usage, so every automatic run was just failing. Re-add the
+# `push` trigger once billing is resolved, or run this manually via
+# workflow_dispatch in the meantime. GitHub Pages (deploy-pages.yml) is
+# the live deploy target until then.
 on:
-  push:
-    branches:
-      - claude/agency-app-structure-mttifh
   workflow_dispatch: {}
 
 jobs:
