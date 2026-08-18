@@ -229,10 +229,15 @@ function ProductionPageInner() {
 
               {activeProductionScript && (
                 <Card className="flex flex-col gap-5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold">{activeProductionScript.name.trim() || activeProductionScript.genre}</p>
-                      <p className="text-xs text-muted">{activeProductionScript.genre} · {activeProductionScript.client} · {activeProductionScript.kind}</p>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <input
+                        value={activeProductionScript.name}
+                        onChange={(e) => updateCreativeScript(activeProductionScript.id, { name: e.target.value })}
+                        placeholder={activeProductionScript.genre}
+                        className="w-full bg-transparent font-semibold outline-none border-b border-transparent hover:border-border-soft focus:border-accent transition-colors duration-150 ease-[var(--ease-smooth)]"
+                      />
+                      <p className="text-xs text-muted mt-0.5">{activeProductionScript.genre} · {activeProductionScript.client} · {activeProductionScript.kind}</p>
                     </div>
                     <Badge tone={activeProductionScript.finalised ? "good" : "accent"}>
                       {activeProductionScript.finalised ? "Finalised" : "In production"}
