@@ -92,6 +92,7 @@ function ClientSuccessPageInner() {
   const [form, setForm] = useState<Client>(emptyClient());
 
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [selectedPost, setSelectedPost] = useState<Record<string, string>>({});
   const [reportClientSel, setReportClient] = useState("");
   const [newProblem, setNewProblem] = useState<Record<string, string>>({});
   const [newSolution, setNewSolution] = useState<Record<string, string>>({});
@@ -201,8 +202,11 @@ function ClientSuccessPageInner() {
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {state.clients.map((c) => {
-            const posts = state.creativeScripts.filter((s) => s.client === c.name && s.posted);
+            const posts = state.creativeScripts.filter((s) => s.client === c.name);
             const isOpen = expanded.has(c.id);
+            const activePostId = selectedPost[c.id] ?? posts[0]?.id ?? "";
+            const activePost = posts.find((s) => s.id === activePostId) ?? posts[0];
+            const perf = activePost ? postPerformanceFor(activePost.id) : undefined;
             return (
               <Card key={c.id} className="flex flex-col gap-3">
                 <div className="flex items-center justify-between gap-2">
@@ -228,27 +232,36 @@ function ClientSuccessPageInner() {
                   <div className={isOpen ? "pt-3 border-t border-border-soft flex flex-col gap-3" : ""}>
                     {posts.length === 0 ? (
                       <p className="text-xs text-muted">
-                        Nothing posted yet — check Posted in Deliverables to see ads/posts here.
+                        Nothing yet — confirm an ad or post in Creative & Production first.
                       </p>
                     ) : (
-                      posts.map((s) => {
-                        const perf = postPerformanceFor(s.id);
-                        return (
-                          <div key={s.id} className="rounded-lg border border-border-soft bg-surface-2 p-3 flex flex-col gap-2">
-                            <p className="text-sm font-medium">{s.name.trim() || s.genre}</p>
-                            <div className="grid grid-cols-2 gap-2">
-                              {POST_PERFORMANCE_FIELDS.map((f) => (
-                                <Field key={f.key} label={f.label}>
-                                  <NumberInput
-                                    value={perf?.[f.key] ?? 0}
-                                    onChange={(v) => patchPerformance(s, { [f.key]: v })}
-                                  />
-                                </Field>
-                              ))}
-                            </div>
+                      <>
+                        <Field label="Ad / post">
+                          <select
+                            value={activePostId}
+                            onChange={(e) => setSelectedPost({ ...selectedPost, [c.id]: e.target.value })}
+                            className="w-full rounded-lg border border-border bg-surface-2 px-3.5 py-2.5 text-sm outline-none focus:border-accent transition appearance-none"
+                          >
+                            {posts.map((s) => (
+                              <option key={s.id} value={s.id}>
+                                {s.name.trim() || s.genre}
+                              </option>
+                            ))}
+                          </select>
+                        </Field>
+                        {activePost && (
+                          <div className="grid grid-cols-2 gap-2">
+                            {POST_PERFORMANCE_FIELDS.map((f) => (
+                              <Field key={f.key} label={f.label}>
+                                <NumberInput
+                                  value={perf?.[f.key] ?? 0}
+                                  onChange={(v) => patchPerformance(activePost, { [f.key]: v })}
+                                />
+                              </Field>
+                            ))}
                           </div>
-                        );
-                      })
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
