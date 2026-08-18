@@ -234,10 +234,46 @@ function ProductionPageInner() {
                       <p className="font-semibold">{activeProductionScript.name.trim() || activeProductionScript.genre}</p>
                       <p className="text-xs text-muted">{activeProductionScript.genre} · {activeProductionScript.client} · {activeProductionScript.kind}</p>
                     </div>
-                    <Badge tone="accent">Equipment</Badge>
+                    <Badge tone={activeProductionScript.finalised ? "good" : "accent"}>
+                      {activeProductionScript.finalised ? "Finalised" : "In production"}
+                    </Badge>
                   </div>
 
                   <div className="flex flex-col gap-2">
+                    <p className="text-xs font-medium tracking-wide uppercase text-muted">Production progress</p>
+                    <div className="grid grid-cols-3 gap-2">
+                      {(
+                        [
+                          { key: "shooting", label: "Shooting" },
+                          { key: "editing", label: "Editing" },
+                          { key: "finalised", label: "Finalised" },
+                        ] as const
+                      ).map((step) => (
+                        <label
+                          key={step.key}
+                          className={`flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm cursor-pointer transition ${
+                            activeProductionScript[step.key] ? "border-good/40 bg-good-soft" : "border-border bg-surface-2"
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={activeProductionScript[step.key]}
+                            onChange={(e) => updateCreativeScript(activeProductionScript.id, { [step.key]: e.target.checked })}
+                            className="h-4 w-4 rounded border-border accent-[var(--good)]"
+                          />
+                          {step.label}
+                        </label>
+                      ))}
+                    </div>
+                    {activeProductionScript.finalised && (
+                      <p className="text-xs text-muted">
+                        Finalised — this now shows up as a final outcome to select in Deliverables.
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="pt-3 border-t border-border-soft flex flex-col gap-2">
+                    <p className="text-xs font-medium tracking-wide uppercase text-muted">Equipment</p>
                     {activeProductionScript.equipment.length === 0 ? (
                       <p className="text-sm text-muted">No equipment listed — add one below or reset to the genre default.</p>
                     ) : (

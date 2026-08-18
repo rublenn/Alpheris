@@ -21,7 +21,6 @@ import {
   CreativeScript,
   createClientLearn,
   createClientTimeline,
-  Deliverable,
   EMPTY_STATE,
   Experiment,
   Lead,
@@ -70,10 +69,6 @@ interface OsStore {
   addPlaybook: (p: Playbook) => void;
   updatePlaybook: (id: string, patch: Partial<Playbook>) => void;
   removePlaybook: (id: string) => void;
-
-  addDeliverable: (d: Deliverable) => void;
-  updateDeliverable: (id: string, patch: Partial<Deliverable>) => void;
-  removeDeliverable: (id: string) => void;
 
   addClient: (c: Client) => void;
   updateClient: (id: string, patch: Partial<Client>) => void;
@@ -167,7 +162,6 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
   const med = useMemo(() => collection(setState, "mediums"), [setState]);
   const exp = useMemo(() => collection(setState, "experiments"), [setState]);
   const play = useMemo(() => collection(setState, "playbooks"), [setState]);
-  const del = useMemo(() => collection(setState, "deliverables"), [setState]);
   const cli = useMemo(() => collection(setState, "clients"), [setState]);
   const money = useMemo(() => collection(setState, "moneyEvents"), [setState]);
   const cap = useMemo(() => collection(setState, "captures"), [setState]);
@@ -260,10 +254,6 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
     addPlaybook: play.add,
     updatePlaybook: play.update,
     removePlaybook: play.remove,
-
-    addDeliverable: del.add,
-    updateDeliverable: del.update,
-    removeDeliverable: del.remove,
 
     addClient: cli.add,
     updateClient: cli.update,

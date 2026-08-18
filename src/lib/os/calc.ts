@@ -1,6 +1,6 @@
 import {
   Client,
-  Deliverable,
+  CreativeScript,
   Lead,
   MoneyEvent,
   OsState,
@@ -27,45 +27,23 @@ export function referralShare(leads: Lead[]) {
   return referred / leads.length;
 }
 
-export function activeEngagements(deliverables: Deliverable[]) {
-  return new Set(
-    deliverables.filter((d) => d.status !== "Final").map((d) => d.client)
-  ).size;
+export function activeEngagements(scripts: CreativeScript[]) {
+  return new Set(scripts.filter((s) => !s.posted).map((s) => s.client)).size;
 }
 
-export function inProductionCount(deliverables: Deliverable[]) {
-  return deliverables.filter((d) => d.status === "In Production").length;
+export function inProductionCount(scripts: CreativeScript[]) {
+  return scripts.filter((s) => (s.shooting || s.editing) && !s.finalised).length;
 }
 
 export function wip(state: OsState) {
   return {
-    engagements: activeEngagements(state.deliverables),
+    engagements: activeEngagements(state.creativeScripts),
     engagementsLimit: WIP_LIMITS.activeEngagements,
-    production: inProductionCount(state.deliverables),
+    production: inProductionCount(state.creativeScripts),
     productionLimit: WIP_LIMITS.inProduction,
     experiments: state.experiments.filter((e) => e.status === "Active").length,
     experimentsLimit: WIP_LIMITS.activeExperiments,
   };
-}
-
-export function estimateVariance(deliverables: Deliverable[]) {
-  const done = deliverables.filter((d) => d.status === "Final" && d.estimateHours > 0);
-  if (done.length === 0) return null;
-  const total = done.reduce(
-    (acc, d) => acc + (d.loggedHours - d.estimateHours) / d.estimateHours,
-    0
-  );
-  return total / done.length;
-}
-
-export function onTimeRate(deliverables: Deliverable[]) {
-  const done = deliverables.filter((d) => d.status === "Final");
-  if (done.length === 0) return null;
-  // Without a separate "delivered at" timestamp we treat any delivered item
-  // that is not past its due date as on time — a conservative proxy.
-  const today = new Date().toISOString().slice(0, 10);
-  const onTime = done.filter((d) => !d.dueDate || d.dueDate >= today).length;
-  return onTime / done.length;
 }
 
 export function financeSummary(events: MoneyEvent[]) {

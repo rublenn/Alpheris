@@ -37,7 +37,7 @@ export default function OverviewPage() {
   const flagged = flaggedClients(state.clients);
   const w = wip(state);
 
-  const openDeliverables = state.deliverables.filter((d) => d.status !== "Final");
+  const openDeliverables = state.creativeScripts.filter((s) => s.finalised && !s.posted);
   const overdueInvoices = state.moneyEvents.filter((m) => m.status === "Overdue");
   const openTimelineItems = state.timeline.filter((t) => !t.done).length;
   const activeClientTimelines = state.clientTimelines.filter((t) => t.steps.some((s) => !s.done)).length;

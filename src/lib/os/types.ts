@@ -48,29 +48,6 @@ export interface Playbook {
   steps: PlaybookStep[];
 }
 
-export type DeliverableStatus = "In Production" | "To Be Reviewed" | "Need Changes" | "Final";
-
-export const DELIVERABLE_STATUSES: DeliverableStatus[] = [
-  "In Production",
-  "To Be Reviewed",
-  "Need Changes",
-  "Final",
-];
-
-export interface Deliverable {
-  id: string;
-  client: string;
-  title: string;
-  playbookId: string;
-  status: DeliverableStatus;
-  estimateHours: number;
-  loggedHours: number;
-  dueDate: string;
-  scheduledDate: string;
-  publishedDate: string;
-  publishedLink: string;
-}
-
 export type ClientHealth = "Good" | "Watch" | "At risk";
 
 export interface Client {
@@ -153,12 +130,12 @@ export const CLIENT_TIMELINE_STAGE_INFO: Record<
     href: (client) => `/os/working/production?focus=production&client=${encodeURIComponent(client)}`,
   },
   "Post-Production": {
-    description: "In production, to be reviewed, need changes, final",
-    href: (client) => `/os/working/deliverables?tab=postproduction&client=${encodeURIComponent(client)}`,
+    description: "Shooting, editing, finalised — per ad/post",
+    href: (client) => `/os/working/production?focus=production&client=${encodeURIComponent(client)}`,
   },
   Deliverables: {
-    description: "Content calendar, scheduling, posting",
-    href: (client) => `/os/working/deliverables?tab=live&client=${encodeURIComponent(client)}`,
+    description: "Delivered, scheduled, posted — per final outcome",
+    href: (client) => `/os/working/deliverables?client=${encodeURIComponent(client)}`,
   },
 };
 
@@ -294,6 +271,12 @@ export interface CreativeScript {
   hypeCreation: string;
   neuromarketing: string;
   equipment: string[];
+  shooting: boolean;
+  editing: boolean;
+  finalised: boolean;
+  delivered: boolean;
+  scheduled: boolean;
+  posted: boolean;
   createdAt: string;
 }
 
@@ -316,6 +299,12 @@ export function emptyCreativeScript(client: string, kind: "Ad" | "Post", genre: 
     hypeCreation: "",
     neuromarketing: "",
     equipment: [],
+    shooting: false,
+    editing: false,
+    finalised: false,
+    delivered: false,
+    scheduled: false,
+    posted: false,
     createdAt: todayISO(),
   };
 }
@@ -368,7 +357,6 @@ export interface OsState {
   mediums: Medium[];
   experiments: Experiment[];
   playbooks: Playbook[];
-  deliverables: Deliverable[];
   clients: Client[];
   moneyEvents: MoneyEvent[];
   captures: Capture[];
@@ -396,7 +384,6 @@ export const EMPTY_STATE: OsState = {
   mediums: [],
   experiments: [],
   playbooks: [],
-  deliverables: [],
   clients: [],
   moneyEvents: [],
   captures: [],
