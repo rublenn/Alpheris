@@ -27,7 +27,6 @@ import {
   SelectInput,
   Tabs,
   TextArea,
-  TextInput,
 } from "@/components/os/ui";
 import { IconClose } from "@/components/os/icons";
 
@@ -354,24 +353,26 @@ function ProductionPageInner() {
       <Drawer
         open={scriptDrawer}
         onClose={() => setScriptDrawer(false)}
-        title={scriptForm ? `${scriptForm.name.trim() || scriptForm.genre} · ${scriptForm.client}` : "Script"}
+        title={scriptForm ? `${scriptForm.genre} · ${scriptForm.client}` : "Script"}
       >
         {scriptForm && (
           <div className="flex flex-col gap-4">
+            <div>
+              <span className="block text-sm font-medium mb-1.5">Name</span>
+              <input
+                value={scriptForm.name}
+                onChange={(e) => setScriptForm({ ...scriptForm, name: e.target.value })}
+                placeholder={scriptForm.genre}
+                className="w-full rounded-lg border border-border bg-surface-2 px-3.5 py-2.5 text-base font-semibold outline-none focus:border-accent transition-colors duration-150 ease-[var(--ease-smooth)]"
+              />
+            </div>
+
             <div>
               <p className="text-xs font-medium tracking-wide uppercase text-muted mb-1">1. Type of ad</p>
               <div className="rounded-lg border border-border bg-surface-2 px-3.5 py-2.5 text-sm">
                 {scriptForm.genre} <span className="text-muted">· {scriptForm.kind}</span>
               </div>
             </div>
-
-            <Field label="Name">
-              <TextInput
-                value={scriptForm.name}
-                onChange={(v) => setScriptForm({ ...scriptForm, name: v })}
-                placeholder={`e.g. ${scriptForm.genre}`}
-              />
-            </Field>
 
             <Field label="2. Script">
               <TextArea
