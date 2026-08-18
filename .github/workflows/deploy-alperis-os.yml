@@ -27,17 +27,8 @@ jobs:
         env:
           NEXT_PUBLIC_ALPHERIS_OS_ROOT: "true"
 
-      - name: Debug root redirect
-        run: |
-          echo "--- env in this step ---"
-          echo "NEXT_PUBLIC_ALPHERIS_OS_ROOT=$NEXT_PUBLIC_ALPHERIS_OS_ROOT"
-          echo "--- grep for redirect digest in out/index.html ---"
-          grep -o "NEXT_REDIRECT[a-zA-Z0-9/;]*" out/index.html || echo "NOT FOUND"
-          echo "--- grep for marketing title ---"
-          grep -o "AlperisMedien[^<]*" out/index.html | head -1 || true
-
       - name: Deploy to Netlify
-        run: npx netlify-cli deploy --prod --dir=out --site="$NETLIFY_SITE_ID" --auth="$NETLIFY_AUTH_TOKEN"
+        run: npx netlify-cli deploy --no-build --prod --dir=out --site="$NETLIFY_SITE_ID" --auth="$NETLIFY_AUTH_TOKEN"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
