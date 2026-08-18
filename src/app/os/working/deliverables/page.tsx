@@ -24,19 +24,21 @@ import {
 import { IconPlus } from "@/components/os/icons";
 
 const STATUS_TONE: Record<DeliverableStatus, "neutral" | "accent" | "warn" | "good"> = {
-  Brief: "neutral",
-  Production: "accent",
-  Review: "warn",
-  Delivered: "good",
+  "In Production": "accent",
+  "To Be Reviewed": "neutral",
+  "Need Changes": "warn",
+  Final: "good",
 };
 
-function emptyDeliverable(): Deliverable {
+const POST_PRODUCTION_COLUMNS: DeliverableStatus[] = ["In Production", "To Be Reviewed", "Need Changes", "Final"];
+
+function emptyDeliverable(client = ""): Deliverable {
   return {
     id: newId(),
-    client: "",
+    client,
     title: "",
     playbookId: "",
-    status: "Brief",
+    status: "In Production",
     estimateHours: 0,
     loggedHours: 0,
     dueDate: todayISO(),
@@ -64,8 +66,8 @@ function DeliverablesPageInner() {
   const { state, hydrated, addDeliverable, updateDeliverable, removeDeliverable } = useOsStore();
   const searchParams = useSearchParams();
   const focusClient = searchParams.get("client") || "";
-  const initialTab = searchParams.get("tab") === "calendar" ? "Calendar" : "All";
-  const [tab, setTab] = useState<"All" | "Calendar" | "Scheduling" | "Publishing">(initialTab);
+  const initialTab = searchParams.get("tab") === "live" ? "Live" : "PostProduction";
+  const [tab, setTab] = useState<"PostProduction" | "Live">(initialTab);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<Deliverable>(emptyDeliverable());
@@ -76,7 +78,7 @@ function DeliverablesPageInner() {
   const onTime = onTimeRate(state.deliverables);
 
   function openNew() {
-    setForm({ ...emptyDeliverable(), client: focusClient });
+    setForm(emptyDeliverable(focusClient));
     setEditingId(null);
     setDrawerOpen(true);
   }
@@ -94,8 +96,11 @@ function DeliverablesPageInner() {
     setDrawerOpen(false);
   }
 
-  const sorted = [...state.deliverables].sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+  const queue = state.deliverables.filter(
+    (d) => !focusClient || d.client.toLowerCase() === focusClient.toLowerCase()
+  );
 
+  const sorted = [...state.deliverables].sort((a, b) => a.dueDate.localeCompare(b.dueDate));
   const calendarSource = focusClient
     ? sorted.filter((d) => d.client.toLowerCase() === focusClient.toLowerCase())
     : sorted;
@@ -113,7 +118,7 @@ function DeliverablesPageInner() {
     .sort((a, b) => a.scheduledDate.localeCompare(b.scheduledDate));
 
   const published = state.deliverables
-    .filter((d) => d.status === "Delivered" || d.publishedDate)
+    .filter((d) => d.status === "Final" || d.publishedDate)
     .slice()
     .sort((a, b) => (b.publishedDate || "").localeCompare(a.publishedDate || ""));
 
@@ -130,12 +135,12 @@ function DeliverablesPageInner() {
       />
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <StatTile label="Open" value={state.deliverables.filter((d) => d.status !== "Delivered").length} />
+        <StatTile label="Open" value={state.deliverables.filter((d) => d.status !== "Final").length} />
         <StatTile
           label="Estimate variance"
           value={variance === null ? "—" : `${variance >= 0 ? "+" : ""}${Math.round(variance * 100)}%`}
           tone={variance !== null && variance > 0.2 ? "warn" : "neutral"}
-          hint="Logged vs. estimated hours, delivered work"
+          hint="Logged vs. estimated hours, final work"
         />
         <StatTile
           label="On-time rate"
@@ -148,155 +153,169 @@ function DeliverablesPageInner() {
         value={tab}
         onChange={setTab}
         options={[
-          { value: "All", label: "All Deliverables", count: state.deliverables.length },
-          { value: "Calendar", label: "Content Calendar" },
-          { value: "Scheduling", label: "Scheduling", count: scheduled.length },
-          { value: "Publishing", label: "Publishing", count: published.length },
+          { value: "PostProduction", label: "Post-Production", count: queue.filter((d) => d.status !== "Final").length },
+          { value: "Live", label: "Live" },
         ]}
       />
 
-      {tab === "All" && (state.deliverables.length === 0 ? (
-        <EmptyState
-          title="No deliverables yet"
-          body="This is the atomic unit everything else schedules and reports against. Add what you owe a client next."
-          action={
-            <Button variant="primary" onClick={openNew}>
-              <IconPlus className="h-4 w-4" /> Add your first deliverable
-            </Button>
-          }
-        />
-      ) : (
-        <Card padded={false} className="overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm min-w-[40rem]">
-              <thead>
-                <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted">
-                  <th className="px-5 py-3 font-medium">Deliverable</th>
-                  <th className="px-5 py-3 font-medium">Client</th>
-                  <th className="px-5 py-3 font-medium">Status</th>
-                  <th className="px-5 py-3 font-medium text-right">Est. / logged</th>
-                  <th className="px-5 py-3 font-medium">Due</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sorted.map((d) => (
-                  <tr
-                    key={d.id}
-                    onClick={() => openEdit(d)}
-                    className="border-b border-border-soft last:border-0 cursor-pointer hover:bg-surface-2 transition"
-                  >
-                    <td className="px-5 py-3 font-medium">{d.title}</td>
-                    <td className="px-5 py-3 text-muted">{d.client}</td>
-                    <td className="px-5 py-3">
-                      <Badge tone={STATUS_TONE[d.status]}>{d.status}</Badge>
-                    </td>
-                    <td className="px-5 py-3 text-right tabular-nums text-muted">
-                      {d.estimateHours}h / {d.loggedHours}h
-                    </td>
-                    <td className="px-5 py-3 text-muted">{d.dueDate}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
-      ))}
-
-      {tab === "Calendar" && focusClient && (
+      {focusClient && (
         <div className="flex items-center gap-2 text-sm -mt-2">
           <span className="text-muted">Filtered to</span>
           <Badge tone="accent">{focusClient}</Badge>
-          <Link href="/os/working/deliverables?tab=calendar" className="text-accent hover:opacity-80">
+          <Link href={`/os/working/deliverables?tab=${tab === "Live" ? "live" : "postproduction"}`} className="text-accent hover:opacity-80">
             Clear
           </Link>
         </div>
       )}
 
-      {tab === "Calendar" && (calendarSource.length === 0 ? (
+      {tab === "PostProduction" && (queue.length === 0 ? (
         <EmptyState
-          title={focusClient ? `Nothing on the calendar for ${focusClient}` : "Nothing on the calendar"}
-          body="Deliverables appear here grouped by due month, earliest first."
+          title={focusClient ? `Nothing for ${focusClient} yet` : "Nothing in post-production yet"}
+          body="Add a deliverable and move it through in production, to be reviewed, need changes, and final."
           action={
-            focusClient ? (
-              <Button variant="primary" onClick={openNew}>
-                <IconPlus className="h-4 w-4" /> Add a deliverable for {focusClient}
-              </Button>
-            ) : undefined
+            <Button variant="primary" onClick={openNew}>
+              <IconPlus className="h-4 w-4" /> Add a deliverable
+            </Button>
           }
         />
       ) : (
-        <div className="flex flex-col gap-5">
-          {Array.from(byMonth.entries()).map(([month, items]) => (
-            <Card key={month}>
-              <p className="text-sm font-semibold mb-3">{month}</p>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {POST_PRODUCTION_COLUMNS.map((col) => {
+            const items = queue.filter((d) => d.status === col);
+            return (
+              <div key={col}>
+                <div className="flex items-center justify-between mb-3 px-1">
+                  <p className="text-sm font-semibold">{col}</p>
+                  <span className="text-xs text-muted">{items.length}</span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  {items.map((d) => (
+                    <div key={d.id} className="rounded-xl border border-border bg-surface p-3.5">
+                      <div onClick={() => openEdit(d)} className="cursor-pointer">
+                        <p className="font-medium text-sm mb-0.5">{d.title}</p>
+                        <p className="text-xs text-muted mb-3">{d.client}{d.dueDate ? ` · due ${d.dueDate}` : ""}</p>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        {POST_PRODUCTION_COLUMNS.map((target) => (
+                          <button
+                            key={target}
+                            onClick={() => updateDeliverable(d.id, { status: target })}
+                            disabled={target === d.status}
+                            className={`rounded-full px-2.5 py-1 text-xs font-medium transition disabled:opacity-100 ${
+                              target === d.status
+                                ? "bg-accent text-white"
+                                : "bg-surface-2 text-muted hover:text-foreground"
+                            }`}
+                          >
+                            {target}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                  {items.length === 0 && (
+                    <div className="rounded-xl border border-dashed border-border-soft p-4 text-center">
+                      <p className="text-xs text-muted">Empty</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ))}
+
+      {tab === "Live" && (
+        <div className="flex flex-col gap-8">
+          <div>
+            <p className="text-sm font-semibold mb-3">Content calendar</p>
+            {calendarSource.length === 0 ? (
+              <EmptyState
+                title={focusClient ? `Nothing on the calendar for ${focusClient}` : "Nothing on the calendar"}
+                body="Deliverables appear here grouped by due month, earliest first."
+              />
+            ) : (
+              <div className="flex flex-col gap-5">
+                {Array.from(byMonth.entries()).map(([month, items]) => (
+                  <Card key={month}>
+                    <p className="text-sm font-semibold mb-3">{month}</p>
+                    <div className="flex flex-col gap-2">
+                      {items.map((d) => (
+                        <div key={d.id} onClick={() => openEdit(d)} className="flex items-center justify-between gap-3 rounded-lg border border-border-soft bg-surface-2 px-3.5 py-2.5 cursor-pointer hover:border-muted transition">
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium truncate">{d.title}</p>
+                            <p className="text-xs text-muted">{d.client}</p>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="text-xs text-muted tabular-nums">{d.dueDate}</span>
+                            <Badge tone={STATUS_TONE[d.status]}>{d.status}</Badge>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <p className="text-sm font-semibold mb-3">Scheduling</p>
+            {scheduled.length === 0 ? (
+              <EmptyState title="Nothing scheduled" body="Set a scheduled date on a deliverable to have it show up here as a publishing queue." />
+            ) : (
               <div className="flex flex-col gap-2">
-                {items.map((d) => (
-                  <div key={d.id} onClick={() => openEdit(d)} className="flex items-center justify-between gap-3 rounded-lg border border-border-soft bg-surface-2 px-3.5 py-2.5 cursor-pointer hover:border-muted transition">
+                {scheduled.map((d) => (
+                  <Card key={d.id} className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <p className="text-sm font-medium truncate">{d.title}</p>
                       <p className="text-xs text-muted">{d.client}</p>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-xs text-muted tabular-nums">{d.dueDate}</span>
-                      <Badge tone={STATUS_TONE[d.status]}>{d.status}</Badge>
-                    </div>
-                  </div>
+                    <input
+                      type="date"
+                      value={d.scheduledDate}
+                      onChange={(e) => updateDeliverable(d.id, { scheduledDate: e.target.value })}
+                      className="rounded-lg border border-border bg-surface-2 px-2.5 py-1.5 text-sm outline-none focus:border-accent transition shrink-0"
+                    />
+                  </Card>
                 ))}
               </div>
-            </Card>
-          ))}
-        </div>
-      ))}
+            )}
+          </div>
 
-      {tab === "Scheduling" && (scheduled.length === 0 ? (
-        <EmptyState title="Nothing scheduled" body="Set a scheduled date on a deliverable to have it show up here as a publishing queue." />
-      ) : (
-        <div className="flex flex-col gap-2">
-          {scheduled.map((d) => (
-            <Card key={d.id} className="flex items-center justify-between gap-3">
-              <div className="min-w-0">
-                <p className="text-sm font-medium truncate">{d.title}</p>
-                <p className="text-xs text-muted">{d.client}</p>
+          <div>
+            <p className="text-sm font-semibold mb-3">Publishing</p>
+            {published.length === 0 ? (
+              <EmptyState title="Nothing published yet" body="Deliverables marked Final, or with a published date set, show up here as your publishing log." />
+            ) : (
+              <div className="flex flex-col gap-2">
+                {published.map((d) => (
+                  <Card key={d.id} className="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{d.title}</p>
+                      <p className="text-xs text-muted">{d.client}</p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <input
+                        type="date"
+                        value={d.publishedDate}
+                        onChange={(e) => updateDeliverable(d.id, { publishedDate: e.target.value })}
+                        className="rounded-lg border border-border bg-surface-2 px-2.5 py-1.5 text-sm outline-none focus:border-accent transition"
+                      />
+                      <input
+                        value={d.publishedLink}
+                        onChange={(e) => updateDeliverable(d.id, { publishedLink: e.target.value })}
+                        placeholder="Link"
+                        className="w-40 rounded-lg border border-border bg-surface-2 px-2.5 py-1.5 text-sm outline-none focus:border-accent transition"
+                      />
+                    </div>
+                  </Card>
+                ))}
               </div>
-              <input
-                type="date"
-                value={d.scheduledDate}
-                onChange={(e) => updateDeliverable(d.id, { scheduledDate: e.target.value })}
-                className="rounded-lg border border-border bg-surface-2 px-2.5 py-1.5 text-sm outline-none focus:border-accent transition shrink-0"
-              />
-            </Card>
-          ))}
+            )}
+          </div>
         </div>
-      ))}
-
-      {tab === "Publishing" && (published.length === 0 ? (
-        <EmptyState title="Nothing published yet" body="Deliverables marked Delivered, or with a published date set, show up here as your publishing log." />
-      ) : (
-        <div className="flex flex-col gap-2">
-          {published.map((d) => (
-            <Card key={d.id} className="flex flex-col sm:flex-row sm:items-center gap-3">
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{d.title}</p>
-                <p className="text-xs text-muted">{d.client}</p>
-              </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <input
-                  type="date"
-                  value={d.publishedDate}
-                  onChange={(e) => updateDeliverable(d.id, { publishedDate: e.target.value })}
-                  className="rounded-lg border border-border bg-surface-2 px-2.5 py-1.5 text-sm outline-none focus:border-accent transition"
-                />
-                <input
-                  value={d.publishedLink}
-                  onChange={(e) => updateDeliverable(d.id, { publishedLink: e.target.value })}
-                  placeholder="Link"
-                  className="w-40 rounded-lg border border-border bg-surface-2 px-2.5 py-1.5 text-sm outline-none focus:border-accent transition"
-                />
-              </div>
-            </Card>
-          ))}
-        </div>
-      ))}
+      )}
 
       <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)} title={editingId ? "Edit deliverable" : "New deliverable"}>
         <div className="flex flex-col gap-4">

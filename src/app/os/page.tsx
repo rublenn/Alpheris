@@ -37,7 +37,7 @@ export default function OverviewPage() {
   const flagged = flaggedClients(state.clients);
   const w = wip(state);
 
-  const openDeliverables = state.deliverables.filter((d) => d.status !== "Delivered");
+  const openDeliverables = state.deliverables.filter((d) => d.status !== "Final");
   const overdueInvoices = state.moneyEvents.filter((m) => m.status === "Overdue");
   const openTimelineItems = state.timeline.filter((t) => !t.done).length;
   const activeClientTimelines = state.clientTimelines.filter((t) => t.steps.some((s) => !s.done)).length;
@@ -161,7 +161,7 @@ export default function OverviewPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <QuickLink href="/os/sales-growth/sales" icon={<IconSales className="h-4 w-4" />} label="Sales pipeline" />
         <QuickLink href="/os/sales-growth/marketing" icon={<IconMarketing className="h-4 w-4" />} label="Marketing" />
-        <QuickLink href="/os/working/strategies" icon={<IconStrategies className="h-4 w-4" />} label="Playbooks" />
+        <QuickLink href="/os/working/data" icon={<IconStrategies className="h-4 w-4" />} label="Playbooks" />
         <QuickLink href="/os/operations/client-success" icon={<IconClientSuccess className="h-4 w-4" />} label="Client health" />
       </div>
     </div>

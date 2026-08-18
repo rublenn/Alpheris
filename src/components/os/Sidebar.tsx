@@ -53,7 +53,7 @@ const GROUPS: NavGroup[] = [
     lens: "working",
     label: "Working",
     items: [
-      { href: "/os/working/strategies", label: "Strategies", icon: IconStrategies },
+      { href: "/os/working/data", label: "Data", icon: IconStrategies },
       { href: "/os/working/production", label: "Creative & Production", icon: IconProduction },
       { href: "/os/working/deliverables", label: "Deliverables", icon: IconDeliverables },
     ],

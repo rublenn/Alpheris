@@ -13,11 +13,13 @@ import {
   Asset,
   Capture,
   Client,
-  ClientResearch,
+  ClientLearn,
   ClientTimeline,
   ClientTimelineStage,
   ClientTimelineStep,
   CompanyStrategy,
+  CreativeScript,
+  createClientLearn,
   createClientTimeline,
   Deliverable,
   EMPTY_STATE,
@@ -29,7 +31,6 @@ import {
   OsState,
   Outsource,
   Playbook,
-  ProductionPlan,
   RelationshipNote,
   Target,
   TimelineEntry,
@@ -98,13 +99,15 @@ interface OsStore {
   updateLead: (id: string, patch: Partial<Lead>) => void;
   removeLead: (id: string) => void;
 
-  addClientResearch: (r: ClientResearch) => void;
-  updateClientResearch: (id: string, patch: Partial<ClientResearch>) => void;
-  removeClientResearch: (id: string) => void;
+  addClientLearn: (r: ClientLearn) => void;
+  updateClientLearn: (id: string, patch: Partial<ClientLearn>) => void;
+  removeClientLearn: (id: string) => void;
 
-  addProductionPlan: (p: ProductionPlan) => void;
-  updateProductionPlan: (id: string, patch: Partial<ProductionPlan>) => void;
-  removeProductionPlan: (id: string) => void;
+  addCreativeScript: (s: CreativeScript) => void;
+  updateCreativeScript: (id: string, patch: Partial<CreativeScript>) => void;
+  removeCreativeScript: (id: string) => void;
+
+  setEquipmentDefault: (genre: string, equipment: string[]) => void;
 
   addOutsource: (o: Outsource) => void;
   updateOutsource: (id: string, patch: Partial<Outsource>) => void;
@@ -176,8 +179,8 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
   const tl = useMemo(() => collection(setState, "timeline"), [setState]);
   const ct = useMemo(() => collection(setState, "clientTimelines"), [setState]);
   const lead = useMemo(() => collection(setState, "leads"), [setState]);
-  const research = useMemo(() => collection(setState, "clientResearch"), [setState]);
-  const prodPlan = useMemo(() => collection(setState, "productionPlans"), [setState]);
+  const learn = useMemo(() => collection(setState, "clientLearn"), [setState]);
+  const script = useMemo(() => collection(setState, "creativeScripts"), [setState]);
   const outsource = useMemo(() => collection(setState, "outsources"), [setState]);
   const relNote = useMemo(() => collection(setState, "relationshipNotes"), [setState]);
   const asset = useMemo(() => collection(setState, "assets"), [setState]);
@@ -188,13 +191,14 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
       setState((prev) => {
         const leads = [...prev.leads, newLead];
         if (newLead.stage !== "Client") return { ...prev, leads };
-        const alreadyHasTimeline = prev.clientTimelines.some((t) => t.client === newLead.name);
-        if (alreadyHasTimeline) return { ...prev, leads };
-        return {
-          ...prev,
-          leads,
-          clientTimelines: [...prev.clientTimelines, createClientTimeline(newLead.name)],
-        };
+        const next: OsState = { ...prev, leads };
+        if (!prev.clientTimelines.some((t) => t.client === newLead.name)) {
+          next.clientTimelines = [...prev.clientTimelines, createClientTimeline(newLead.name)];
+        }
+        if (!prev.clientLearn.some((l) => l.client === newLead.name)) {
+          next.clientLearn = [...prev.clientLearn, createClientLearn(newLead.name)];
+        }
+        return next;
       });
     },
     [setState]
@@ -208,14 +212,25 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
         const becomingClient = !!target && target.stage !== "Client" && patch.stage === "Client";
         if (!becomingClient) return { ...prev, leads };
         const clientName = patch.name ?? target!.name;
-        const alreadyHasTimeline = prev.clientTimelines.some((t) => t.client === clientName);
-        if (alreadyHasTimeline) return { ...prev, leads };
-        return {
-          ...prev,
-          leads,
-          clientTimelines: [...prev.clientTimelines, createClientTimeline(clientName)],
-        };
+        const next: OsState = { ...prev, leads };
+        if (!prev.clientTimelines.some((t) => t.client === clientName)) {
+          next.clientTimelines = [...prev.clientTimelines, createClientTimeline(clientName)];
+        }
+        if (!prev.clientLearn.some((l) => l.client === clientName)) {
+          next.clientLearn = [...prev.clientLearn, createClientLearn(clientName)];
+        }
+        return next;
       });
+    },
+    [setState]
+  );
+
+  const setEquipmentDefault = useCallback(
+    (genre: string, equipment: string[]) => {
+      setState((prev) => ({
+        ...prev,
+        equipmentDefaults: { ...prev.equipmentDefaults, [genre]: equipment },
+      }));
     },
     [setState]
   );
@@ -279,13 +294,15 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
     updateLead: updateLeadAndMaybeCreateTimeline,
     removeLead: lead.remove,
 
-    addClientResearch: research.add,
-    updateClientResearch: research.update,
-    removeClientResearch: research.remove,
+    addClientLearn: learn.add,
+    updateClientLearn: learn.update,
+    removeClientLearn: learn.remove,
 
-    addProductionPlan: prodPlan.add,
-    updateProductionPlan: prodPlan.update,
-    removeProductionPlan: prodPlan.remove,
+    addCreativeScript: script.add,
+    updateCreativeScript: script.update,
+    removeCreativeScript: script.remove,
+
+    setEquipmentDefault,
 
     addOutsource: outsource.add,
     updateOutsource: outsource.update,

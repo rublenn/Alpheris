@@ -29,12 +29,12 @@ export function referralShare(leads: Lead[]) {
 
 export function activeEngagements(deliverables: Deliverable[]) {
   return new Set(
-    deliverables.filter((d) => d.status !== "Delivered").map((d) => d.client)
+    deliverables.filter((d) => d.status !== "Final").map((d) => d.client)
   ).size;
 }
 
 export function inProductionCount(deliverables: Deliverable[]) {
-  return deliverables.filter((d) => d.status === "Production").length;
+  return deliverables.filter((d) => d.status === "In Production").length;
 }
 
 export function wip(state: OsState) {
@@ -49,7 +49,7 @@ export function wip(state: OsState) {
 }
 
 export function estimateVariance(deliverables: Deliverable[]) {
-  const done = deliverables.filter((d) => d.status === "Delivered" && d.estimateHours > 0);
+  const done = deliverables.filter((d) => d.status === "Final" && d.estimateHours > 0);
   if (done.length === 0) return null;
   const total = done.reduce(
     (acc, d) => acc + (d.loggedHours - d.estimateHours) / d.estimateHours,
@@ -59,7 +59,7 @@ export function estimateVariance(deliverables: Deliverable[]) {
 }
 
 export function onTimeRate(deliverables: Deliverable[]) {
-  const done = deliverables.filter((d) => d.status === "Delivered");
+  const done = deliverables.filter((d) => d.status === "Final");
   if (done.length === 0) return null;
   // Without a separate "delivered at" timestamp we treat any delivered item
   // that is not past its due date as on time — a conservative proxy.

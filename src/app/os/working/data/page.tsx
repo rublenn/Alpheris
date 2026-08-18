@@ -3,7 +3,7 @@
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useOsStore } from "@/lib/os/store";
-import { ClientResearch, Playbook, PlaybookStep, newId } from "@/lib/os/types";
+import { ClientLearn, Playbook, PlaybookStep, newId } from "@/lib/os/types";
 import {
   Badge,
   Button,
@@ -24,65 +24,65 @@ function emptyPlaybook(): Playbook {
   return { id: newId(), name: "", version: 1, steps: [] };
 }
 
-function emptyResearch(client = ""): ClientResearch {
-  return { id: newId(), client, background: "", goals: "", challenges: "", questionnaire: "" };
+function emptyLearn(client = ""): ClientLearn {
+  return { id: newId(), client, business: "", problem: "", audience: "", aim: "" };
 }
 
-export default function StrategiesPage() {
+export default function DataPage() {
   return (
     <Suspense>
-      <StrategiesPageInner />
+      <DataPageInner />
     </Suspense>
   );
 }
 
-function StrategiesPageInner() {
+function DataPageInner() {
   const {
     state,
     hydrated,
     addPlaybook,
     updatePlaybook,
     removePlaybook,
-    addClientResearch,
-    updateClientResearch,
-    removeClientResearch,
+    addClientLearn,
+    updateClientLearn,
+    removeClientLearn,
   } = useOsStore();
   const searchParams = useSearchParams();
   const focusClient = searchParams.get("client") || "";
-  const initialTab = searchParams.get("tab") === "research" ? "Research" : "Playbooks";
-  const [tab, setTab] = useState<"Playbooks" | "Research">(initialTab);
+  const initialTab = searchParams.get("tab") === "playbooks" ? "Playbooks" : "Learn";
+  const [tab, setTab] = useState<"Learn" | "Playbooks">(initialTab);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<Playbook>(emptyPlaybook());
 
-  const [researchDrawer, setResearchDrawer] = useState(false);
-  const [editingResearchId, setEditingResearchId] = useState<string | null>(null);
-  const [researchForm, setResearchForm] = useState<ClientResearch>(emptyResearch());
+  const [learnDrawer, setLearnDrawer] = useState(false);
+  const [editingLearnId, setEditingLearnId] = useState<string | null>(null);
+  const [learnForm, setLearnForm] = useState<ClientLearn>(emptyLearn());
 
   if (!hydrated) return null;
 
-  const focusedResearch = focusClient
-    ? state.clientResearch.find((r) => r.client.toLowerCase() === focusClient.toLowerCase())
+  const focusedLearn = focusClient
+    ? state.clientLearn.find((r) => r.client.toLowerCase() === focusClient.toLowerCase())
     : undefined;
 
-  function openNewResearch(prefillClient = "") {
-    setResearchForm(emptyResearch(prefillClient));
-    setEditingResearchId(null);
-    setResearchDrawer(true);
+  function openNewLearn(prefillClient = "") {
+    setLearnForm(emptyLearn(prefillClient));
+    setEditingLearnId(null);
+    setLearnDrawer(true);
   }
 
-  function openEditResearch(r: ClientResearch) {
-    setResearchForm(r);
-    setEditingResearchId(r.id);
-    setResearchDrawer(true);
+  function openEditLearn(r: ClientLearn) {
+    setLearnForm(r);
+    setEditingLearnId(r.id);
+    setLearnDrawer(true);
   }
 
-  function saveResearch() {
-    if (!researchForm.client.trim()) return;
-    if (editingResearchId) updateClientResearch(editingResearchId, researchForm);
-    else addClientResearch(researchForm);
-    setResearchDrawer(false);
+  function saveLearn() {
+    if (!learnForm.client.trim()) return;
+    if (editingLearnId) updateClientLearn(editingLearnId, learnForm);
+    else addClientLearn(learnForm);
+    setLearnDrawer(false);
   }
 
   function openNew() {
@@ -126,15 +126,15 @@ function StrategiesPageInner() {
     <div className="flex flex-col gap-8">
       <SectionHeader
         eyebrow="Working"
-        title="Strategies"
+        title="Data"
         action={
           tab === "Playbooks" ? (
             <Button variant="primary" onClick={openNew}>
               <IconPlus className="h-4 w-4" /> New playbook
             </Button>
           ) : (
-            <Button variant="primary" onClick={openNewResearch}>
-              <IconPlus className="h-4 w-4" /> New research
+            <Button variant="primary" onClick={() => openNewLearn()}>
+              <IconPlus className="h-4 w-4" /> Learn a client
             </Button>
           )
         }
@@ -144,10 +144,64 @@ function StrategiesPageInner() {
         value={tab}
         onChange={setTab}
         options={[
+          { value: "Learn", label: "Learn", count: state.clientLearn.length },
           { value: "Playbooks", label: "Playbooks", count: state.playbooks.length },
-          { value: "Research", label: "Client Research", count: state.clientResearch.length },
         ]}
       />
+
+      {tab === "Learn" && (
+        <>
+          <p className="text-sm text-muted -mt-2">
+            Four things to learn about every client before anything else: business, problem, audience, aim.
+          </p>
+
+          {focusClient && !focusedLearn && (
+            <Card className="border-accent/30 bg-accent-soft flex items-center justify-between flex-wrap gap-3">
+              <p className="text-sm">No data yet for <span className="font-medium">{focusClient}</span>.</p>
+              <Button variant="primary" onClick={() => openNewLearn(focusClient)}>
+                <IconPlus className="h-4 w-4" /> Learn {focusClient}
+              </Button>
+            </Card>
+          )}
+
+          {state.clientLearn.length === 0 ? (
+            <EmptyState
+              title="No clients learned yet"
+              body="Business, problem, audience, aim — go through this before any strategy work starts. A blank entry is created automatically the moment a lead becomes a client."
+              action={
+                <Button variant="primary" onClick={() => openNewLearn()}>
+                  <IconPlus className="h-4 w-4" /> Learn a client
+                </Button>
+              }
+            />
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2">
+              {state.clientLearn.map((r) => {
+                const focused = focusClient && r.client.toLowerCase() === focusClient.toLowerCase();
+                const filled = [r.business, r.problem, r.audience, r.aim].filter((v) => v.trim()).length;
+                return (
+                  <Card
+                    key={r.id}
+                    className={`flex flex-col gap-2 cursor-pointer ${focused ? "border-accent" : ""}`}
+                    padded
+                  >
+                    <div onClick={() => openEditLearn(r)}>
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="font-semibold">{r.client}</p>
+                        <Badge tone={filled === 4 ? "good" : "neutral"}>{filled} / 4</Badge>
+                      </div>
+                      {r.business && <p className="text-sm text-muted line-clamp-1 mb-1"><span className="text-foreground">Business:</span> {r.business}</p>}
+                      {r.problem && <p className="text-sm text-muted line-clamp-1 mb-1"><span className="text-foreground">Problem:</span> {r.problem}</p>}
+                      {r.audience && <p className="text-sm text-muted line-clamp-1 mb-1"><span className="text-foreground">Audience:</span> {r.audience}</p>}
+                      {r.aim && <p className="text-sm text-muted line-clamp-1"><span className="text-foreground">Aim:</span> {r.aim}</p>}
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
 
       {tab === "Playbooks" && (state.playbooks.length === 0 ? (
         <EmptyState
@@ -192,50 +246,6 @@ function StrategiesPageInner() {
           ))}
         </div>
       ))}
-
-      {tab === "Research" && (
-        <>
-          {focusClient && !focusedResearch && (
-            <Card className="border-accent/30 bg-accent-soft flex items-center justify-between flex-wrap gap-3">
-              <p className="text-sm">No research yet for <span className="font-medium">{focusClient}</span>.</p>
-              <Button variant="primary" onClick={() => openNewResearch(focusClient)}>
-                <IconPlus className="h-4 w-4" /> Add research for {focusClient}
-              </Button>
-            </Card>
-          )}
-
-          {state.clientResearch.length === 0 ? (
-            <EmptyState
-              title="No client research yet"
-              body="Background, goals, challenges, and a questionnaire — go through this before every new planning cycle, per the playbook."
-              action={
-                <Button variant="primary" onClick={() => openNewResearch()}>
-                  <IconPlus className="h-4 w-4" /> Add research
-                </Button>
-              }
-            />
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {state.clientResearch.map((r) => {
-                const focused = focusClient && r.client.toLowerCase() === focusClient.toLowerCase();
-                return (
-                  <Card
-                    key={r.id}
-                    className={`flex flex-col gap-2 cursor-pointer ${focused ? "border-accent" : ""}`}
-                    padded
-                  >
-                    <div onClick={() => openEditResearch(r)}>
-                      <p className="font-semibold mb-2">{r.client}</p>
-                      {r.goals && <p className="text-sm text-muted line-clamp-2 mb-1"><span className="text-foreground">Goals:</span> {r.goals}</p>}
-                      {r.challenges && <p className="text-sm text-muted line-clamp-2"><span className="text-foreground">Challenges:</span> {r.challenges}</p>}
-                    </div>
-                  </Card>
-                );
-              })}
-            </div>
-          )}
-        </>
-      )}
 
       <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)} title={editingId ? "Edit playbook" : "New playbook"}>
         <div className="flex flex-col gap-4">
@@ -304,33 +314,33 @@ function StrategiesPageInner() {
         </div>
       </Drawer>
 
-      <Drawer open={researchDrawer} onClose={() => setResearchDrawer(false)} title={editingResearchId ? "Edit research" : "New research"}>
+      <Drawer open={learnDrawer} onClose={() => setLearnDrawer(false)} title={editingLearnId ? "Edit client data" : "Learn a client"}>
         <div className="flex flex-col gap-4">
           <Field label="Client">
-            <TextInput value={researchForm.client} onChange={(v) => setResearchForm({ ...researchForm, client: v })} placeholder="e.g. Northwind Studio" />
+            <TextInput value={learnForm.client} onChange={(v) => setLearnForm({ ...learnForm, client: v })} placeholder="e.g. Northwind Studio" />
           </Field>
-          <Field label="Background">
-            <TextArea value={researchForm.background} onChange={(v) => setResearchForm({ ...researchForm, background: v })} placeholder="Industry, size, how they found you" />
+          <Field label="Business">
+            <TextArea value={learnForm.business} onChange={(v) => setLearnForm({ ...learnForm, business: v })} placeholder="Their story and what they sell" />
           </Field>
-          <Field label="Goals">
-            <TextArea value={researchForm.goals} onChange={(v) => setResearchForm({ ...researchForm, goals: v })} placeholder="What they're trying to achieve" />
+          <Field label="Problem">
+            <TextArea value={learnForm.problem} onChange={(v) => setLearnForm({ ...learnForm, problem: v })} placeholder="What it's costing them, and the root cause" />
           </Field>
-          <Field label="Challenges">
-            <TextArea value={researchForm.challenges} onChange={(v) => setResearchForm({ ...researchForm, challenges: v })} placeholder="What's stuck or missing today" />
+          <Field label="Audience">
+            <TextArea value={learnForm.audience} onChange={(v) => setLearnForm({ ...learnForm, audience: v })} placeholder="Their ideal customer profile" />
           </Field>
-          <Field label="Questionnaire notes">
-            <TextArea value={researchForm.questionnaire} onChange={(v) => setResearchForm({ ...researchForm, questionnaire: v })} placeholder="Answers from the intake questionnaire" />
+          <Field label="Aim">
+            <TextArea value={learnForm.aim} onChange={(v) => setLearnForm({ ...learnForm, aim: v })} placeholder="The growth objective beyond immediate sales" />
           </Field>
           <div className="flex items-center gap-2 pt-2">
-            <Button variant="primary" onClick={saveResearch}>
-              {editingResearchId ? "Save changes" : "Add research"}
+            <Button variant="primary" onClick={saveLearn}>
+              {editingLearnId ? "Save changes" : "Save"}
             </Button>
-            {editingResearchId && (
+            {editingLearnId && (
               <DeleteButton
-                label="Delete research"
+                label="Delete"
                 onClick={() => {
-                  removeClientResearch(editingResearchId);
-                  setResearchDrawer(false);
+                  removeClientLearn(editingLearnId);
+                  setLearnDrawer(false);
                 }}
               />
             )}

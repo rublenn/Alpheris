@@ -48,13 +48,13 @@ export interface Playbook {
   steps: PlaybookStep[];
 }
 
-export type DeliverableStatus = "Brief" | "Production" | "Review" | "Delivered";
+export type DeliverableStatus = "In Production" | "To Be Reviewed" | "Need Changes" | "Final";
 
 export const DELIVERABLE_STATUSES: DeliverableStatus[] = [
-  "Brief",
-  "Production",
-  "Review",
-  "Delivered",
+  "In Production",
+  "To Be Reviewed",
+  "Need Changes",
+  "Final",
 ];
 
 export interface Deliverable {
@@ -141,24 +141,24 @@ export const CLIENT_TIMELINE_STAGE_INFO: Record<
     href: (client) => `/os/operations/client-success?client=${encodeURIComponent(client)}`,
   },
   Strategy: {
-    description: "Research + client data",
-    href: (client) => `/os/working/strategies?tab=research&client=${encodeURIComponent(client)}`,
+    description: "Learn the business, problem, audience and aim",
+    href: (client) => `/os/working/data?tab=learn&client=${encodeURIComponent(client)}`,
   },
   Workflow: {
     description: "Runs through the playbook to produce scripts",
-    href: (client) => `/os/working/strategies?tab=playbooks&client=${encodeURIComponent(client)}`,
+    href: (client) => `/os/working/data?tab=playbooks&client=${encodeURIComponent(client)}`,
   },
   Production: {
-    description: "Production requirements set",
-    href: (client) => `/os/working/production?focus=plan&client=${encodeURIComponent(client)}`,
+    description: "Equipment and setup for each confirmed script",
+    href: (client) => `/os/working/production?focus=production&client=${encodeURIComponent(client)}`,
   },
   "Post-Production": {
-    description: "Editing, finalizing, captions, tags",
-    href: (client) => `/os/working/production?focus=board&client=${encodeURIComponent(client)}`,
+    description: "In production, to be reviewed, need changes, final",
+    href: (client) => `/os/working/deliverables?tab=postproduction&client=${encodeURIComponent(client)}`,
   },
   Deliverables: {
     description: "Content calendar, scheduling, posting",
-    href: (client) => `/os/working/deliverables?tab=calendar&client=${encodeURIComponent(client)}`,
+    href: (client) => `/os/working/deliverables?tab=live&client=${encodeURIComponent(client)}`,
   },
 };
 
@@ -222,26 +222,114 @@ export interface Lead {
   capturedAt: string;
 }
 
-export interface ClientResearch {
+export interface ClientLearn {
   id: string;
   client: string;
-  background: string;
-  goals: string;
-  challenges: string;
-  questionnaire: string;
+  business: string;
+  problem: string;
+  audience: string;
+  aim: string;
 }
 
-export const PRODUCTION_PLAN_STATUSES = ["Draft", "Approved"] as const;
-export type ProductionPlanStatus = (typeof PRODUCTION_PLAN_STATUSES)[number];
+export function createClientLearn(client: string): ClientLearn {
+  return { id: newId(), client, business: "", problem: "", audience: "", aim: "" };
+}
 
-export interface ProductionPlan {
+export const AD_GENRES = [
+  "Problem/Awareness",
+  "Desire/Outcome",
+  "Product/Service Demo",
+  "Social Proof",
+  "Differentiation",
+  "Objection-Killing",
+  "Offer/Conversion",
+  "Retargeting",
+] as const;
+export type AdGenre = (typeof AD_GENRES)[number];
+
+export const POST_GENRES = [
+  "Carousel (Educational)",
+  "High-Quality Photo",
+  "Carousel (Trust/Expertise)",
+  "Photo + Storytelling Caption",
+] as const;
+export type PostGenre = (typeof POST_GENRES)[number];
+
+export type CreativeGenre = AdGenre | PostGenre;
+export const ALL_CREATIVE_GENRES: CreativeGenre[] = [...AD_GENRES, ...POST_GENRES];
+
+export const AD_QUESTION_FIELDS = [
+  { key: "vibe", label: "Vibe", placeholder: "Aesthetic and tonal direction" },
+  { key: "why", label: "Why", placeholder: "The strategic rationale" },
+  { key: "who", label: "Who", placeholder: "Who exactly this is for" },
+  { key: "whyWillItWork", label: "Why will it work?", placeholder: "The effectiveness hypothesis" },
+  { key: "emotion", label: "Emotion", placeholder: "The psychological response it triggers" },
+  { key: "offer", label: "What are we offering?", placeholder: "The value proposition" },
+  { key: "whyShareable", label: "Why is it shareable?", placeholder: "Viral / distribution potential" },
+] as const;
+export type AdQuestionKey = (typeof AD_QUESTION_FIELDS)[number]["key"];
+
+export const AMPLIFIER_FIELDS = [
+  { key: "creativity", label: "Creativity", placeholder: "The novel hook or unexpected approach" },
+  { key: "hypeCreation", label: "Hype Creation", placeholder: "What makes people rewatch it" },
+  { key: "neuromarketing", label: "Neuromarketing", placeholder: "Curiosity, social proof, reciprocity triggers" },
+] as const;
+export type AmplifierKey = (typeof AMPLIFIER_FIELDS)[number]["key"];
+
+export interface CreativeScript {
   id: string;
-  project: string;
-  title: string;
-  details: string;
-  shootDate: string;
-  status: ProductionPlanStatus;
+  client: string;
+  kind: "Ad" | "Post";
+  genre: CreativeGenre;
+  vibe: string;
+  why: string;
+  who: string;
+  whyWillItWork: string;
+  emotion: string;
+  offer: string;
+  whyShareable: string;
+  creativity: string;
+  hypeCreation: string;
+  neuromarketing: string;
+  equipment: string[];
+  createdAt: string;
 }
+
+export function emptyCreativeScript(client: string, kind: "Ad" | "Post", genre: CreativeGenre): CreativeScript {
+  return {
+    id: newId(),
+    client,
+    kind,
+    genre,
+    vibe: "",
+    why: "",
+    who: "",
+    whyWillItWork: "",
+    emotion: "",
+    offer: "",
+    whyShareable: "",
+    creativity: "",
+    hypeCreation: "",
+    neuromarketing: "",
+    equipment: [],
+    createdAt: todayISO(),
+  };
+}
+
+export const DEFAULT_EQUIPMENT: Record<CreativeGenre, string[]> = {
+  "Problem/Awareness": ["Camera", "Lav mic", "Tripod"],
+  "Desire/Outcome": ["Camera", "Gimbal", "Lifestyle b-roll props"],
+  "Product/Service Demo": ["Camera", "Tripod", "Product samples", "Macro lens"],
+  "Social Proof": ["Camera", "Lav mic", "Client testimonial release form"],
+  Differentiation: ["Camera", "Tripod", "Comparison props/graphics"],
+  "Objection-Killing": ["Camera", "Lav mic", "Whiteboard or graphics"],
+  "Offer/Conversion": ["Camera", "Tripod", "Countdown/offer graphics"],
+  Retargeting: ["Camera", "Existing footage library"],
+  "Carousel (Educational)": ["Camera or phone", "Design template"],
+  "High-Quality Photo": ["Camera", "Tripod", "Lighting kit"],
+  "Carousel (Trust/Expertise)": ["Camera", "Design template", "Client quotes/photos"],
+  "Photo + Storytelling Caption": ["Camera", "Notebook for caption draft"],
+};
 
 export const OUTSOURCE_ROLES = ["Cameraman", "Editor", "Actor", "Other"] as const;
 export type OutsourceRole = (typeof OUTSOURCE_ROLES)[number];
@@ -295,8 +383,9 @@ export interface OsState {
   timeline: TimelineEntry[];
   clientTimelines: ClientTimeline[];
   leads: Lead[];
-  clientResearch: ClientResearch[];
-  productionPlans: ProductionPlan[];
+  clientLearn: ClientLearn[];
+  creativeScripts: CreativeScript[];
+  equipmentDefaults: Record<string, string[]>;
   outsources: Outsource[];
   relationshipNotes: RelationshipNote[];
   assets: Asset[];
@@ -323,8 +412,9 @@ export const EMPTY_STATE: OsState = {
   timeline: [],
   clientTimelines: [],
   leads: [],
-  clientResearch: [],
-  productionPlans: [],
+  clientLearn: [],
+  creativeScripts: [],
+  equipmentDefaults: { ...DEFAULT_EQUIPMENT },
   outsources: [],
   relationshipNotes: [],
   assets: [],
