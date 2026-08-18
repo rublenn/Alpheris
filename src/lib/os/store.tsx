@@ -29,7 +29,6 @@ import {
   Medium,
   MoneyEvent,
   OsState,
-  Outsource,
   Playbook,
   RelationshipNote,
   Target,
@@ -109,10 +108,6 @@ interface OsStore {
 
   setEquipmentDefault: (genre: string, equipment: string[]) => void;
 
-  addOutsource: (o: Outsource) => void;
-  updateOutsource: (id: string, patch: Partial<Outsource>) => void;
-  removeOutsource: (id: string) => void;
-
   addRelationshipNote: (n: RelationshipNote) => void;
   removeRelationshipNote: (id: string) => void;
 
@@ -181,7 +176,6 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
   const lead = useMemo(() => collection(setState, "leads"), [setState]);
   const learn = useMemo(() => collection(setState, "clientLearn"), [setState]);
   const script = useMemo(() => collection(setState, "creativeScripts"), [setState]);
-  const outsource = useMemo(() => collection(setState, "outsources"), [setState]);
   const relNote = useMemo(() => collection(setState, "relationshipNotes"), [setState]);
   const asset = useMemo(() => collection(setState, "assets"), [setState]);
   const idea = useMemo(() => collection(setState, "marketingIdeas"), [setState]);
@@ -303,10 +297,6 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
     removeCreativeScript: script.remove,
 
     setEquipmentDefault,
-
-    addOutsource: outsource.add,
-    updateOutsource: outsource.update,
-    removeOutsource: outsource.remove,
 
     addRelationshipNote: relNote.add,
     removeRelationshipNote: relNote.remove,

@@ -11,12 +11,8 @@ import {
   CreativeGenre,
   CreativeScript,
   DEFAULT_EQUIPMENT,
-  Outsource,
-  OutsourceRole,
-  OUTSOURCE_ROLES,
   POST_GENRES,
   emptyCreativeScript,
-  newId,
 } from "@/lib/os/types";
 import {
   Badge,
@@ -33,11 +29,7 @@ import {
   TextArea,
   TextInput,
 } from "@/components/os/ui";
-import { IconClose, IconPlus } from "@/components/os/icons";
-
-function emptyOutsource(): Outsource {
-  return { id: newId(), role: "Cameraman", name: "", contact: "", rate: "", notes: "" };
-}
+import { IconClose } from "@/components/os/icons";
 
 export default function ProductionPage() {
   return (
@@ -55,15 +47,12 @@ function ProductionPageInner() {
     updateCreativeScript,
     removeCreativeScript,
     setEquipmentDefault,
-    addOutsource,
-    updateOutsource,
-    removeOutsource,
   } = useOsStore();
 
   const searchParams = useSearchParams();
   const queryClient = searchParams.get("client") || "";
   const initialTab = searchParams.get("focus") === "production" ? "Production" : "Creative";
-  const [tab, setTab] = useState<"Creative" | "Production" | "Outsources">(initialTab);
+  const [tab, setTab] = useState<"Creative" | "Production">(initialTab);
 
   const clientNames = Array.from(new Set(state.leads.filter((l) => l.stage === "Client").map((l) => l.name))).sort();
 
@@ -77,10 +66,6 @@ function ProductionPageInner() {
   const [scriptDrawer, setScriptDrawer] = useState(false);
   const [editingScriptId, setEditingScriptId] = useState<string | null>(null);
   const [scriptForm, setScriptForm] = useState<CreativeScript | null>(null);
-
-  const [outDrawer, setOutDrawer] = useState(false);
-  const [editingOutId, setEditingOutId] = useState<string | null>(null);
-  const [outForm, setOutForm] = useState<Outsource>(emptyOutsource());
 
   if (!hydrated) return null;
 
@@ -140,36 +125,9 @@ function ProductionPageInner() {
     updateCreativeScript(activeProductionScript.id, { equipment: fallback });
   }
 
-  function openNewOutsource() {
-    setOutForm(emptyOutsource());
-    setEditingOutId(null);
-    setOutDrawer(true);
-  }
-  function openEditOutsource(o: Outsource) {
-    setOutForm(o);
-    setEditingOutId(o.id);
-    setOutDrawer(true);
-  }
-  function saveOutsource() {
-    if (!outForm.name.trim()) return;
-    if (editingOutId) updateOutsource(editingOutId, outForm);
-    else addOutsource(outForm);
-    setOutDrawer(false);
-  }
-
   return (
     <div className="flex flex-col gap-8">
-      <SectionHeader
-        eyebrow="Working"
-        title="Creative & Production"
-        action={
-          tab === "Outsources" ? (
-            <Button variant="primary" onClick={openNewOutsource}>
-              <IconPlus className="h-4 w-4" /> Add outsource
-            </Button>
-          ) : undefined
-        }
-      />
+      <SectionHeader eyebrow="Working" title="Creative & Production" />
 
       <Tabs
         value={tab}
@@ -177,7 +135,6 @@ function ProductionPageInner() {
         options={[
           { value: "Creative", label: "Creative" },
           { value: "Production", label: "Production" },
-          { value: "Outsources", label: "Outsources", count: state.outsources.length },
         ]}
       />
 
@@ -254,9 +211,9 @@ function ProductionPageInner() {
                     className="w-full rounded-lg border border-border bg-surface-2 px-3.5 py-2.5 text-sm outline-none focus:border-accent transition appearance-none"
                   >
                     <option value="">Select a confirmed script</option>
-                    {genresWithScript.map((g) => (
-                      <option key={g} value={g}>
-                        {g}
+                    {scriptsForProductionClient.map((s) => (
+                      <option key={s.genre} value={s.genre}>
+                        {s.name.trim() || s.genre}
                       </option>
                     ))}
                   </select>
@@ -274,8 +231,8 @@ function ProductionPageInner() {
                 <Card className="flex flex-col gap-5">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-semibold">{activeProductionScript.genre}</p>
-                      <p className="text-xs text-muted">{activeProductionScript.client} · {activeProductionScript.kind}</p>
+                      <p className="font-semibold">{activeProductionScript.name.trim() || activeProductionScript.genre}</p>
+                      <p className="text-xs text-muted">{activeProductionScript.genre} · {activeProductionScript.client} · {activeProductionScript.kind}</p>
                     </div>
                     <Badge tone="accent">Equipment</Badge>
                   </div>
@@ -353,37 +310,10 @@ function ProductionPageInner() {
         </>
       )}
 
-      {tab === "Outsources" && (state.outsources.length === 0 ? (
-        <EmptyState
-          title="No outsources yet"
-          body="Cameramen, editors, actors — anyone external you bring in for production. Keep their contact and rate here."
-          action={
-            <Button variant="primary" onClick={openNewOutsource}>
-              <IconPlus className="h-4 w-4" /> Add an outsource
-            </Button>
-          }
-        />
-      ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {state.outsources.map((o) => (
-            <Card key={o.id} className="cursor-pointer flex flex-col gap-1.5">
-              <div onClick={() => openEditOutsource(o)}>
-                <div className="flex items-center justify-between">
-                  <p className="font-medium text-sm">{o.name}</p>
-                  <Badge>{o.role}</Badge>
-                </div>
-                <p className="text-xs text-muted">{o.contact}{o.rate ? ` · ${o.rate}` : ""}</p>
-                {o.notes && <p className="text-xs text-muted line-clamp-2">{o.notes}</p>}
-              </div>
-            </Card>
-          ))}
-        </div>
-      ))}
-
       <Drawer
         open={scriptDrawer}
         onClose={() => setScriptDrawer(false)}
-        title={scriptForm ? `${scriptForm.genre} · ${scriptForm.client}` : "Script"}
+        title={scriptForm ? `${scriptForm.name.trim() || scriptForm.genre} · ${scriptForm.client}` : "Script"}
       >
         {scriptForm && (
           <div className="flex flex-col gap-4">
@@ -393,6 +323,14 @@ function ProductionPageInner() {
                 {scriptForm.genre} <span className="text-muted">· {scriptForm.kind}</span>
               </div>
             </div>
+
+            <Field label="Name">
+              <TextInput
+                value={scriptForm.name}
+                onChange={(v) => setScriptForm({ ...scriptForm, name: v })}
+                placeholder={`e.g. ${scriptForm.genre}`}
+              />
+            </Field>
 
             <Field label="2. Script">
               <TextArea
@@ -442,41 +380,6 @@ function ProductionPageInner() {
         )}
       </Drawer>
 
-      <Drawer open={outDrawer} onClose={() => setOutDrawer(false)} title={editingOutId ? "Edit outsource" : "New outsource"}>
-        <div className="flex flex-col gap-4">
-          <div className="grid grid-cols-2 gap-4">
-            <Field label="Role">
-              <SelectInput value={outForm.role} onChange={(v: OutsourceRole) => setOutForm({ ...outForm, role: v })} options={OUTSOURCE_ROLES} />
-            </Field>
-            <Field label="Name">
-              <TextInput value={outForm.name} onChange={(v) => setOutForm({ ...outForm, name: v })} placeholder="e.g. Sam Rivera" />
-            </Field>
-          </div>
-          <Field label="Contact">
-            <TextInput value={outForm.contact} onChange={(v) => setOutForm({ ...outForm, contact: v })} placeholder="Email or phone" />
-          </Field>
-          <Field label="Rate">
-            <TextInput value={outForm.rate} onChange={(v) => setOutForm({ ...outForm, rate: v })} placeholder="e.g. $400/day" />
-          </Field>
-          <Field label="Notes">
-            <TextArea value={outForm.notes} onChange={(v) => setOutForm({ ...outForm, notes: v })} placeholder="Availability, style, past work" />
-          </Field>
-          <div className="flex items-center gap-2 pt-2">
-            <Button variant="primary" onClick={saveOutsource}>
-              {editingOutId ? "Save changes" : "Add outsource"}
-            </Button>
-            {editingOutId && (
-              <DeleteButton
-                label="Delete outsource"
-                onClick={() => {
-                  removeOutsource(editingOutId);
-                  setOutDrawer(false);
-                }}
-              />
-            )}
-          </div>
-        </div>
-      </Drawer>
     </div>
   );
 }
@@ -490,6 +393,7 @@ function GenreSlot({
   script: CreativeScript | undefined;
   onClick: () => void;
 }) {
+  const hasCustomName = !!script?.name.trim();
   return (
     <button
       onClick={onClick}
@@ -498,9 +402,10 @@ function GenreSlot({
       }`}
     >
       <div className="flex items-center justify-between mb-1.5">
-        <p className="text-sm font-semibold leading-tight">{genre}</p>
+        <p className="text-sm font-semibold leading-tight">{hasCustomName ? script!.name : genre}</p>
         {script ? <Badge tone="good">Confirmed</Badge> : <Badge>Blank</Badge>}
       </div>
+      {hasCustomName && <p className="text-xs text-muted mb-1">{genre}</p>}
       <p className="text-xs text-muted line-clamp-2">
         {script ? script.vibe || script.why || "Confirmed — tap to edit" : "Tap to confirm this genre"}
       </p>

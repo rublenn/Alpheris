@@ -281,6 +281,7 @@ export interface CreativeScript {
   client: string;
   kind: "Ad" | "Post";
   genre: CreativeGenre;
+  name: string;
   script: string;
   vibe: string;
   why: string;
@@ -302,6 +303,7 @@ export function emptyCreativeScript(client: string, kind: "Ad" | "Post", genre: 
     client,
     kind,
     genre,
+    name: "",
     script: "",
     vibe: "",
     why: "",
@@ -332,18 +334,6 @@ export const DEFAULT_EQUIPMENT: Record<CreativeGenre, string[]> = {
   "Carousel (Trust/Expertise)": ["Camera", "Design template", "Client quotes/photos"],
   "Photo + Storytelling Caption": ["Camera", "Notebook for caption draft"],
 };
-
-export const OUTSOURCE_ROLES = ["Cameraman", "Editor", "Actor", "Other"] as const;
-export type OutsourceRole = (typeof OUTSOURCE_ROLES)[number];
-
-export interface Outsource {
-  id: string;
-  role: OutsourceRole;
-  name: string;
-  contact: string;
-  rate: string;
-  notes: string;
-}
 
 export interface RelationshipNote {
   id: string;
@@ -388,7 +378,6 @@ export interface OsState {
   clientLearn: ClientLearn[];
   creativeScripts: CreativeScript[];
   equipmentDefaults: Record<string, string[]>;
-  outsources: Outsource[];
   relationshipNotes: RelationshipNote[];
   assets: Asset[];
   marketingIdeas: MarketingIdea[];
@@ -417,7 +406,6 @@ export const EMPTY_STATE: OsState = {
   clientLearn: [],
   creativeScripts: [],
   equipmentDefaults: { ...DEFAULT_EQUIPMENT },
-  outsources: [],
   relationshipNotes: [],
   assets: [],
   marketingIdeas: [],
