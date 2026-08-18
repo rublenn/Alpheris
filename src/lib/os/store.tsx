@@ -27,6 +27,7 @@ import {
   MarketingIdea,
   Medium,
   MoneyEvent,
+  normalizeCreativeScript,
   OsState,
   Playbook,
   RelationshipNote,
@@ -41,7 +42,9 @@ function readState(): OsState {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return EMPTY_STATE;
-    return { ...EMPTY_STATE, ...(JSON.parse(raw) as Partial<OsState>) };
+    const parsed = { ...EMPTY_STATE, ...(JSON.parse(raw) as Partial<OsState>) };
+    parsed.creativeScripts = (parsed.creativeScripts ?? []).map(normalizeCreativeScript);
+    return parsed;
   } catch {
     return EMPTY_STATE;
   }

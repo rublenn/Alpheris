@@ -309,6 +309,17 @@ export function emptyCreativeScript(client: string, kind: "Ad" | "Post", genre: 
   };
 }
 
+export function normalizeCreativeScript(s: Partial<CreativeScript>): CreativeScript {
+  const empty = emptyCreativeScript(s.client ?? "", s.kind ?? "Ad", s.genre ?? AD_GENRES[0]);
+  return {
+    ...empty,
+    ...s,
+    id: s.id ?? empty.id,
+    equipment: Array.isArray(s.equipment) ? s.equipment : empty.equipment,
+    createdAt: s.createdAt ?? empty.createdAt,
+  };
+}
+
 export const DEFAULT_EQUIPMENT: Record<CreativeGenre, string[]> = {
   "Problem/Awareness": ["Camera", "Lav mic", "Tripod"],
   "Desire/Outcome": ["Camera", "Gimbal", "Lifestyle b-roll props"],
