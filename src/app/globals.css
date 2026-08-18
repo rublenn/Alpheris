@@ -81,6 +81,51 @@ body {
   }
 }
 
+:root {
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-transition {
+  animation: page-in 360ms var(--ease-smooth) both;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fade-in 220ms var(--ease-smooth) both;
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(4px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.rise-in {
+  animation: rise-in 220ms var(--ease-smooth) both;
+}
+
+.collapsible {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 320ms var(--ease-smooth);
+}
+
+.collapsible.is-open {
+  grid-template-rows: 1fr;
+}
+
+.collapsible > div {
+  overflow: hidden;
+}
+
 @keyframes milestone-ping {
   0% { box-shadow: 0 0 0 0 var(--ring-color, var(--accent-soft)); }
   70% { box-shadow: 0 0 0 12px transparent; }

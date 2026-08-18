@@ -22,6 +22,7 @@ import {
   Badge,
   Button,
   Card,
+  Collapsible,
   DeleteButton,
   Drawer,
   EmptyState,
@@ -335,9 +336,8 @@ function ProductionPageInner() {
                 </Card>
               )}
 
-              <details className="rounded-2xl border border-border-soft bg-surface p-4">
-                <summary className="cursor-pointer text-sm font-medium">Default equipment per genre</summary>
-                <div className="mt-4 flex flex-col gap-3">
+              <Collapsible summary="Default equipment per genre">
+                <div className="flex flex-col gap-3">
                   {ALL_CREATIVE_GENRES.map((genre) => (
                     <EquipmentDefaultRow
                       key={genre}
@@ -347,7 +347,7 @@ function ProductionPageInner() {
                     />
                   ))}
                 </div>
-              </details>
+              </Collapsible>
             </>
           )}
         </>

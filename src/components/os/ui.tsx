@@ -1,7 +1,7 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
-import { IconClose, IconTrash } from "./icons";
+import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { IconChevron, IconClose, IconTrash } from "./icons";
 
 // ---------- layout ----------
 
@@ -19,7 +19,7 @@ export function Card({
   return (
     <div
       id={id}
-      className={`rounded-2xl border border-border bg-surface ${
+      className={`rounded-2xl border border-border bg-surface transition-[border-color,transform,box-shadow] duration-200 ease-[var(--ease-smooth)] ${
         padded ? "p-5 sm:p-6" : ""
       } ${className}`}
     >
@@ -73,7 +73,7 @@ export function Badge({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-medium ${toneClasses[tone]}`}
+      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors duration-200 ease-[var(--ease-smooth)] ${toneClasses[tone]}`}
     >
       {children}
     </span>
@@ -121,7 +121,7 @@ export function Button({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed ${variants[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition duration-150 ease-[var(--ease-smooth)] active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100 ${variants[variant]} ${className}`}
     >
       {children}
     </button>
@@ -145,7 +145,7 @@ export function IconButton({
       onClick={onClick}
       aria-label={label}
       title={label}
-      className={`inline-flex h-8 w-8 items-center justify-center rounded-full border border-border transition hover:border-muted ${
+      className={`inline-flex h-8 w-8 items-center justify-center rounded-full border border-border transition duration-150 ease-[var(--ease-smooth)] active:scale-[0.94] hover:border-muted ${
         danger ? "text-critical hover:bg-critical-soft" : "text-muted hover:text-foreground hover:bg-surface-2"
       }`}
     >
@@ -173,14 +173,41 @@ export function Tabs<T extends string>({
   onChange: (v: T) => void;
   options: { value: T; label: string; count?: number }[];
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const btnRefs = useRef<Map<T, HTMLButtonElement>>(new Map());
+  const [indicator, setIndicator] = useState<{ left: number; width: number } | null>(null);
+
+  useLayoutEffect(() => {
+    const el = btnRefs.current.get(value);
+    const container = containerRef.current;
+    if (!el || !container) return;
+    const elRect = el.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    setIndicator({ left: elRect.left - containerRect.left, width: elRect.width });
+  }, [value, options]);
+
   return (
-    <div className="flex items-center gap-1 rounded-full border border-border bg-surface p-1 w-fit overflow-x-auto max-w-full">
+    <div
+      ref={containerRef}
+      className="relative flex items-center gap-1 rounded-full border border-border bg-surface p-1 w-fit overflow-x-auto max-w-full"
+    >
+      {indicator && (
+        <div
+          className="absolute top-1 bottom-1 rounded-full bg-accent transition-all duration-[260ms] ease-[var(--ease-smooth)]"
+          style={{ left: indicator.left, width: indicator.width }}
+          aria-hidden="true"
+        />
+      )}
       {options.map((o) => (
         <button
           key={o.value}
+          ref={(el) => {
+            if (el) btnRefs.current.set(o.value, el);
+            else btnRefs.current.delete(o.value);
+          }}
           onClick={() => onChange(o.value)}
-          className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition ${
-            value === o.value ? "bg-accent text-white" : "text-muted hover:text-foreground"
+          className={`relative z-10 shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors duration-200 ease-[var(--ease-smooth)] ${
+            value === o.value ? "text-white" : "text-muted hover:text-foreground"
           }`}
         >
           {o.label}
@@ -238,7 +265,7 @@ export function ProgressBar({ value, tone = "accent" }: { value: number; tone?: 
   return (
     <div className="h-1.5 w-full rounded-full bg-surface-2 overflow-hidden">
       <div
-        className={`h-full rounded-full transition-[width] duration-500 ${barTone[tone]}`}
+        className={`h-full rounded-full transition-all duration-500 ease-[var(--ease-smooth)] ${barTone[tone]}`}
         style={{ width: `${pct}%` }}
       />
     </div>
@@ -257,7 +284,7 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="rounded-2xl border border-dashed border-border py-14 px-6 text-center">
+    <div className="fade-in rounded-2xl border border-dashed border-border py-14 px-6 text-center">
       <p className="font-medium mb-1">{title}</p>
       <p className="text-sm text-muted max-w-sm mx-auto mb-5">{body}</p>
       {action}
@@ -294,21 +321,22 @@ export function Drawer({
     >
       <div
         onClick={onClose}
-        className={`absolute inset-0 bg-black/50 backdrop-blur-[2px] transition-opacity duration-300 ${
+        className={`absolute inset-0 bg-black/50 backdrop-blur-[2px] transition-opacity duration-300 ease-[var(--ease-smooth)] ${
           open ? "opacity-100" : "opacity-0"
         }`}
       />
       <div
-        className={`absolute right-0 top-0 h-full w-full max-w-md border-l border-border bg-surface shadow-2xl transition-transform duration-300 ease-out ${
+        className={`absolute right-0 top-0 h-full w-full max-w-md border-l border-border bg-surface shadow-2xl transition-transform ease-[var(--ease-smooth)] ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
+        style={{ transitionDuration: "340ms" }}
       >
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <h3 className="font-semibold tracking-tight">{title}</h3>
           <button
             onClick={onClose}
             aria-label="Close"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-full text-muted hover:text-foreground hover:bg-surface-2 transition"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full text-muted hover:text-foreground hover:bg-surface-2 transition duration-150 ease-[var(--ease-smooth)] active:scale-[0.94]"
           >
             <IconClose className="h-4 w-4" />
           </button>
@@ -337,7 +365,7 @@ export function Field({
 }
 
 const inputClasses =
-  "w-full rounded-lg border border-border bg-surface-2 px-3.5 py-2.5 text-sm outline-none focus:border-accent transition";
+  "w-full rounded-lg border border-border bg-surface-2 px-3.5 py-2.5 text-sm outline-none focus:border-accent transition-colors duration-150 ease-[var(--ease-smooth)]";
 
 export function TextInput({
   value,
@@ -424,5 +452,38 @@ export function SelectInput<T extends string>({
         </option>
       ))}
     </select>
+  );
+}
+
+// ---------- collapsible ----------
+
+export function Collapsible({
+  summary,
+  children,
+  defaultOpen = false,
+}: {
+  summary: ReactNode;
+  children: ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="rounded-2xl border border-border-soft bg-surface p-4">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center justify-between gap-2 text-left text-sm font-medium"
+      >
+        {summary}
+        <IconChevron
+          className={`h-3.5 w-3.5 shrink-0 text-muted transition-transform duration-[250ms] ease-[var(--ease-smooth)] ${
+            open ? "rotate-90" : "rotate-0"
+          }`}
+        />
+      </button>
+      <div className={`collapsible ${open ? "is-open" : ""}`}>
+        <div className={open ? "pt-4" : ""}>{children}</div>
+      </div>
+    </div>
   );
 }
