@@ -55,12 +55,17 @@ export interface Client {
   name: string;
   monthlyValue: number;
   health: ClientHealth;
-  lastReportDate: string;
-  lastReportNotes: string;
   notes: string;
-  currentProblem: string;
-  proposedSolution: string;
   satisfaction: number;
+  roi: number;
+  organicViews: number;
+}
+
+export interface ProblemSolution {
+  id: string;
+  client: string;
+  problem: string;
+  solution: string;
 }
 
 export type MoneyKind = "Invoice" | "Expense";
@@ -335,12 +340,72 @@ export const DEFAULT_EQUIPMENT: Record<CreativeGenre, string[]> = {
   "Photo + Storytelling Caption": ["Camera", "Notebook for caption draft"],
 };
 
-export interface RelationshipNote {
+export interface AdReport {
   id: string;
   client: string;
-  date: string;
-  note: string;
+  creativeScriptId: string;
+  views: number;
+  engagement: number;
+  budget: number;
+  cpm: number;
+  impressions: number;
+  reach: number;
+  clicks: number;
+  conversions: number;
+  totalSale: number;
+  roi: number;
+  improveCpm: string;
+  improveConversion: string;
+  improveAov: string;
+  improveRetention: string;
 }
+
+export function emptyAdReport(client: string, creativeScriptId: string): AdReport {
+  return {
+    id: newId(),
+    client,
+    creativeScriptId,
+    views: 0,
+    engagement: 0,
+    budget: 0,
+    cpm: 0,
+    impressions: 0,
+    reach: 0,
+    clicks: 0,
+    conversions: 0,
+    totalSale: 0,
+    roi: 0,
+    improveCpm: "",
+    improveConversion: "",
+    improveAov: "",
+    improveRetention: "",
+  };
+}
+
+export function normalizeAdReport(r: Partial<AdReport>): AdReport {
+  const empty = emptyAdReport(r.client ?? "", r.creativeScriptId ?? "");
+  return { ...empty, ...r, id: r.id ?? empty.id };
+}
+
+export const AD_REPORT_METRIC_FIELDS = [
+  { key: "views", label: "Views" },
+  { key: "engagement", label: "Engagement" },
+  { key: "budget", label: "Budget" },
+  { key: "cpm", label: "CPM" },
+  { key: "impressions", label: "Impressions" },
+  { key: "reach", label: "Reach" },
+  { key: "clicks", label: "Clicks" },
+  { key: "conversions", label: "Conversions" },
+  { key: "totalSale", label: "Total Sale" },
+  { key: "roi", label: "ROI" },
+] as const satisfies { key: keyof AdReport; label: string }[];
+
+export const AD_REPORT_IMPROVEMENT_FIELDS = [
+  { key: "improveCpm", label: "Can we decrease CPM?" },
+  { key: "improveConversion", label: "How can we increase conversion?" },
+  { key: "improveAov", label: "How can we improve average order value?" },
+  { key: "improveRetention", label: "Can we increase retention?" },
+] as const satisfies { key: keyof AdReport; label: string }[];
 
 export interface Asset {
   id: string;
@@ -377,7 +442,8 @@ export interface OsState {
   clientLearn: ClientLearn[];
   creativeScripts: CreativeScript[];
   equipmentDefaults: Record<string, string[]>;
-  relationshipNotes: RelationshipNote[];
+  problemSolutions: ProblemSolution[];
+  adReports: AdReport[];
   assets: Asset[];
   marketingIdeas: MarketingIdea[];
 }
@@ -404,7 +470,8 @@ export const EMPTY_STATE: OsState = {
   clientLearn: [],
   creativeScripts: [],
   equipmentDefaults: { ...DEFAULT_EQUIPMENT },
-  relationshipNotes: [],
+  problemSolutions: [],
+  adReports: [],
   assets: [],
   marketingIdeas: [],
 };

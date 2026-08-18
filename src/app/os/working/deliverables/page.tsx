@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useOsStore } from "@/lib/os/store";
 import { CreativeScript } from "@/lib/os/types";
@@ -115,6 +116,15 @@ function DeliverablesPageInner() {
                   </label>
                 ))}
               </div>
+
+              {activeOutcome.posted && (
+                <Link
+                  href={`/os/operations/client-success?focus=report&client=${encodeURIComponent(activeOutcome.client)}`}
+                  className="text-sm text-accent hover:underline"
+                >
+                  Report performance in Client Success →
+                </Link>
+              )}
             </Card>
           )}
         </>

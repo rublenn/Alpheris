@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 import {
+  AdReport,
   Asset,
   Capture,
   Client,
@@ -27,10 +28,11 @@ import {
   MarketingIdea,
   Medium,
   MoneyEvent,
+  normalizeAdReport,
   normalizeCreativeScript,
   OsState,
   Playbook,
-  RelationshipNote,
+  ProblemSolution,
   Target,
   TimelineEntry,
 } from "./types";
@@ -44,6 +46,7 @@ function readState(): OsState {
     if (!raw) return EMPTY_STATE;
     const parsed = { ...EMPTY_STATE, ...(JSON.parse(raw) as Partial<OsState>) };
     parsed.creativeScripts = (parsed.creativeScripts ?? []).map(normalizeCreativeScript);
+    parsed.adReports = (parsed.adReports ?? []).map(normalizeAdReport);
     return parsed;
   } catch {
     return EMPTY_STATE;
@@ -106,8 +109,13 @@ interface OsStore {
 
   setEquipmentDefault: (genre: string, equipment: string[]) => void;
 
-  addRelationshipNote: (n: RelationshipNote) => void;
-  removeRelationshipNote: (id: string) => void;
+  addProblemSolution: (p: ProblemSolution) => void;
+  updateProblemSolution: (id: string, patch: Partial<ProblemSolution>) => void;
+  removeProblemSolution: (id: string) => void;
+
+  addAdReport: (r: AdReport) => void;
+  updateAdReport: (id: string, patch: Partial<AdReport>) => void;
+  removeAdReport: (id: string) => void;
 
   addAsset: (a: Asset) => void;
   updateAsset: (id: string, patch: Partial<Asset>) => void;
@@ -173,7 +181,8 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
   const lead = useMemo(() => collection(setState, "leads"), [setState]);
   const learn = useMemo(() => collection(setState, "clientLearn"), [setState]);
   const script = useMemo(() => collection(setState, "creativeScripts"), [setState]);
-  const relNote = useMemo(() => collection(setState, "relationshipNotes"), [setState]);
+  const probSol = useMemo(() => collection(setState, "problemSolutions"), [setState]);
+  const adReport = useMemo(() => collection(setState, "adReports"), [setState]);
   const asset = useMemo(() => collection(setState, "assets"), [setState]);
   const idea = useMemo(() => collection(setState, "marketingIdeas"), [setState]);
 
@@ -291,8 +300,13 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
 
     setEquipmentDefault,
 
-    addRelationshipNote: relNote.add,
-    removeRelationshipNote: relNote.remove,
+    addProblemSolution: probSol.add,
+    updateProblemSolution: probSol.update,
+    removeProblemSolution: probSol.remove,
+
+    addAdReport: adReport.add,
+    updateAdReport: adReport.update,
+    removeAdReport: adReport.remove,
 
     addAsset: asset.add,
     updateAsset: asset.update,
