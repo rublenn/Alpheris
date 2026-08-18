@@ -26,7 +26,6 @@ import {
   MarketingIdea,
   Medium,
   MoneyEvent,
-  Opportunity,
   OsState,
   Outsource,
   Playbook,
@@ -59,10 +58,6 @@ interface OsStore {
 
   setTarget: (target: Target) => void;
   setStrategy: (strategy: CompanyStrategy) => void;
-
-  addOpportunity: (o: Opportunity) => void;
-  updateOpportunity: (id: string, patch: Partial<Opportunity>) => void;
-  removeOpportunity: (id: string) => void;
 
   addMedium: (m: Medium) => void;
   updateMedium: (id: string, patch: Partial<Medium>) => void;
@@ -171,7 +166,6 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const opp = useMemo(() => collection(setState, "opportunities"), [setState]);
   const med = useMemo(() => collection(setState, "mediums"), [setState]);
   const exp = useMemo(() => collection(setState, "experiments"), [setState]);
   const play = useMemo(() => collection(setState, "playbooks"), [setState]);
@@ -189,19 +183,37 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
   const asset = useMemo(() => collection(setState, "assets"), [setState]);
   const idea = useMemo(() => collection(setState, "marketingIdeas"), [setState]);
 
-  const updateOpportunityAndMaybeCreateTimeline = useCallback(
-    (id: string, patch: Partial<Opportunity>) => {
+  const addLeadAndMaybeCreateTimeline = useCallback(
+    (newLead: Lead) => {
       setState((prev) => {
-        const target = prev.opportunities.find((o) => o.id === id);
-        const opportunities = prev.opportunities.map((o) => (o.id === id ? { ...o, ...patch } : o));
-        const becomingWon = !!target && target.stage !== "Won" && patch.stage === "Won";
-        if (!becomingWon) return { ...prev, opportunities };
-        const alreadyHasTimeline = prev.clientTimelines.some((t) => t.client === target!.name);
-        if (alreadyHasTimeline) return { ...prev, opportunities };
+        const leads = [...prev.leads, newLead];
+        if (newLead.stage !== "Client") return { ...prev, leads };
+        const alreadyHasTimeline = prev.clientTimelines.some((t) => t.client === newLead.name);
+        if (alreadyHasTimeline) return { ...prev, leads };
         return {
           ...prev,
-          opportunities,
-          clientTimelines: [...prev.clientTimelines, createClientTimeline(target!.name)],
+          leads,
+          clientTimelines: [...prev.clientTimelines, createClientTimeline(newLead.name)],
+        };
+      });
+    },
+    [setState]
+  );
+
+  const updateLeadAndMaybeCreateTimeline = useCallback(
+    (id: string, patch: Partial<Lead>) => {
+      setState((prev) => {
+        const target = prev.leads.find((l) => l.id === id);
+        const leads = prev.leads.map((l) => (l.id === id ? { ...l, ...patch } : l));
+        const becomingClient = !!target && target.stage !== "Client" && patch.stage === "Client";
+        if (!becomingClient) return { ...prev, leads };
+        const clientName = patch.name ?? target!.name;
+        const alreadyHasTimeline = prev.clientTimelines.some((t) => t.client === clientName);
+        if (alreadyHasTimeline) return { ...prev, leads };
+        return {
+          ...prev,
+          leads,
+          clientTimelines: [...prev.clientTimelines, createClientTimeline(clientName)],
         };
       });
     },
@@ -227,10 +239,6 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
     hydrated,
     setTarget: (target) => setState((prev) => ({ ...prev, target })),
     setStrategy: (strategy) => setState((prev) => ({ ...prev, strategy })),
-
-    addOpportunity: opp.add,
-    updateOpportunity: updateOpportunityAndMaybeCreateTimeline,
-    removeOpportunity: opp.remove,
 
     addMedium: med.add,
     updateMedium: med.update,
@@ -267,8 +275,8 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
     removeClientTimeline: ct.remove,
     updateClientTimelineStep,
 
-    addLead: lead.add,
-    updateLead: lead.update,
+    addLead: addLeadAndMaybeCreateTimeline,
+    updateLead: updateLeadAndMaybeCreateTimeline,
     removeLead: lead.remove,
 
     addClientResearch: research.add,

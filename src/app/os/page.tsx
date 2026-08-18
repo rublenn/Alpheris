@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useOsStore } from "@/lib/os/store";
 import {
+  conversionRate,
   financeSummary,
   flaggedClients,
   formatCurrency,
@@ -10,7 +11,6 @@ import {
   pipelineValue,
   referralShare,
   revenueConcentration,
-  winRate,
   wip,
 } from "@/lib/os/calc";
 import { Badge, Card, DeleteButton, EmptyState, ProgressBar } from "@/components/os/ui";
@@ -29,9 +29,9 @@ export default function OverviewPage() {
 
   if (!hydrated) return null;
 
-  const pipeline = pipelineValue(state.opportunities);
-  const win = winRate(state.opportunities);
-  const referral = referralShare(state.opportunities);
+  const pipeline = pipelineValue(state.leads);
+  const conversion = conversionRate(state.leads);
+  const referral = referralShare(state.leads);
   const finance = financeSummary(state.moneyEvents);
   const concentration = revenueConcentration(state.clients);
   const flagged = flaggedClients(state.clients);
@@ -74,7 +74,7 @@ export default function OverviewPage() {
           href="/os/sales-growth/sales"
           stats={[
             { label: "Open pipeline", value: formatCurrency(pipeline) },
-            { label: "Win rate", value: formatPct(win) },
+            { label: "Conversion rate", value: formatPct(conversion) },
             { label: "Referral share", value: formatPct(referral) },
           ]}
         />

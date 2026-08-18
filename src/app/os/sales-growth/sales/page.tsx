@@ -3,18 +3,16 @@
 import { useState } from "react";
 import { useOsStore } from "@/lib/os/store";
 import {
+  LEAD_STAGE_LABELS,
+  LEAD_STAGES,
   Lead,
-  LEAD_STATUSES,
-  LeadStatus,
-  Opportunity,
+  LeadStage,
   SOURCES,
   Source,
-  STAGES,
-  Stage,
   newId,
   todayISO,
 } from "@/lib/os/types";
-import { formatCurrency, formatPct, openOpportunities, pipelineValue, winRate } from "@/lib/os/calc";
+import { conversionRate, formatCurrency, formatPct, openLeads, pipelineValue } from "@/lib/os/calc";
 import {
   Badge,
   Button,
@@ -29,44 +27,16 @@ import {
   SelectInput,
   StatTile,
   Tabs,
-  TextArea,
   TextInput,
 } from "@/components/os/ui";
 import { IconPlus } from "@/components/os/icons";
 
-const STAGE_TONE: Record<Stage, "neutral" | "good" | "critical" | "accent"> = {
-  New: "neutral",
-  Contacted: "neutral",
-  Engaged: "accent",
-  Qualified: "accent",
-  Proposed: "accent",
-  Won: "good",
-  Lost: "critical",
+const STAGE_TONE: Record<LeadStage, "neutral" | "good" | "critical" | "accent" | "warn"> = {
+  Lead: "neutral",
+  InTalk: "accent",
+  Client: "good",
+  FollowUp: "warn",
 };
-
-const LEAD_STATUS_TONE: Record<LeadStatus, "neutral" | "accent" | "good"> = {
-  New: "neutral",
-  Contacted: "accent",
-  Qualified: "good",
-};
-
-const IN_TALKS_STAGES: Stage[] = ["New", "Contacted", "Engaged", "Qualified", "Proposed", "Lost"];
-
-const EMPTY_FORM: Opportunity = {
-  id: "",
-  name: "",
-  source: "Referral",
-  stage: "New",
-  value: 0,
-  nextAction: "",
-  nextActionDate: todayISO(),
-  lostReason: "",
-  createdAt: todayISO(),
-};
-
-function emptyLead(): Lead {
-  return { id: newId(), name: "", source: "Referral", contact: "", status: "New", capturedAt: todayISO() };
-}
 
 function addDays(dateStr: string, days: number): string {
   const base = dateStr ? new Date(dateStr) : new Date();
@@ -74,69 +44,66 @@ function addDays(dateStr: string, days: number): string {
   return base.toISOString().slice(0, 10);
 }
 
-export default function SalesPage() {
-  const {
-    state,
-    hydrated,
-    setTarget,
-    addOpportunity,
-    updateOpportunity,
-    removeOpportunity,
-    addLead,
-    updateLead,
-    removeLead,
-  } = useOsStore();
+function emptyLead(): Lead {
+  return {
+    id: newId(),
+    name: "",
+    source: "Referral",
+    contact: "",
+    instagramFollowers: 0,
+    address: "",
+    stage: "Lead",
+    value: 0,
+    nextAction: "",
+    nextActionDate: todayISO(),
+    capturedAt: todayISO(),
+  };
+}
 
-  const [tab, setTab] = useState<"Leads" | "InTalks" | "Clients" | "FollowUps">("Leads");
+export default function SalesPage() {
+  const { state, hydrated, setTarget, addLead, updateLead, removeLead } = useOsStore();
+
+  const [tab, setTab] = useState<LeadStage>("Lead");
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState<Opportunity>(EMPTY_FORM);
+  const [form, setForm] = useState<Lead>(emptyLead());
+
   const [editingTarget, setEditingTarget] = useState(false);
   const [targetForm, setTargetForm] = useState(state.target);
 
-  const [leadDrawer, setLeadDrawer] = useState(false);
-  const [editingLeadId, setEditingLeadId] = useState<string | null>(null);
-  const [leadForm, setLeadForm] = useState<Lead>(emptyLead());
-
   if (!hydrated) return null;
 
-  const pipeline = pipelineValue(state.opportunities);
-  const win = winRate(state.opportunities);
-  const wonThisSet = state.opportunities.filter((o) => o.stage === "Won").length;
-  const qualifiedPlus = state.opportunities.filter((o) =>
-    (["Qualified", "Proposed", "Won"] as Stage[]).includes(o.stage)
-  ).length;
-  const revenueWon = state.opportunities
-    .filter((o) => o.stage === "Won")
-    .reduce((s, o) => s + o.value, 0);
-
-  const clients = state.opportunities.filter((o) => o.stage === "Won");
+  const pipeline = pipelineValue(state.leads);
+  const conversion = conversionRate(state.leads);
+  const clients = state.leads.filter((l) => l.stage === "Client");
+  const revenueWon = clients.reduce((s, l) => s + l.value, 0);
+  const qualifiedPlus = state.leads.filter((l) => l.stage !== "Lead").length;
   const today = todayISO();
-  const followUps = state.opportunities
-    .filter((o) => IN_TALKS_STAGES.includes(o.stage) && o.nextActionDate)
-    .slice()
-    .sort((a, b) => a.nextActionDate.localeCompare(b.nextActionDate));
-  const overdueCount = followUps.filter((o) => o.nextActionDate < today).length;
+
+  const byTab = state.leads.filter((l) => l.stage === tab);
+  const overdueFollowUps = state.leads.filter(
+    (l) => l.stage === "FollowUp" && l.nextActionDate && l.nextActionDate < today
+  ).length;
 
   function openNew() {
-    setForm({ ...EMPTY_FORM, id: newId(), createdAt: todayISO() });
+    setForm({ ...emptyLead(), stage: tab });
     setEditingId(null);
     setDrawerOpen(true);
   }
 
-  function openEdit(o: Opportunity) {
-    setForm(o);
-    setEditingId(o.id);
+  function openEdit(l: Lead) {
+    setForm(l);
+    setEditingId(l.id);
     setDrawerOpen(true);
   }
 
   function save() {
     if (!form.name.trim()) return;
     if (editingId) {
-      updateOpportunity(editingId, form);
+      updateLead(editingId, form);
     } else {
-      addOpportunity(form);
+      addLead(form);
     }
     setDrawerOpen(false);
   }
@@ -146,38 +113,8 @@ export default function SalesPage() {
     setEditingTarget(false);
   }
 
-  function openNewLead() {
-    setLeadForm(emptyLead());
-    setEditingLeadId(null);
-    setLeadDrawer(true);
-  }
-
-  function openEditLead(l: Lead) {
-    setLeadForm(l);
-    setEditingLeadId(l.id);
-    setLeadDrawer(true);
-  }
-
-  function saveLead() {
-    if (!leadForm.name.trim()) return;
-    if (editingLeadId) updateLead(editingLeadId, leadForm);
-    else addLead(leadForm);
-    setLeadDrawer(false);
-  }
-
-  function convertLead(l: Lead) {
-    addOpportunity({
-      id: newId(),
-      name: l.name,
-      source: l.source,
-      stage: "New",
-      value: 0,
-      nextAction: "",
-      nextActionDate: todayISO(),
-      createdAt: todayISO(),
-    });
-    removeLead(l.id);
-    setTab("InTalks");
+  function moveTo(l: Lead, stage: LeadStage) {
+    updateLead(l.id, { stage });
   }
 
   return (
@@ -186,15 +123,9 @@ export default function SalesPage() {
         eyebrow="Sales & Marketing"
         title="Sales"
         action={
-          tab === "Leads" ? (
-            <Button variant="primary" onClick={openNewLead}>
-              <IconPlus className="h-4 w-4" /> Add lead
-            </Button>
-          ) : tab === "InTalks" ? (
-            <Button variant="primary" onClick={openNew}>
-              <IconPlus className="h-4 w-4" /> New opportunity
-            </Button>
-          ) : undefined
+          <Button variant="primary" onClick={openNew}>
+            <IconPlus className="h-4 w-4" /> Add lead
+          </Button>
         }
       />
 
@@ -233,7 +164,7 @@ export default function SalesPage() {
         ) : (
           <div className="grid gap-5 sm:grid-cols-3">
             <TargetProgress label="Revenue" value={revenueWon} goal={state.target.revenueGoal} format={formatCurrency} />
-            <TargetProgress label="New clients" value={wonThisSet} goal={state.target.newClientsGoal} format={(n) => String(n)} />
+            <TargetProgress label="New clients" value={clients.length} goal={state.target.newClientsGoal} format={(n) => String(n)} />
             <TargetProgress label="Qualified leads" value={qualifiedPlus} goal={state.target.qualifiedLeadsGoal} format={(n) => String(n)} />
           </div>
         )}
@@ -241,235 +172,163 @@ export default function SalesPage() {
 
       <div className="grid gap-4 sm:grid-cols-3">
         <StatTile label="Open pipeline value" value={formatCurrency(pipeline)} />
-        <StatTile label="Win rate" value={formatPct(win)} hint="Won ÷ (Won + Lost)" />
-        <StatTile label="Open opportunities" value={openOpportunities(state.opportunities).length} />
+        <StatTile label="Conversion rate" value={formatPct(conversion)} hint="Clients ÷ all leads" />
+        <StatTile label="In talks" value={openLeads(state.leads).length} />
       </div>
 
       <Tabs
         value={tab}
         onChange={setTab}
         options={[
-          { value: "Leads", label: "Leads", count: state.leads.length },
-          { value: "InTalks", label: "In Talks", count: openOpportunities(state.opportunities).length },
-          { value: "Clients", label: "Clients", count: clients.length },
-          { value: "FollowUps", label: "Follow Ups", count: overdueCount },
+          { value: "Lead", label: "Leads", count: state.leads.filter((l) => l.stage === "Lead").length },
+          { value: "InTalk", label: "In Talks", count: state.leads.filter((l) => l.stage === "InTalk").length },
+          { value: "Client", label: "Clients", count: clients.length },
+          { value: "FollowUp", label: "Follow Ups", count: overdueFollowUps },
         ]}
       />
 
-      {tab === "Leads" && (state.leads.length === 0 ? (
+      {byTab.length === 0 ? (
         <EmptyState
-          title="No leads yet"
-          body="Raw, uncontacted names and companies land here first. Qualify them, then convert — that moves them into In Talks."
-          action={
-            <Button variant="primary" onClick={openNewLead}>
-              <IconPlus className="h-4 w-4" /> Add your first lead
-            </Button>
+          title={
+            tab === "Lead"
+              ? "No leads yet"
+              : tab === "InTalk"
+              ? "Nothing in talks yet"
+              : tab === "Client"
+              ? "No clients yet"
+              : "No follow ups yet"
           }
-        />
-      ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {state.leads.map((l) => (
-            <Card key={l.id} className="flex flex-col gap-3">
-              <div onClick={() => openEditLead(l)} className="flex flex-col gap-2 cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <p className="font-medium text-sm">{l.name}</p>
-                  <Badge tone={LEAD_STATUS_TONE[l.status]}>{l.status}</Badge>
-                </div>
-                <p className="text-xs text-muted">{l.source}{l.contact ? ` · ${l.contact}` : ""}</p>
-                <p className="text-xs text-muted">Captured {l.capturedAt}</p>
-              </div>
-              <button
-                onClick={() => convertLead(l)}
-                className="text-left text-xs font-medium text-accent hover:opacity-80 transition"
-              >
-                Convert → In Talks
-              </button>
-            </Card>
-          ))}
-        </div>
-      ))}
-
-      {tab === "InTalks" && (openOpportunities(state.opportunities).length === 0 && state.opportunities.filter((o) => o.stage === "Lost").length === 0 ? (
-        <EmptyState
-          title="Nothing in talks yet"
-          body="Add an opportunity directly, or convert a lead from the Leads tab. Every stage move updates your win rate and pipeline value automatically."
+          body={
+            tab === "Lead"
+              ? "Raw, uncontacted names land here first. Add one, then move it forward once you're talking."
+              : tab === "Client"
+              ? "Move a lead to Client from the In Talks tab and a timeline builds for it automatically."
+              : tab === "FollowUp"
+              ? "Anything you're keeping warm for later shows up here."
+              : "Leads you're actively talking to show up here."
+          }
           action={
             <Button variant="primary" onClick={openNew}>
-              <IconPlus className="h-4 w-4" /> Add an opportunity
+              <IconPlus className="h-4 w-4" /> Add lead
             </Button>
           }
         />
       ) : (
-        <div className="overflow-x-auto pb-2 -mx-1 px-1">
-          <div className="flex gap-4 min-w-max">
-            {IN_TALKS_STAGES.map((stage) => {
-              const items = state.opportunities.filter((o) => o.stage === stage);
-              return (
-                <div key={stage} className="w-64 shrink-0">
-                  <div className="flex items-center justify-between mb-3 px-1">
-                    <Badge tone={STAGE_TONE[stage]}>{stage}</Badge>
-                    <span className="text-xs text-muted">{items.length}</span>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    {items.map((o) => (
-                      <button
-                        key={o.id}
-                        onClick={() => openEdit(o)}
-                        className="text-left rounded-xl border border-border bg-surface p-3.5 transition hover:border-muted"
-                      >
-                        <p className="font-medium text-sm mb-1">{o.name}</p>
-                        <p className="text-xs text-muted mb-2">{formatCurrency(o.value)} · {o.source}</p>
-                        {o.nextAction && (
-                          <p className="text-xs text-muted line-clamp-2">
-                            Next: {o.nextAction}
-                            {o.nextActionDate && ` · ${o.nextActionDate}`}
-                          </p>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-
-      {tab === "Clients" && (clients.length === 0 ? (
-        <EmptyState title="No clients yet" body="Move an opportunity to Won from In Talks and it shows up here." />
-      ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {clients.map((o) => (
-            <button
-              key={o.id}
-              onClick={() => openEdit(o)}
-              className="text-left rounded-xl border border-border bg-surface p-4 transition hover:border-muted"
-            >
-              <div className="flex items-center justify-between mb-1">
-                <p className="font-medium text-sm">{o.name}</p>
-                <Badge tone="good">Won</Badge>
-              </div>
-              <p className="text-xs text-muted">{formatCurrency(o.value)} · {o.source}</p>
-            </button>
-          ))}
-        </div>
-      ))}
-
-      {tab === "FollowUps" && (followUps.length === 0 ? (
-        <EmptyState title="Nothing waiting on you" body="Every open opportunity with a next action and date shows up here, earliest first." />
-      ) : (
-        <div className="flex flex-col gap-2">
-          {followUps.map((o) => {
-            const overdueItem = o.nextActionDate < today;
-            const dueTodayItem = o.nextActionDate === today;
+          {byTab.map((l) => {
+            const overdueItem = l.stage === "FollowUp" && l.nextActionDate && l.nextActionDate < today;
             return (
-              <Card key={o.id} className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="font-medium text-sm">{o.name}</p>
-                    <Badge tone={STAGE_TONE[o.stage]}>{o.stage}</Badge>
-                    {o.value > 0 && <span className="text-xs text-muted">{formatCurrency(o.value)}</span>}
+              <Card key={l.id} className="flex flex-col gap-3">
+                <div onClick={() => openEdit(l)} className="flex flex-col gap-2 cursor-pointer">
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium text-sm">{l.name}</p>
+                    <Badge tone={STAGE_TONE[l.stage]}>{LEAD_STAGE_LABELS[l.stage]}</Badge>
                   </div>
-                  <input
-                    value={o.nextAction}
-                    onChange={(e) => updateOpportunity(o.id, { nextAction: e.target.value })}
-                    placeholder="What's the next action?"
-                    className="w-full rounded-lg border border-border bg-surface-2 px-3 py-1.5 text-sm outline-none focus:border-accent transition"
-                  />
+                  <p className="text-xs text-muted">
+                    {l.source}
+                    {l.instagramFollowers > 0 ? ` · ${l.instagramFollowers.toLocaleString()} IG followers` : ""}
+                  </p>
+                  {l.address && <p className="text-xs text-muted line-clamp-1">{l.address}</p>}
+                  {l.value > 0 && <p className="text-xs text-muted">{formatCurrency(l.value)}</p>}
+                  {l.stage === "FollowUp" && l.nextAction && (
+                    <p className={`text-xs line-clamp-2 ${overdueItem ? "text-critical" : "text-muted"}`}>
+                      Next: {l.nextAction}
+                      {l.nextActionDate && ` · ${l.nextActionDate}`}
+                    </p>
+                  )}
+                  <p className="text-xs text-muted">Captured {l.capturedAt}</p>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <input
-                    type="date"
-                    value={o.nextActionDate}
-                    onChange={(e) => updateOpportunity(o.id, { nextActionDate: e.target.value })}
-                    className={`rounded-lg border bg-surface-2 px-2.5 py-1.5 text-sm outline-none focus:border-accent transition ${
-                      overdueItem ? "border-critical text-critical" : dueTodayItem ? "border-warn text-warn" : "border-border"
-                    }`}
-                  />
-                  <Button variant="ghost" onClick={() => updateOpportunity(o.id, { nextActionDate: addDays(o.nextActionDate, 3) })}>
-                    +3d
-                  </Button>
-                  <Button variant="secondary" onClick={() => updateOpportunity(o.id, { nextAction: "", nextActionDate: "" })}>
-                    Done
-                  </Button>
+                <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t border-border-soft">
+                  {LEAD_STAGES.filter((s) => s !== l.stage).map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => moveTo(l, s)}
+                      className="rounded-full border border-border px-2.5 py-1 text-xs font-medium text-muted transition hover:border-accent hover:text-accent"
+                    >
+                      → {LEAD_STAGE_LABELS[s]}
+                    </button>
+                  ))}
                 </div>
+                {l.stage === "FollowUp" && (
+                  <div className="flex items-center gap-2 pt-1">
+                    <input
+                      type="date"
+                      value={l.nextActionDate}
+                      onChange={(e) => updateLead(l.id, { nextActionDate: e.target.value })}
+                      className={`flex-1 rounded-lg border bg-surface-2 px-2.5 py-1.5 text-sm outline-none focus:border-accent transition ${
+                        overdueItem ? "border-critical text-critical" : "border-border"
+                      }`}
+                    />
+                    <Button variant="ghost" onClick={() => updateLead(l.id, { nextActionDate: addDays(l.nextActionDate, 3) })}>
+                      +3d
+                    </Button>
+                  </div>
+                )}
               </Card>
             );
           })}
         </div>
-      ))}
+      )}
 
-      <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)} title={editingId ? "Edit opportunity" : "New opportunity"}>
+      <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)} title={editingId ? "Edit lead" : "New lead"}>
         <div className="flex flex-col gap-4">
-          <Field label="Account name">
+          <Field label="Name">
             <TextInput value={form.name} onChange={(v) => setForm({ ...form, name: v })} placeholder="e.g. Northwind Studio" />
           </Field>
           <div className="grid grid-cols-2 gap-4">
+            <Field label="Instagram followers">
+              <NumberInput
+                value={form.instagramFollowers}
+                onChange={(v) => setForm({ ...form, instagramFollowers: v })}
+                placeholder="0"
+              />
+            </Field>
             <Field label="Source">
               <SelectInput value={form.source} onChange={(v: Source) => setForm({ ...form, source: v })} options={SOURCES} />
             </Field>
+          </div>
+          <Field label="Address">
+            <TextInput value={form.address} onChange={(v) => setForm({ ...form, address: v })} placeholder="e.g. 12 Main St, Springfield" />
+          </Field>
+          <Field label="Contact">
+            <TextInput value={form.contact} onChange={(v) => setForm({ ...form, contact: v })} placeholder="Email or phone" />
+          </Field>
+          <div className="grid grid-cols-2 gap-4">
             <Field label="Stage">
-              <SelectInput value={form.stage} onChange={(v: Stage) => setForm({ ...form, stage: v })} options={STAGES} />
+              <SelectInput
+                value={form.stage}
+                onChange={(v: LeadStage) => setForm({ ...form, stage: v })}
+                options={LEAD_STAGES}
+                labels={LEAD_STAGE_LABELS}
+              />
+            </Field>
+            <Field label="Deal value">
+              <NumberInput value={form.value} onChange={(v) => setForm({ ...form, value: v })} placeholder="0" />
             </Field>
           </div>
-          <Field label="Deal value">
-            <NumberInput value={form.value} onChange={(v) => setForm({ ...form, value: v })} placeholder="0" />
-          </Field>
           <Field label="Next action">
             <TextInput value={form.nextAction} onChange={(v) => setForm({ ...form, nextAction: v })} placeholder="e.g. Send proposal" />
           </Field>
           <Field label="Next action date">
             <TextInput type="date" value={form.nextActionDate} onChange={(v) => setForm({ ...form, nextActionDate: v })} />
           </Field>
-          {form.stage === "Lost" && (
-            <Field label="Lost reason">
-              <TextArea value={form.lostReason ?? ""} onChange={(v) => setForm({ ...form, lostReason: v })} placeholder="What happened?" />
-            </Field>
+
+          {form.stage === "Client" && !editingId && (
+            <p className="text-xs text-muted">
+              Saving this as a Client builds its client timeline automatically — same six stages every time.
+            </p>
           )}
 
           <div className="flex items-center gap-2 pt-2">
             <Button variant="primary" onClick={save}>
-              {editingId ? "Save changes" : "Add opportunity"}
+              {editingId ? "Save changes" : "Add lead"}
             </Button>
             {editingId && (
               <DeleteButton
-                label="Delete opportunity"
-                onClick={() => {
-                  removeOpportunity(editingId);
-                  setDrawerOpen(false);
-                }}
-              />
-            )}
-          </div>
-        </div>
-      </Drawer>
-
-      <Drawer open={leadDrawer} onClose={() => setLeadDrawer(false)} title={editingLeadId ? "Edit lead" : "New lead"}>
-        <div className="flex flex-col gap-4">
-          <Field label="Name">
-            <TextInput value={leadForm.name} onChange={(v) => setLeadForm({ ...leadForm, name: v })} placeholder="e.g. Northwind Studio" />
-          </Field>
-          <div className="grid grid-cols-2 gap-4">
-            <Field label="Source">
-              <SelectInput value={leadForm.source} onChange={(v: Source) => setLeadForm({ ...leadForm, source: v })} options={SOURCES} />
-            </Field>
-            <Field label="Status">
-              <SelectInput value={leadForm.status} onChange={(v: LeadStatus) => setLeadForm({ ...leadForm, status: v })} options={LEAD_STATUSES} />
-            </Field>
-          </div>
-          <Field label="Contact">
-            <TextInput value={leadForm.contact} onChange={(v) => setLeadForm({ ...leadForm, contact: v })} placeholder="Email or phone" />
-          </Field>
-          <div className="flex items-center gap-2 pt-2">
-            <Button variant="primary" onClick={saveLead}>
-              {editingLeadId ? "Save changes" : "Add lead"}
-            </Button>
-            {editingLeadId && (
-              <DeleteButton
                 label="Delete lead"
                 onClick={() => {
-                  removeLead(editingLeadId);
-                  setLeadDrawer(false);
+                  removeLead(editingId);
+                  setDrawerOpen(false);
                 }}
               />
             )}

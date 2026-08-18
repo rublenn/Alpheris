@@ -405,10 +405,12 @@ export function SelectInput<T extends string>({
   value,
   onChange,
   options,
+  labels,
 }: {
   value: T;
   onChange: (v: T) => void;
   options: readonly T[];
+  labels?: Partial<Record<T, string>>;
 }) {
   return (
     <select
@@ -418,7 +420,7 @@ export function SelectInput<T extends string>({
     >
       {options.map((o) => (
         <option key={o} value={o}>
-          {o}
+          {labels?.[o] ?? o}
         </option>
       ))}
     </select>

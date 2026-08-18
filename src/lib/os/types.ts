@@ -1,22 +1,3 @@
-export type Stage =
-  | "New"
-  | "Contacted"
-  | "Engaged"
-  | "Qualified"
-  | "Proposed"
-  | "Won"
-  | "Lost";
-
-export const STAGES: Stage[] = [
-  "New",
-  "Contacted",
-  "Engaged",
-  "Qualified",
-  "Proposed",
-  "Won",
-  "Lost",
-];
-
 export const SOURCES = [
   "Referral",
   "Outbound",
@@ -26,18 +7,6 @@ export const SOURCES = [
   "Other",
 ] as const;
 export type Source = (typeof SOURCES)[number];
-
-export interface Opportunity {
-  id: string;
-  name: string;
-  source: Source;
-  stage: Stage;
-  value: number;
-  nextAction: string;
-  nextActionDate: string;
-  lostReason?: string;
-  createdAt: string;
-}
 
 export interface Target {
   revenueGoal: number;
@@ -229,15 +198,27 @@ export function createClientTimeline(client: string): ClientTimeline {
   };
 }
 
-export const LEAD_STATUSES = ["New", "Contacted", "Qualified"] as const;
-export type LeadStatus = (typeof LEAD_STATUSES)[number];
+export const LEAD_STAGES = ["Lead", "InTalk", "Client", "FollowUp"] as const;
+export type LeadStage = (typeof LEAD_STAGES)[number];
+
+export const LEAD_STAGE_LABELS: Record<LeadStage, string> = {
+  Lead: "Lead",
+  InTalk: "In Talk",
+  Client: "Client",
+  FollowUp: "Follow Up",
+};
 
 export interface Lead {
   id: string;
   name: string;
   source: Source;
   contact: string;
-  status: LeadStatus;
+  instagramFollowers: number;
+  address: string;
+  stage: LeadStage;
+  value: number;
+  nextAction: string;
+  nextActionDate: string;
   capturedAt: string;
 }
 
@@ -304,7 +285,6 @@ export interface MarketingIdea {
 export interface OsState {
   target: Target;
   strategy: CompanyStrategy;
-  opportunities: Opportunity[];
   mediums: Medium[];
   experiments: Experiment[];
   playbooks: Playbook[];
@@ -333,7 +313,6 @@ export const EMPTY_STATE: OsState = {
     quarterlyPriority: "",
     lastReviewed: "",
   },
-  opportunities: [],
   mediums: [],
   experiments: [],
   playbooks: [],

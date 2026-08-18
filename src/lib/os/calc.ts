@@ -1,33 +1,30 @@
 import {
   Client,
   Deliverable,
+  Lead,
   MoneyEvent,
-  Opportunity,
   OsState,
   WIP_LIMITS,
 } from "./types";
 
-const OPEN_STAGES = ["New", "Contacted", "Engaged", "Qualified", "Proposed"] as const;
-
-export function openOpportunities(opps: Opportunity[]) {
-  return opps.filter((o) => (OPEN_STAGES as readonly string[]).includes(o.stage));
+export function openLeads(leads: Lead[]) {
+  return leads.filter((l) => l.stage === "InTalk" || l.stage === "FollowUp");
 }
 
-export function pipelineValue(opps: Opportunity[]) {
-  return openOpportunities(opps).reduce((sum, o) => sum + o.value, 0);
+export function pipelineValue(leads: Lead[]) {
+  return openLeads(leads).reduce((sum, l) => sum + l.value, 0);
 }
 
-export function winRate(opps: Opportunity[]) {
-  const closed = opps.filter((o) => o.stage === "Won" || o.stage === "Lost");
-  if (closed.length === 0) return null;
-  const won = closed.filter((o) => o.stage === "Won").length;
-  return won / closed.length;
+export function conversionRate(leads: Lead[]) {
+  if (leads.length === 0) return null;
+  const clients = leads.filter((l) => l.stage === "Client").length;
+  return clients / leads.length;
 }
 
-export function referralShare(opps: Opportunity[]) {
-  if (opps.length === 0) return null;
-  const referred = opps.filter((o) => o.source === "Referral").length;
-  return referred / opps.length;
+export function referralShare(leads: Lead[]) {
+  if (leads.length === 0) return null;
+  const referred = leads.filter((l) => l.source === "Referral").length;
+  return referred / leads.length;
 }
 
 export function activeEngagements(deliverables: Deliverable[]) {

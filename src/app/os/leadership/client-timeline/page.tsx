@@ -17,7 +17,7 @@ export default function ClientTimelinePage() {
       {state.clientTimelines.length === 0 ? (
         <EmptyState
           title="No client timelines yet"
-          body="A timeline is created automatically the moment an opportunity moves to Won in Sales — same six stages every time, only the dates change."
+          body="A timeline is created automatically the moment a lead moves to Client in Sales — same six stages every time, only the dates change."
         />
       ) : (
         <div className="flex flex-col gap-5">
