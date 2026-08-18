@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 const steps = [
   {
@@ -16,6 +17,10 @@ const steps = [
 ];
 
 export default function Home() {
+  if (process.env.NEXT_PUBLIC_ALPHERIS_OS_ROOT === "true") {
+    redirect("/os");
+  }
+
   return (
     <div>
       <section className="mx-auto max-w-6xl px-6 pt-20 pb-16 text-center">

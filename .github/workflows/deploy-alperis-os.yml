@@ -24,6 +24,8 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          NEXT_PUBLIC_ALPHERIS_OS_ROOT: "true"
 
       - name: Deploy to Netlify
         run: npx netlify-cli deploy --prod --dir=out --site="$NETLIFY_SITE_ID" --auth="$NETLIFY_AUTH_TOKEN"
