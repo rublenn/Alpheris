@@ -259,20 +259,20 @@ export type CreativeGenre = AdGenre | PostGenre;
 export const ALL_CREATIVE_GENRES: CreativeGenre[] = [...AD_GENRES, ...POST_GENRES];
 
 export const AD_QUESTION_FIELDS = [
-  { key: "vibe", label: "Vibe", placeholder: "Aesthetic and tonal direction" },
-  { key: "why", label: "Why", placeholder: "The strategic rationale" },
-  { key: "who", label: "Who", placeholder: "Who exactly this is for" },
+  { key: "vibe", label: "What's the vibe?", placeholder: "Aesthetic and tonal direction" },
+  { key: "why", label: "Why are we making this?", placeholder: "The strategic rationale" },
+  { key: "who", label: "Who are we making it for?", placeholder: "Who exactly this is for" },
   { key: "whyWillItWork", label: "Why will it work?", placeholder: "The effectiveness hypothesis" },
-  { key: "emotion", label: "Emotion", placeholder: "The psychological response it triggers" },
+  { key: "emotion", label: "What emotion should it trigger?", placeholder: "The psychological response it triggers" },
   { key: "offer", label: "What are we offering?", placeholder: "The value proposition" },
   { key: "whyShareable", label: "Why is it shareable?", placeholder: "Viral / distribution potential" },
 ] as const;
 export type AdQuestionKey = (typeof AD_QUESTION_FIELDS)[number]["key"];
 
 export const AMPLIFIER_FIELDS = [
-  { key: "creativity", label: "Creativity", placeholder: "The novel hook or unexpected approach" },
-  { key: "hypeCreation", label: "Hype Creation", placeholder: "What makes people rewatch it" },
-  { key: "neuromarketing", label: "Neuromarketing", placeholder: "Curiosity, social proof, reciprocity triggers" },
+  { key: "creativity", label: "What's the creativity?", placeholder: "The novel hook or unexpected approach" },
+  { key: "hypeCreation", label: "What's the hype creation?", placeholder: "What makes people rewatch it" },
+  { key: "neuromarketing", label: "What's the neuromarketing?", placeholder: "Curiosity, social proof, reciprocity triggers" },
 ] as const;
 export type AmplifierKey = (typeof AMPLIFIER_FIELDS)[number]["key"];
 
@@ -281,6 +281,7 @@ export interface CreativeScript {
   client: string;
   kind: "Ad" | "Post";
   genre: CreativeGenre;
+  script: string;
   vibe: string;
   why: string;
   who: string;
@@ -301,6 +302,7 @@ export function emptyCreativeScript(client: string, kind: "Ad" | "Post", genre: 
     client,
     kind,
     genre,
+    script: "",
     vibe: "",
     why: "",
     who: "",

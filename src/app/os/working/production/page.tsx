@@ -309,6 +309,12 @@ function ProductionPageInner() {
 
                   <div className="pt-3 border-t border-border-soft flex flex-col gap-3">
                     <p className="text-xs font-medium tracking-wide uppercase text-muted">Script &amp; strategy (read-only here — edit in Creative)</p>
+                    {activeProductionScript.script && (
+                      <div>
+                        <p className="text-xs text-muted">Script</p>
+                        <p className="text-sm whitespace-pre-wrap">{activeProductionScript.script}</p>
+                      </div>
+                    )}
                     <div className="grid gap-2 sm:grid-cols-2">
                       {AD_QUESTION_FIELDS.map((f) => (
                         <div key={f.key}>
@@ -381,7 +387,22 @@ function ProductionPageInner() {
       >
         {scriptForm && (
           <div className="flex flex-col gap-4">
-            <p className="text-xs font-medium tracking-wide uppercase text-muted">Questions for this {scriptForm.kind.toLowerCase()}</p>
+            <div>
+              <p className="text-xs font-medium tracking-wide uppercase text-muted mb-1">1. Type of ad</p>
+              <div className="rounded-lg border border-border bg-surface-2 px-3.5 py-2.5 text-sm">
+                {scriptForm.genre} <span className="text-muted">· {scriptForm.kind}</span>
+              </div>
+            </div>
+
+            <Field label="2. Script">
+              <TextArea
+                value={scriptForm.script}
+                onChange={(v) => setScriptForm({ ...scriptForm, script: v })}
+                placeholder="Write out the actual script or copy for this piece"
+              />
+            </Field>
+
+            <p className="text-xs font-medium tracking-wide uppercase text-muted pt-2 border-t border-border-soft">3. Questions for this {scriptForm.kind.toLowerCase()}</p>
             {AD_QUESTION_FIELDS.map((f) => (
               <Field key={f.key} label={f.label}>
                 <TextArea

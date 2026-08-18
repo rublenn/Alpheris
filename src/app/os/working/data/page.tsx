@@ -3,7 +3,7 @@
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useOsStore } from "@/lib/os/store";
-import { ClientLearn, Playbook, PlaybookStep, newId } from "@/lib/os/types";
+import { createClientLearn, Playbook, PlaybookStep, newId } from "@/lib/os/types";
 import {
   Badge,
   Button,
@@ -14,6 +14,7 @@ import {
   Field,
   IconButton,
   SectionHeader,
+  SelectInput,
   Tabs,
   TextArea,
   TextInput,
@@ -24,9 +25,12 @@ function emptyPlaybook(): Playbook {
   return { id: newId(), name: "", version: 1, steps: [] };
 }
 
-function emptyLearn(client = ""): ClientLearn {
-  return { id: newId(), client, business: "", problem: "", audience: "", aim: "" };
-}
+const LEARN_BLOCKS = [
+  { key: "business", label: "Business", placeholder: "Their story and what they sell" },
+  { key: "problem", label: "Problem", placeholder: "What it's costing them, and the root cause" },
+  { key: "audience", label: "Audience", placeholder: "Their ideal customer profile" },
+  { key: "aim", label: "Aim", placeholder: "The growth objective beyond immediate sales" },
+] as const;
 
 export default function DataPage() {
   return (
@@ -45,10 +49,9 @@ function DataPageInner() {
     removePlaybook,
     addClientLearn,
     updateClientLearn,
-    removeClientLearn,
   } = useOsStore();
   const searchParams = useSearchParams();
-  const focusClient = searchParams.get("client") || "";
+  const queryClient = searchParams.get("client") || "";
   const initialTab = searchParams.get("tab") === "playbooks" ? "Playbooks" : "Learn";
   const [tab, setTab] = useState<"Learn" | "Playbooks">(initialTab);
 
@@ -56,33 +59,22 @@ function DataPageInner() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<Playbook>(emptyPlaybook());
 
-  const [learnDrawer, setLearnDrawer] = useState(false);
-  const [editingLearnId, setEditingLearnId] = useState<string | null>(null);
-  const [learnForm, setLearnForm] = useState<ClientLearn>(emptyLearn());
+  const clientNames = Array.from(new Set(state.leads.filter((l) => l.stage === "Client").map((l) => l.name))).sort();
+  const [learnClientSel, setLearnClient] = useState("");
+  const learnClient = learnClientSel || queryClient || clientNames[0] || "";
 
   if (!hydrated) return null;
 
-  const focusedLearn = focusClient
-    ? state.clientLearn.find((r) => r.client.toLowerCase() === focusClient.toLowerCase())
+  const activeLearn = learnClient
+    ? state.clientLearn.find((r) => r.client.toLowerCase() === learnClient.toLowerCase())
     : undefined;
 
-  function openNewLearn(prefillClient = "") {
-    setLearnForm(emptyLearn(prefillClient));
-    setEditingLearnId(null);
-    setLearnDrawer(true);
-  }
-
-  function openEditLearn(r: ClientLearn) {
-    setLearnForm(r);
-    setEditingLearnId(r.id);
-    setLearnDrawer(true);
-  }
-
-  function saveLearn() {
-    if (!learnForm.client.trim()) return;
-    if (editingLearnId) updateClientLearn(editingLearnId, learnForm);
-    else addClientLearn(learnForm);
-    setLearnDrawer(false);
+  function saveLearnField(key: (typeof LEARN_BLOCKS)[number]["key"], value: string) {
+    if (activeLearn) {
+      updateClientLearn(activeLearn.id, { [key]: value });
+    } else if (learnClient) {
+      addClientLearn({ ...createClientLearn(learnClient), [key]: value });
+    }
   }
 
   function openNew() {
@@ -132,11 +124,7 @@ function DataPageInner() {
             <Button variant="primary" onClick={openNew}>
               <IconPlus className="h-4 w-4" /> New playbook
             </Button>
-          ) : (
-            <Button variant="primary" onClick={() => openNewLearn()}>
-              <IconPlus className="h-4 w-4" /> Learn a client
-            </Button>
-          )
+          ) : undefined
         }
       />
 
@@ -155,50 +143,32 @@ function DataPageInner() {
             Four things to learn about every client before anything else: business, problem, audience, aim.
           </p>
 
-          {focusClient && !focusedLearn && (
-            <Card className="border-accent/30 bg-accent-soft flex items-center justify-between flex-wrap gap-3">
-              <p className="text-sm">No data yet for <span className="font-medium">{focusClient}</span>.</p>
-              <Button variant="primary" onClick={() => openNewLearn(focusClient)}>
-                <IconPlus className="h-4 w-4" /> Learn {focusClient}
-              </Button>
-            </Card>
-          )}
-
-          {state.clientLearn.length === 0 ? (
+          {clientNames.length === 0 ? (
             <EmptyState
-              title="No clients learned yet"
-              body="Business, problem, audience, aim — go through this before any strategy work starts. A blank entry is created automatically the moment a lead becomes a client."
-              action={
-                <Button variant="primary" onClick={() => openNewLearn()}>
-                  <IconPlus className="h-4 w-4" /> Learn a client
-                </Button>
-              }
+              title="No clients yet"
+              body="Move a lead to Client in Sales first — data is learned per client, same as the client timeline and creative board."
             />
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {state.clientLearn.map((r) => {
-                const focused = focusClient && r.client.toLowerCase() === focusClient.toLowerCase();
-                const filled = [r.business, r.problem, r.audience, r.aim].filter((v) => v.trim()).length;
-                return (
-                  <Card
-                    key={r.id}
-                    className={`flex flex-col gap-2 cursor-pointer ${focused ? "border-accent" : ""}`}
-                    padded
-                  >
-                    <div onClick={() => openEditLearn(r)}>
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="font-semibold">{r.client}</p>
-                        <Badge tone={filled === 4 ? "good" : "neutral"}>{filled} / 4</Badge>
-                      </div>
-                      {r.business && <p className="text-sm text-muted line-clamp-1 mb-1"><span className="text-foreground">Business:</span> {r.business}</p>}
-                      {r.problem && <p className="text-sm text-muted line-clamp-1 mb-1"><span className="text-foreground">Problem:</span> {r.problem}</p>}
-                      {r.audience && <p className="text-sm text-muted line-clamp-1 mb-1"><span className="text-foreground">Audience:</span> {r.audience}</p>}
-                      {r.aim && <p className="text-sm text-muted line-clamp-1"><span className="text-foreground">Aim:</span> {r.aim}</p>}
-                    </div>
-                  </Card>
-                );
-              })}
-            </div>
+            <>
+              <Field label="Client">
+                <SelectInput value={learnClient} onChange={setLearnClient} options={clientNames} />
+              </Field>
+
+              {learnClient && (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {LEARN_BLOCKS.map((block) => (
+                    <Card key={block.key} className="flex flex-col gap-2">
+                      <p className="font-semibold">{block.label}</p>
+                      <TextArea
+                        value={activeLearn?.[block.key] ?? ""}
+                        onChange={(v) => saveLearnField(block.key, v)}
+                        placeholder={block.placeholder}
+                      />
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </>
       )}
@@ -307,40 +277,6 @@ function DataPageInner() {
                 onClick={() => {
                   removePlaybook(editingId);
                   setDrawerOpen(false);
-                }}
-              />
-            )}
-          </div>
-        </div>
-      </Drawer>
-
-      <Drawer open={learnDrawer} onClose={() => setLearnDrawer(false)} title={editingLearnId ? "Edit client data" : "Learn a client"}>
-        <div className="flex flex-col gap-4">
-          <Field label="Client">
-            <TextInput value={learnForm.client} onChange={(v) => setLearnForm({ ...learnForm, client: v })} placeholder="e.g. Northwind Studio" />
-          </Field>
-          <Field label="Business">
-            <TextArea value={learnForm.business} onChange={(v) => setLearnForm({ ...learnForm, business: v })} placeholder="Their story and what they sell" />
-          </Field>
-          <Field label="Problem">
-            <TextArea value={learnForm.problem} onChange={(v) => setLearnForm({ ...learnForm, problem: v })} placeholder="What it's costing them, and the root cause" />
-          </Field>
-          <Field label="Audience">
-            <TextArea value={learnForm.audience} onChange={(v) => setLearnForm({ ...learnForm, audience: v })} placeholder="Their ideal customer profile" />
-          </Field>
-          <Field label="Aim">
-            <TextArea value={learnForm.aim} onChange={(v) => setLearnForm({ ...learnForm, aim: v })} placeholder="The growth objective beyond immediate sales" />
-          </Field>
-          <div className="flex items-center gap-2 pt-2">
-            <Button variant="primary" onClick={saveLearn}>
-              {editingLearnId ? "Save changes" : "Save"}
-            </Button>
-            {editingLearnId && (
-              <DeleteButton
-                label="Delete"
-                onClick={() => {
-                  removeClientLearn(editingLearnId);
-                  setLearnDrawer(false);
                 }}
               />
             )}
