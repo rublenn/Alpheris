@@ -27,6 +27,8 @@
   --lens-working-soft: #ff5a3c1a;
   --lens-operations: #34c3a6;
   --lens-operations-soft: #34c3a61a;
+
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @theme inline {
@@ -56,6 +58,9 @@
   --color-lens-working-soft: var(--lens-working-soft);
   --color-lens-operations: var(--lens-operations);
   --color-lens-operations-soft: var(--lens-operations-soft);
+
+  --default-transition-duration: 180ms;
+  --default-transition-timing-function: var(--ease-smooth);
 }
 
 body {
@@ -79,10 +84,6 @@ body {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
-}
-
-:root {
-  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes page-in {

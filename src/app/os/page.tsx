@@ -55,6 +55,7 @@ export default function OverviewPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <LensCard
+          delay={0}
           title="Leadership"
           subtitle="Strategy & timeline"
           icon={<IconCompanyStrategy className="h-4 w-4" />}
@@ -67,6 +68,7 @@ export default function OverviewPage() {
           ]}
         />
         <LensCard
+          delay={1}
           title="Sales & Marketing"
           subtitle="Pipeline, leads & campaigns"
           icon={<IconSales className="h-4 w-4" />}
@@ -79,6 +81,7 @@ export default function OverviewPage() {
           ]}
         />
         <LensCard
+          delay={2}
           title="Working"
           subtitle="Strategy, production, deliverables"
           icon={<IconProduction className="h-4 w-4" />}
@@ -91,6 +94,7 @@ export default function OverviewPage() {
           ]}
         />
         <LensCard
+          delay={3}
           title="Operations"
           subtitle="Client success & finance"
           icon={<IconFinance className="h-4 w-4" />}
@@ -120,10 +124,11 @@ export default function OverviewPage() {
               {state.captures
                 .slice()
                 .reverse()
-                .map((c) => (
+                .map((c, i) => (
                   <li
                     key={c.id}
-                    className="flex items-center justify-between gap-3 rounded-lg border border-border-soft bg-surface-2 px-3.5 py-2.5"
+                    className="flex items-center justify-between gap-3 rounded-lg border border-border-soft bg-surface-2 px-3.5 py-2.5 rise-in"
+                    style={{ animationDelay: `${Math.min(i, 6) * 35}ms` }}
                   >
                     <span className="text-sm">{c.text}</span>
                     <DeleteButton onClick={() => removeCapture(c.id)} label="Clear" />
@@ -175,6 +180,7 @@ function LensCard({
   tone,
   href,
   stats,
+  delay = 0,
 }: {
   title: string;
   subtitle: string;
@@ -182,6 +188,7 @@ function LensCard({
   tone: "leadership" | "sales" | "working" | "operations";
   href: string;
   stats: { label: string; value: React.ReactNode; warn?: boolean }[];
+  delay?: number;
 }) {
   const toneBg: Record<string, string> = {
     leadership: "bg-lens-leadership-soft text-lens-leadership",
@@ -190,7 +197,11 @@ function LensCard({
     operations: "bg-lens-operations-soft text-lens-operations",
   };
   return (
-    <Link href={href} className="group block">
+    <Link
+      href={href}
+      className="group block rise-in transition duration-150 ease-[var(--ease-smooth)] active:scale-[0.98]"
+      style={{ animationDelay: `${delay * 50}ms` }}
+    >
       <Card className="h-full transition group-hover:border-muted">
         <div className="flex items-center gap-3 mb-4">
           <span className={`inline-flex h-8 w-8 items-center justify-center rounded-full ${toneBg[tone]}`}>
@@ -233,7 +244,7 @@ function QuickLink({ href, icon, label }: { href: string; icon: React.ReactNode;
   return (
     <Link
       href={href}
-      className="flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3.5 text-sm font-medium transition hover:border-muted"
+      className="flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3.5 text-sm font-medium transition hover:border-muted active:scale-[0.98]"
     >
       <span className="text-muted">{icon}</span>
       {label}

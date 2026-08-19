@@ -98,7 +98,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       <Link
         href="/os"
         onClick={onNavigate}
-        className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition ${
+        className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition active:scale-[0.98] ${
           pathname === "/os"
             ? "bg-surface-2 text-foreground"
             : "text-muted hover:bg-surface-2 hover:text-foreground"
@@ -126,7 +126,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                     key={item.href}
                     href={item.href}
                     onClick={onNavigate}
-                    className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition ${
+                    className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition active:scale-[0.98] ${
                       active
                         ? "bg-surface-2 text-foreground"
                         : "text-muted hover:bg-surface-2 hover:text-foreground"

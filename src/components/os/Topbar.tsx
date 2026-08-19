@@ -46,7 +46,7 @@ export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
       <button
         onClick={onMenuClick}
         aria-label="Open navigation"
-        className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted"
+        className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted transition active:scale-[0.94]"
       >
         <IconMenu className="h-4 w-4" />
       </button>
@@ -62,13 +62,13 @@ export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
             className="w-full rounded-full border border-border bg-surface px-4 py-2 text-sm outline-none focus:border-accent transition"
           />
           {justAdded && (
-            <span className="absolute -bottom-5 right-1 text-xs text-good">Captured</span>
+            <span className="absolute -bottom-5 right-1 text-xs text-good fade-in">Captured</span>
           )}
         </div>
         <button
           type="submit"
           aria-label="Add capture"
-          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent text-white hover:opacity-90 transition"
+          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent text-white hover:opacity-90 transition active:scale-[0.94]"
         >
           <IconPlus className="h-4 w-4" />
         </button>
