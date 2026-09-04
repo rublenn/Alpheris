@@ -532,7 +532,11 @@ fieldset.form-field {
 /* Example work carousel (Pass 1: native scroll-snap, no drag/JS; Pass 2 wires up drag + live counter) */
 
 .work-carousel {
-  padding: 6rem 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 6.5rem 0 2rem;
   overflow: hidden;
 }
 
@@ -543,7 +547,8 @@ fieldset.form-field {
   gap: 1.5rem;
   padding: 0 2rem;
   max-width: 1440px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 2rem;
+  flex: none;
 }
 
 .work-carousel__heading {
@@ -583,9 +588,9 @@ fieldset.form-field {
 
 .work-carousel__track {
   display: flex;
+  flex: none;
   gap: 1.5rem;
   overflow-x: auto;
-  scroll-snap-type: x proximity;
   padding: 0 2rem;
   scrollbar-width: none;
 }
@@ -597,7 +602,6 @@ fieldset.form-field {
 .work-slide {
   flex: 0 0 auto;
   width: min(520px, 78vw);
-  scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -614,7 +618,7 @@ fieldset.form-field {
   display: flex;
   align-items: center;
   justify-content: center;
-  aspect-ratio: 4 / 5;
+  height: clamp(220px, calc(100vh - 420px), 440px);
   border: 1px solid var(--rule);
   font-family: var(--font-label);
   font-weight: 600;

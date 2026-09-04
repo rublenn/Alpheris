@@ -141,6 +141,11 @@
     var counter = document.querySelector(".work-carousel__counter-current");
     if (!section || !track || !slides.length) return;
 
+    // Chromium quirk: a scroll-snap-align:start track with padding can
+    // auto-scroll past its own start padding on load. Force it back to 0
+    // so the first card's left padding actually renders.
+    track.scrollLeft = 0;
+
     // Pinned drag-scroll is a desktop pattern; mobile keeps native touch
     // scrolling on the track exactly as Pass 1 built it.
     var mm = gsap.matchMedia();
