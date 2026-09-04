@@ -180,6 +180,146 @@ a {
   color: var(--paper-dim);
 }
 
+/* Start a Conversation form */
+
+.start {
+  padding: 6rem 2rem 8rem;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.start__heading {
+  margin: 0 0 3rem;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  color: var(--paper);
+}
+
+.start-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-field,
+fieldset.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.form-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.form-field label,
+.form-field legend {
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  padding: 0;
+}
+
+.form-field input[type="text"],
+.form-field textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  padding: 0.6rem 0;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: var(--paper);
+}
+
+.form-field textarea {
+  min-height: 4.5rem;
+  resize: vertical;
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--gold);
+}
+
+.choice-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.choice-pill {
+  position: relative;
+}
+
+.choice-pill input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.choice-pill span {
+  display: inline-flex;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--paper-dim);
+  cursor: pointer;
+}
+
+.choice-pill input:checked + span {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.choice-pill input:focus-visible + span {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.start-form__more {
+  border-top: 1px solid var(--rule);
+  padding-top: 1.5rem;
+}
+
+.start-form__more summary {
+  cursor: pointer;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.start-form__more-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 640px) {
+  .form-field-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Founder */
 
 .founder {
