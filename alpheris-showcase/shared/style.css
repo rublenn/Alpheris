@@ -529,29 +529,19 @@ fieldset.form-field {
   color: var(--paper);
 }
 
-/* Example work carousel (Pass 1: native scroll-snap, no drag/JS; Pass 2 wires up drag + live counter) */
+/* Example work: full-bleed stacked cards, one per screen */
 
-.work-carousel {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 6.5rem 0 2rem;
-  overflow: hidden;
+.work-stack {
+  padding: 6rem 0;
 }
 
-.work-carousel__header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1.5rem;
+.work-stack__header {
   padding: 0 2rem;
   max-width: 1440px;
-  margin: 0 auto 2rem;
-  flex: none;
+  margin: 0 auto 3rem;
 }
 
-.work-carousel__heading {
+.work-stack__heading {
   margin: 0;
   font-family: var(--font-label);
   font-weight: 700;
@@ -561,7 +551,7 @@ fieldset.form-field {
   color: var(--paper);
 }
 
-.work-carousel__heading em {
+.work-stack__heading em {
   display: block;
   font-family: var(--font-display);
   font-style: italic;
@@ -572,70 +562,53 @@ fieldset.form-field {
   margin-top: 0.35em;
 }
 
-.work-carousel__counter {
-  flex: none;
-  font-family: var(--font-label);
-  font-weight: 600;
-  font-size: 0.9rem;
-  letter-spacing: 0.1em;
-  color: var(--paper-dim);
-  white-space: nowrap;
-}
-
-.work-carousel__counter-current {
-  color: var(--gold);
-}
-
-.work-carousel__track {
-  display: flex;
-  flex: none;
-  gap: 1.5rem;
-  overflow-x: auto;
-  padding: 0 2rem;
-  scrollbar-width: none;
-}
-
-.work-carousel__track::-webkit-scrollbar {
-  display: none;
-}
-
-.work-slide {
-  flex: 0 0 auto;
-  width: min(520px, 78vw);
+.work-stack__list {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
 }
 
-.work-slide__number {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 1.5rem;
-  color: var(--gold);
+.work-stack-item {
+  position: relative;
+  width: 100%;
 }
 
-.work-slide__image {
+.work-stack-item__image {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: clamp(220px, calc(100vh - 420px), 440px);
-  border: 1px solid var(--rule);
+  width: 100%;
+  height: 90vh;
+  min-height: 480px;
+  border-top: 1px solid var(--rule);
   font-family: var(--font-label);
   font-weight: 600;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  text-align: center;
   color: var(--paper-dim);
 }
 
-.work-slide__meta {
+.work-stack-item:last-child .work-stack-item__image {
+  border-bottom: 1px solid var(--rule);
+}
+
+.work-stack-item__caption {
+  position: absolute;
+  left: 2rem;
+  bottom: 2rem;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
 }
 
-.work-slide__category {
+.work-stack-item__number {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.25rem;
+  color: var(--gold);
+}
+
+.work-stack-item__category {
   font-family: var(--font-label);
   font-weight: 600;
   font-size: 0.75rem;
@@ -644,24 +617,12 @@ fieldset.form-field {
   color: var(--paper-dim);
 }
 
-.work-slide__title {
+.work-stack-item__title {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: 1.5rem;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
   color: var(--paper);
-}
-
-@media (max-width: 720px) {
-  .work-carousel__header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  .work-slide {
-    width: 82vw;
-  }
 }
 
 /* Example work grid */

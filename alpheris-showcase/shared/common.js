@@ -14,7 +14,6 @@
     initHeaderScroll();
     initMarquees();
     initPhilosophyReveal();
-    initWorkCarousel();
     initQuestionsFill();
     initGenericReveals();
   });
@@ -130,51 +129,6 @@
         end: "bottom 55%",
         scrub: true,
       },
-    });
-  }
-
-  // ---- Step 6: work carousel, pinned horizontal scroll + live counter ----
-  function initWorkCarousel() {
-    var section = document.querySelector(".work-carousel");
-    var track = document.querySelector(".work-carousel__track");
-    var slides = document.querySelectorAll(".work-slide");
-    var counter = document.querySelector(".work-carousel__counter-current");
-    if (!section || !track || !slides.length) return;
-
-    // Chromium quirk: a scroll-snap-align:start track with padding can
-    // auto-scroll past its own start padding on load. Force it back to 0
-    // so the first card's left padding actually renders.
-    track.scrollLeft = 0;
-
-    // Pinned drag-scroll is a desktop pattern; mobile keeps native touch
-    // scrolling on the track exactly as Pass 1 built it.
-    var mm = gsap.matchMedia();
-
-    mm.add("(min-width: 900px)", function () {
-      var distance = track.scrollWidth - track.clientWidth;
-      if (distance <= 0) return;
-
-      var st = ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        end: "+=" + distance,
-        pin: true,
-        scrub: 1,
-        onUpdate: function (self) {
-          gsap.set(track, { x: -distance * self.progress });
-          if (counter) {
-            var index = Math.min(
-              slides.length - 1,
-              Math.round(self.progress * (slides.length - 1))
-            );
-            counter.textContent = String(index + 1).padStart(2, "0");
-          }
-        },
-      });
-
-      return function () {
-        st.kill();
-      };
     });
   }
 
