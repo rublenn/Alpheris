@@ -39,3 +39,37 @@ img {
 a {
   color: inherit;
 }
+
+/* Loader lockup (Pass 1: static end-state only, Pass 2 animates into this) */
+
+.loader {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.loader__lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.loader__name {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(3rem, 12vw, 8rem);
+  line-height: 0.95;
+  color: var(--paper);
+}
+
+.loader__sub {
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+}
