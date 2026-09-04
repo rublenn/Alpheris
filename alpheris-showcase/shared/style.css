@@ -149,13 +149,13 @@ a {
 .hero__scroll {
   position: absolute;
   left: 2rem;
-  bottom: 2rem;
+  bottom: 3rem;
 }
 
 .hero__scroll-line {
   display: block;
   width: 28px;
-  height: 1px;
+  height: 2px;
   background: var(--paper-dim);
 }
 
