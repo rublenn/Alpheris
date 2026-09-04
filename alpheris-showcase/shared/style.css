@@ -251,6 +251,16 @@ a {
   color: var(--paper-dim);
 }
 
+.work-card__detail {
+  margin: 0;
+  padding: 1.5rem;
+  border: 1px solid var(--rule);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--paper-dim);
+}
+
 @media (max-width: 720px) {
   .work-card {
     grid-template-columns: 1fr;
