@@ -146,6 +146,19 @@ a {
   border: 1px solid var(--rule);
 }
 
+.hero__scroll {
+  position: absolute;
+  left: 2rem;
+  bottom: 2rem;
+}
+
+.hero__scroll-line {
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--paper-dim);
+}
+
 /* Marquee ticker (Pass 1: static row; Pass 2 scrolls it leftward, infinite loop) */
 
 .marquee {
