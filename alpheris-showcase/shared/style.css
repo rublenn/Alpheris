@@ -146,6 +146,28 @@ a {
   border: 1px solid var(--rule);
 }
 
+/* Philosophy statement (Pass 2 fades individual words/phrases in on scroll; static for now) */
+
+.philosophy-section {
+  padding: 7rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.philosophy {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 3.4vw, 2.75rem);
+  line-height: 1.5;
+  color: var(--paper-dim);
+}
+
+.philosophy .highlight {
+  color: var(--gold);
+  font-weight: 500;
+}
+
 /* Marquee ticker (Pass 1: static row; Pass 2 scrolls it leftward, infinite loop) */
 
 .marquee {
