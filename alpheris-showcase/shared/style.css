@@ -103,9 +103,77 @@ a {
   flex-direction: column;
   justify-content: center;
   position: relative;
+  overflow: hidden;
+}
+
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.hero__bg-photo {
+  position: absolute;
+  width: 300px;
+  border-radius: 6px;
+  object-fit: cover;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+}
+
+.hero__bg-photo--1 {
+  top: -6%;
+  left: -4%;
+  width: 280px;
+  transform: rotate(-16deg);
+}
+
+.hero__bg-photo--2 {
+  top: 4%;
+  right: -5%;
+  width: 320px;
+  transform: rotate(13deg);
+}
+
+.hero__bg-photo--3 {
+  bottom: -10%;
+  left: 12%;
+  width: 260px;
+  transform: rotate(9deg);
+}
+
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(14, 13, 11, 0.74);
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 2;
   padding: 8rem 2rem 6rem;
   max-width: 1440px;
   margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .hero__bg-photo {
+    width: 190px;
+  }
+
+  .hero__bg-photo--1 {
+    width: 170px;
+  }
+
+  .hero__bg-photo--2 {
+    width: 200px;
+  }
+
+  .hero__bg-photo--3 {
+    width: 160px;
+  }
 }
 
 .hero__headline {
