@@ -1,0 +1,41 @@
+:root {
+  --ink: #0e0d0b;        /* background, near-black */
+  --paper: #f2ede3;      /* primary text, warm off-white */
+  --paper-dim: #c9c2b2;  /* secondary/muted text */
+  --gold: #e8b33d;       /* primary accent */
+  --pine: #4f9c7c;       /* secondary accent, used sparingly */
+  --rule: rgba(242, 237, 225, 0.12); /* hairline borders/dividers */
+
+  --font-display: "Fraunces", serif;
+  --font-body: "Newsreader", serif;
+  --font-label: "Archivo", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--ink);
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
