@@ -40,6 +40,47 @@ a {
   color: inherit;
 }
 
+/* Header / nav (Pass 1: solid background; Pass 2 fades it in from transparent on scroll) */
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: var(--ink);
+  border-bottom: 1px solid var(--rule);
+}
+
+.site-header__inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.25rem 2rem;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.logo__name {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.5rem;
+  color: var(--paper);
+}
+
+.logo__sub {
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+}
+
 /* Loader lockup (Pass 1: static end-state only, Pass 2 animates into this) */
 
 .loader {
