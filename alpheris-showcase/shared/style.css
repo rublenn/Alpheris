@@ -150,6 +150,9 @@ a {
   position: absolute;
   left: 2rem;
   bottom: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .hero__scroll-line {
@@ -157,6 +160,15 @@ a {
   width: 28px;
   height: 2px;
   background: var(--paper-dim);
+}
+
+.hero__scroll-label {
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
 }
 
 /* Marquee ticker (Pass 1: static row; Pass 2 scrolls it leftward, infinite loop) */
