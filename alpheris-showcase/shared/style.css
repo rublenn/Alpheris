@@ -529,50 +529,9 @@ fieldset.form-field {
   color: var(--paper);
 }
 
-/* Example work: full-bleed stacked cards, one per screen */
+/* Pure client-photo deck: full-bleed images stacked, no text/captions */
 
-.work-stack {
-  padding: 6rem 0;
-}
-
-.work-stack__header {
-  padding: 0 2rem;
-  max-width: 1440px;
-  margin: 0 auto 3rem;
-}
-
-.work-stack__heading {
-  margin: 0;
-  font-family: var(--font-label);
-  font-weight: 700;
-  font-size: clamp(2.25rem, 6vw, 4.5rem);
-  line-height: 1.05;
-  text-transform: uppercase;
-  color: var(--paper);
-}
-
-.work-stack__heading em {
-  display: block;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 400;
-  text-transform: none;
-  color: var(--paper-dim);
-  font-size: 0.55em;
-  margin-top: 0.35em;
-}
-
-.work-stack__list {
-  display: flex;
-  flex-direction: column;
-}
-
-.work-stack-item {
-  position: relative;
-  width: 100%;
-}
-
-.work-stack-item__image {
+.photo-deck__item {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -588,41 +547,8 @@ fieldset.form-field {
   color: var(--paper-dim);
 }
 
-.work-stack-item:last-child .work-stack-item__image {
+.photo-deck__item:last-child {
   border-bottom: 1px solid var(--rule);
-}
-
-.work-stack-item__caption {
-  position: absolute;
-  left: 2rem;
-  bottom: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.work-stack-item__number {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 1.25rem;
-  color: var(--gold);
-}
-
-.work-stack-item__category {
-  font-family: var(--font-label);
-  font-weight: 600;
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--paper-dim);
-}
-
-.work-stack-item__title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(1.5rem, 4vw, 2.25rem);
-  color: var(--paper);
 }
 
 /* Example work grid */
