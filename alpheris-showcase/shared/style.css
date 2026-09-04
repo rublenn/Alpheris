@@ -532,12 +532,14 @@ fieldset.form-field {
 /* Pure client-photo deck: full-bleed images stacked, no text/captions */
 
 .photo-deck__item {
+  position: sticky;
+  top: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 90vh;
-  min-height: 480px;
+  height: 100vh;
+  background: var(--ink);
   border-top: 1px solid var(--rule);
   font-family: var(--font-label);
   font-weight: 600;
