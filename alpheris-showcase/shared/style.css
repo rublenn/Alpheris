@@ -553,6 +553,49 @@ fieldset.form-field {
   border-bottom: 1px solid var(--rule);
 }
 
+/* How We Make It Work: click-to-reveal statement */
+
+.work-statement {
+  padding: 8rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.work-statement__toggle summary {
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2rem, 5.5vw, 3.5rem);
+  line-height: 1.15;
+  color: var(--paper);
+}
+
+.work-statement__toggle summary::-webkit-details-marker {
+  display: none;
+}
+
+.work-statement__toggle summary::after {
+  content: "+";
+  display: inline-block;
+  margin-left: 0.5rem;
+  color: var(--gold);
+  transition: transform 0.3s ease;
+}
+
+.work-statement__toggle[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.work-statement__reveal {
+  margin: 1rem 0 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.75rem, 4.5vw, 3rem);
+  color: var(--gold);
+}
+
 /* Example work grid */
 
 .work {
