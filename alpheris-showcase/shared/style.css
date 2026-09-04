@@ -501,6 +501,10 @@ fieldset.form-field {
   padding: 0;
 }
 
+.questions__list--nested {
+  margin-top: 3rem;
+}
+
 .questions__item {
   display: flex;
   align-items: baseline;
@@ -559,6 +563,10 @@ fieldset.form-field {
   padding: 8rem 2rem;
   max-width: 1100px;
   margin: 0 auto;
+}
+
+.work-statement__toggle + .work-statement__toggle {
+  margin-top: 2rem;
 }
 
 .work-statement__toggle summary {
