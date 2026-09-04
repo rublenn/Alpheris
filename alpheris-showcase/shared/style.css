@@ -587,13 +587,52 @@ fieldset.form-field {
   transform: rotate(45deg);
 }
 
-.work-statement__reveal {
-  margin: 1rem 0 0;
+.ads-list {
+  list-style: none;
+  margin: 3rem 0 0;
+  padding: 0;
+}
+
+.ads-list__item {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.75rem 0;
+  border-top: 1px solid var(--rule);
+}
+
+.ads-list__item:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.ads-list__number {
+  flex: none;
   font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 400;
-  font-size: clamp(1.75rem, 4.5vw, 3rem);
+  font-weight: 500;
+  font-size: 1.25rem;
   color: var(--gold);
+}
+
+.ads-list__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.ads-list__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+  color: var(--paper);
+}
+
+.ads-list__desc {
+  margin: 0;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--paper-dim);
 }
 
 /* Example work grid */
