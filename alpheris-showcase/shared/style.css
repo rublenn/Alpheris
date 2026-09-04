@@ -60,22 +60,24 @@ a {
 
 .logo {
   display: inline-flex;
-  align-items: baseline;
-  gap: 0.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
   text-decoration: none;
 }
 
 .logo__name {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: 1.5rem;
+  font-size: 1.35rem;
+  line-height: 1;
   color: var(--paper);
 }
 
 .logo__sub {
   font-family: var(--font-label);
   font-weight: 600;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--paper-dim);
