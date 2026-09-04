@@ -83,6 +83,94 @@ a {
   color: var(--paper-dim);
 }
 
+/* Hero */
+
+.hero {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  padding: 8rem 2rem 6rem;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.hero__headline {
+  margin: 0;
+  max-width: 20ch;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.5rem, 6vw, 5.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--paper);
+}
+
+.hero__headline em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--gold);
+}
+
+.hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2.75rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.75rem;
+  border-radius: 999px;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn--primary {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--paper);
+  border: 1px solid var(--rule);
+}
+
+.hero__scroll {
+  position: absolute;
+  left: 2rem;
+  bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.hero__scroll-line {
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--paper-dim);
+}
+
+.hero__scroll-label {
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+}
+
 /* Loader lockup (Pass 1: static end-state only, Pass 2 animates into this) */
 
 .loader {
