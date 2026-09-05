@@ -12,6 +12,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     initLoader();
     initHeaderScroll();
+    initHeroVideoSlider();
     initMarquees();
     initPhilosophyReveal();
     initQuestionsFill();
@@ -67,6 +68,50 @@
       start: 40,
       toggleClass: { targets: header, className: "is-scrolled" },
     });
+  }
+
+  // ---- Hero background: two videos alternate, second one slides in over the first ----
+  function initHeroVideoSlider() {
+    var video1 = document.querySelector(".hero__bg-video--1");
+    var video2 = document.querySelector(".hero__bg-video--2");
+    if (!video1 || !video2) return;
+
+    if (reduceMotion) {
+      video1.setAttribute("loop", "");
+      video1.play().catch(function () {});
+      gsap.set(video2, { display: "none" });
+      return;
+    }
+
+    gsap.set(video2, { xPercent: 100, opacity: 1 });
+
+    function playVideo2() {
+      gsap.to(video2, {
+        xPercent: 0,
+        duration: 0.9,
+        ease: "power3.inOut",
+        onStart: function () {
+          video2.currentTime = 0;
+          video2.play().catch(function () {});
+        },
+      });
+    }
+
+    function playVideo1() {
+      gsap.to(video2, {
+        xPercent: 100,
+        duration: 0.9,
+        ease: "power3.inOut",
+        onStart: function () {
+          video1.currentTime = 0;
+          video1.play().catch(function () {});
+        },
+      });
+    }
+
+    video1.addEventListener("ended", playVideo2);
+    video2.addEventListener("ended", playVideo1);
+    video1.play().catch(function () {});
   }
 
   // ---- Step 4 / Step 7: marquees scroll continuously leftward ----
