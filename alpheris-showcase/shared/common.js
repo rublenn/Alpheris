@@ -18,6 +18,7 @@
     initPhilosophyTagToggles();
     initQuestionsFill();
     initGenericReveals();
+    initPhotoDeckPan();
   });
 
   // ---- Step 1 / Step 2: loader intro -> resolves into the header logo ----
@@ -218,6 +219,34 @@
           );
           btn.setAttribute("aria-expanded", "true");
         }
+      });
+    });
+  }
+
+  // ---- Photo deck: pan each image top -> bottom while its card is pinned,
+  // so the whole photo is revealed instead of a fixed crop ----
+  function initPhotoDeckPan() {
+    var frames = document.querySelectorAll(".photo-deck__frame");
+    if (!frames.length || reduceMotion) return;
+
+    frames.forEach(function (frame) {
+      var img = frame.querySelector("img");
+      var item = frame.closest(".photo-deck__item--photo");
+      if (!img || !item) return;
+
+      var maxOffset = 0;
+
+      ScrollTrigger.create({
+        trigger: item,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: true,
+        onRefresh: function () {
+          maxOffset = Math.max(0, img.offsetHeight - frame.offsetHeight);
+        },
+        onUpdate: function (self) {
+          gsap.set(img, { y: -maxOffset * self.progress });
+        },
       });
     });
   }
