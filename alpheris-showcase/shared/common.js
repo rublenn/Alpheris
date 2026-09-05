@@ -15,6 +15,7 @@
     initHeroVideoSlider();
     initMarquees();
     initPhilosophyReveal();
+    initPhilosophyTagToggles();
     initQuestionsFill();
     initGenericReveals();
   });
@@ -174,6 +175,50 @@
         end: "bottom 55%",
         scrub: true,
       },
+    });
+  }
+
+  // ---- Philosophy: click a highlighted phrase to pop in its metric tags ----
+  function initPhilosophyTagToggles() {
+    var triggers = document.querySelectorAll(".philosophy__trigger");
+    if (!triggers.length) return;
+
+    triggers.forEach(function (btn) {
+      var target = document.getElementById(btn.getAttribute("aria-controls"));
+      if (!target) return;
+
+      btn.addEventListener("click", function () {
+        var isOpen = btn.getAttribute("aria-expanded") === "true";
+
+        if (reduceMotion) {
+          target.hidden = isOpen;
+          btn.setAttribute("aria-expanded", String(!isOpen));
+          return;
+        }
+
+        if (isOpen) {
+          gsap.to(target.children, {
+            opacity: 0,
+            scale: 0.8,
+            y: 6,
+            duration: 0.25,
+            stagger: 0.03,
+            ease: "power1.in",
+            onComplete: function () {
+              target.hidden = true;
+            },
+          });
+          btn.setAttribute("aria-expanded", "false");
+        } else {
+          target.hidden = false;
+          gsap.fromTo(
+            target.children,
+            { opacity: 0, scale: 0.7, y: 10 },
+            { opacity: 1, scale: 1, y: 0, duration: 0.45, stagger: 0.06, ease: "back.out(1.7)" }
+          );
+          btn.setAttribute("aria-expanded", "true");
+        }
+      });
     });
   }
 
