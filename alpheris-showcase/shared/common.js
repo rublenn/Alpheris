@@ -187,47 +187,81 @@
     });
   }
 
-  // ---- Philosophy: click a highlighted phrase to pop in its metric tags ----
+  // ---- Philosophy: click a highlighted phrase to pop in its metric tags;
+  // clicking its trigger again, another trigger, or anywhere else closes it ----
   function initPhilosophyTagToggles() {
     var triggers = document.querySelectorAll(".philosophy__trigger");
     if (!triggers.length) return;
 
-    triggers.forEach(function (btn) {
-      var target = document.getElementById(btn.getAttribute("aria-controls"));
-      if (!target) return;
+    var pairs = Array.prototype.map.call(triggers, function (btn) {
+      return { btn: btn, target: document.getElementById(btn.getAttribute("aria-controls")) };
+    }).filter(function (pair) {
+      return !!pair.target;
+    });
 
-      btn.addEventListener("click", function () {
-        var isOpen = btn.getAttribute("aria-expanded") === "true";
+    function close(pair) {
+      var btn = pair.btn;
+      var target = pair.target;
+      if (btn.getAttribute("aria-expanded") !== "true") return;
 
-        if (reduceMotion) {
-          target.hidden = isOpen;
-          btn.setAttribute("aria-expanded", String(!isOpen));
-          return;
-        }
+      if (reduceMotion) {
+        target.hidden = true;
+        btn.setAttribute("aria-expanded", "false");
+        return;
+      }
+
+      gsap.to(target.children, {
+        opacity: 0,
+        scale: 0.8,
+        y: 6,
+        duration: 0.25,
+        stagger: 0.03,
+        ease: "power1.in",
+        onComplete: function () {
+          target.hidden = true;
+        },
+      });
+      btn.setAttribute("aria-expanded", "false");
+    }
+
+    function open(pair) {
+      var btn = pair.btn;
+      var target = pair.target;
+
+      if (reduceMotion) {
+        target.hidden = false;
+        btn.setAttribute("aria-expanded", "true");
+        return;
+      }
+
+      target.hidden = false;
+      gsap.fromTo(
+        target.children,
+        { opacity: 0, scale: 0.7, y: 10 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.45, stagger: 0.06, ease: "back.out(1.7)" }
+      );
+      btn.setAttribute("aria-expanded", "true");
+    }
+
+    pairs.forEach(function (pair) {
+      pair.btn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        var isOpen = pair.btn.getAttribute("aria-expanded") === "true";
+
+        pairs.forEach(function (other) {
+          if (other !== pair) close(other);
+        });
 
         if (isOpen) {
-          gsap.to(target.children, {
-            opacity: 0,
-            scale: 0.8,
-            y: 6,
-            duration: 0.25,
-            stagger: 0.03,
-            ease: "power1.in",
-            onComplete: function () {
-              target.hidden = true;
-            },
-          });
-          btn.setAttribute("aria-expanded", "false");
+          close(pair);
         } else {
-          target.hidden = false;
-          gsap.fromTo(
-            target.children,
-            { opacity: 0, scale: 0.7, y: 10 },
-            { opacity: 1, scale: 1, y: 0, duration: 0.45, stagger: 0.06, ease: "back.out(1.7)" }
-          );
-          btn.setAttribute("aria-expanded", "true");
+          open(pair);
         }
       });
+    });
+
+    document.addEventListener("click", function () {
+      pairs.forEach(close);
     });
   }
 

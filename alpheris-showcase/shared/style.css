@@ -216,6 +216,14 @@ a {
   color: var(--paper-dim);
 }
 
+.philosophy p {
+  margin: 0;
+}
+
+.philosophy p + p {
+  margin-top: 1.5rem;
+}
+
 .philosophy .highlight {
   color: var(--gold);
   font-weight: 500;
