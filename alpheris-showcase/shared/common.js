@@ -227,21 +227,39 @@
     document.querySelectorAll(".work-statement__trigger").forEach(initSpotlightWords);
   }
 
-  // ---- Work-statement heading: slides up + fades in once when scrolled
-  // into view (not scrubbed — a single smooth entrance) ----
+  // ---- Work-statement heading: each word is rebuilt as text sitting
+  // under a solid block; as the heading scrolls into view, the blocks
+  // wipe away left -> right, "morphing" the blocks into letters ----
   function initWorkHeadingReveal() {
     var heading = document.querySelector(".work-statement__heading");
     if (!heading || reduceMotion) return;
 
-    gsap.set(heading, { y: 40, opacity: 0 });
-    gsap.to(heading, {
-      y: 0,
-      opacity: 1,
-      duration: 0.9,
-      ease: "power3.out",
+    var words = heading.textContent.trim().split(/\s+/);
+    heading.textContent = "";
+
+    var blocks = words.map(function (word) {
+      var wordEl = document.createElement("span");
+      wordEl.className = "wh-word";
+      wordEl.textContent = word;
+
+      var blockEl = document.createElement("span");
+      blockEl.className = "wh-word__block";
+      wordEl.appendChild(blockEl);
+
+      heading.appendChild(wordEl);
+      return blockEl;
+    });
+
+    gsap.set(blocks, { scaleX: 1 });
+    gsap.to(blocks, {
+      scaleX: 0,
+      stagger: 0.15,
+      ease: "power2.inOut",
       scrollTrigger: {
         trigger: heading,
-        start: "top 88%",
+        start: "top 85%",
+        end: "top 30%",
+        scrub: true,
       },
     });
   }

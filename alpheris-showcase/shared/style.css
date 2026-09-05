@@ -719,12 +719,36 @@ fieldset.form-field {
 }
 
 .work-statement__heading {
+  display: flex;
+  flex-wrap: wrap;
   margin: 0 0 4rem;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: clamp(2rem, 5.5vw, 3.5rem);
   line-height: 1.15;
   color: var(--paper);
+}
+
+/* Block-reveal ("morph") effect: each word sits under a solid block that
+   wipes away left -> right as the heading scrolls into view (see
+   initWorkHeadingReveal in common.js). Built by JS, so it degrades to
+   plain static text with no JS. */
+.wh-word {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  padding: 0 0.02em;
+}
+
+.wh-word:not(:last-child) {
+  margin-right: 0.28em;
+}
+
+.wh-word__block {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+  transform-origin: right;
 }
 
 .work-statement__toggle + .work-statement__toggle {
