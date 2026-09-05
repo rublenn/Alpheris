@@ -199,9 +199,16 @@ a {
   border: 1px solid var(--rule);
 }
 
-/* Philosophy statement (Pass 2 fades individual words/phrases in on scroll; static for now) */
+/* Philosophy statement: a light, full-bleed break from the dark page (Pass
+   2 fades individual words in from a dim, low-opacity dark-on-paper state
+   to fully bold as the section scrolls through — see initPhilosophyReveal
+   in common.js) */
 
 .philosophy-section {
+  background: var(--paper);
+}
+
+.philosophy-section__inner {
   padding: 7rem 2rem;
   max-width: 1100px;
   margin: 0 auto;
@@ -210,10 +217,10 @@ a {
 .philosophy {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 400;
+  font-weight: 500;
   font-size: clamp(1.5rem, 3.4vw, 2.75rem);
   line-height: 1.5;
-  color: var(--paper-dim);
+  color: var(--ink);
 }
 
 .philosophy p {
@@ -226,18 +233,22 @@ a {
 
 .philosophy .highlight {
   color: var(--gold);
-  font-weight: 500;
+  font-weight: 700;
+  font-style: italic;
+  text-transform: uppercase;
 }
 
 .philosophy__trigger {
+  display: inline;
   background: none;
   border: none;
   padding: 0;
   margin: 0;
   font: inherit;
+  text-align: left;
   cursor: pointer;
   text-decoration: underline;
-  text-decoration-color: rgba(232, 179, 61, 0.4);
+  text-decoration-color: rgba(232, 179, 61, 0.5);
   text-underline-offset: 0.15em;
 }
 
@@ -255,14 +266,14 @@ a {
 .philosophy__tag {
   display: inline-flex;
   padding: 0.55rem 1.1rem;
-  border: 1px solid var(--rule);
+  border: 1px solid rgba(14, 13, 11, 0.15);
   border-radius: 999px;
   font-family: var(--font-label);
   font-weight: 600;
   font-size: 0.78rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--paper-dim);
+  color: var(--ink);
 }
 
 /* Shared section label (eyebrow) */
