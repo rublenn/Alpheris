@@ -84,12 +84,12 @@
       return;
     }
 
-    gsap.set(video2, { xPercent: 100, opacity: 1 });
+    gsap.set(video2, { yPercent: -100, opacity: 1 });
 
     function playVideo2() {
       gsap.to(video2, {
-        xPercent: 0,
-        duration: 0.9,
+        yPercent: 0,
+        duration: 2,
         ease: "power3.inOut",
         onStart: function () {
           video2.currentTime = 0;
@@ -100,8 +100,8 @@
 
     function playVideo1() {
       gsap.to(video2, {
-        xPercent: 100,
-        duration: 0.9,
+        yPercent: -100,
+        duration: 2,
         ease: "power3.inOut",
         onStart: function () {
           video1.currentTime = 0;
