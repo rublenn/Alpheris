@@ -616,6 +616,16 @@ fieldset.form-field {
   color: var(--paper);
 }
 
+.photo-deck-label {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 3rem 2rem 0;
+}
+
+.photo-deck-label .section-label {
+  margin: 0;
+}
+
 /* Pure client-photo deck: full-bleed images stacked, no text/captions.
    No-JS fallback: plain CSS position:sticky, cards stack in normal
    document flow. */
@@ -708,6 +718,15 @@ fieldset.form-field {
   margin: 0 auto;
 }
 
+.work-statement__heading {
+  margin: 0 0 4rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 5.5vw, 3.5rem);
+  line-height: 1.15;
+  color: var(--paper);
+}
+
 .work-statement__toggle + .work-statement__toggle {
   margin-top: 2rem;
 }
@@ -720,6 +739,13 @@ fieldset.form-field {
   font-size: clamp(2rem, 5.5vw, 3.5rem);
   line-height: 1.15;
   color: var(--paper);
+}
+
+.work-statement__trigger .highlight {
+  color: var(--gold);
+  font-weight: 700;
+  font-style: italic;
+  text-transform: uppercase;
 }
 
 .work-statement__toggle summary::-webkit-details-marker {

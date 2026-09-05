@@ -19,6 +19,8 @@
     initQuestionsFill();
     initGenericReveals();
     initPhotoDeckStack();
+    initWorkHeadingReveal();
+    initWorkTriggerSpotlight();
   });
 
   // ---- Step 1 / Step 2: loader intro -> resolves into the header logo ----
@@ -176,16 +178,13 @@
     return el.querySelectorAll(".reveal-word");
   }
 
-  // ---- Step 5: philosophy statement — a "spotlight" moves through the
-  // text as you scroll: only the word(s) near the middle of the viewport
-  // are bright, words above and below are dim. The two highlighted phrases
-  // ("discovered your business", "became your customers") are excluded —
-  // they stay fully bright the whole time. ----
-  function initPhilosophyReveal() {
-    var statement = document.querySelector(".philosophy");
-    if (!statement) return;
-
-    var wordSpans = wrapWords(statement);
+  // A "spotlight" moves through an element's text as you scroll: only the
+  // word(s) near the middle of the viewport are bright, words above and
+  // below are dim. Words inside a .highlight are excluded — they stay
+  // fully bright the whole time (used for the philosophy statement and the
+  // work-statement trigger headings).
+  function initSpotlightWords(container) {
+    var wordSpans = wrapWords(container);
     if (!wordSpans.length) return;
 
     var DIM = 0.15;
@@ -212,6 +211,38 @@
       })
         .fromTo(span, { opacity: DIM }, { opacity: 1, ease: "none" })
         .to(span, { opacity: DIM, ease: "none" });
+    });
+  }
+
+  // ---- Step 5: philosophy statement word spotlight ----
+  function initPhilosophyReveal() {
+    var statement = document.querySelector(".philosophy");
+    if (!statement) return;
+    initSpotlightWords(statement);
+  }
+
+  // ---- Work-statement trigger headings ("By Creating Ads With Purpose",
+  // "...and Reasons"): same word spotlight, "Purpose"/"Reasons" stay lit ----
+  function initWorkTriggerSpotlight() {
+    document.querySelectorAll(".work-statement__trigger").forEach(initSpotlightWords);
+  }
+
+  // ---- Work-statement heading: slides up + fades in once when scrolled
+  // into view (not scrubbed — a single smooth entrance) ----
+  function initWorkHeadingReveal() {
+    var heading = document.querySelector(".work-statement__heading");
+    if (!heading || reduceMotion) return;
+
+    gsap.set(heading, { y: 40, opacity: 0 });
+    gsap.to(heading, {
+      y: 0,
+      opacity: 1,
+      duration: 0.9,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: heading,
+        start: "top 88%",
+      },
     });
   }
 
