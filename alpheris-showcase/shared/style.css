@@ -277,17 +277,10 @@ a {
   color: var(--paper-dim);
 }
 
-/* Pass 2: scroll-reveal utility. Hidden only once .js confirms the
-   animation script is present, so a no-JS load stays fully visible (Pass 1). */
-.js .reveal {
-  opacity: 0;
-  transform: translateY(28px);
-}
-
-.js .reveal.is-visible {
-  opacity: 1;
-  transform: none;
-}
+/* Pass 2: scroll-reveal utility. Words inside .reveal elements brighten in
+   as the section scrolls through (see initGenericReveals in common.js),
+   dimmed/brightened per-word via inline styles set by GSAP — nothing here
+   hides the block itself, so a no-JS load stays fully visible (Pass 1). */
 
 /* Footer */
 

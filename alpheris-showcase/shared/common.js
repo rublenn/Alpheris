@@ -140,14 +140,11 @@
     });
   }
 
-  // ---- Step 5: philosophy statement, words/phrases fade in on scroll ----
-  function initPhilosophyReveal() {
-    var statement = document.querySelector(".philosophy");
-    if (!statement) return;
-
-    // Wrap every word (including inside .highlight spans) in its own span
-    // so each can fade in independently, without altering the visible text.
-    var walker = document.createTreeWalker(statement, NodeFilter.SHOW_TEXT, null);
+  // Wrap every word of an element's text (including inside nested tags,
+  // e.g. .highlight spans) in its own <span class="reveal-word">, so each
+  // word can be animated independently without altering the visible text.
+  function wrapWords(el) {
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
     var textNodes = [];
     var node;
     while ((node = walker.nextNode())) {
@@ -155,22 +152,36 @@
     }
 
     textNodes.forEach(function (textNode) {
+      // Word spans + the plain whitespace between them are wrapped in one
+      // inline <span> rather than inserted as siblings directly — a flex
+      // container (e.g. .founder__portrait) discards whitespace-only text
+      // nodes between flex-level boxes, which would otherwise collapse the
+      // spaces away. Nesting them one level deep keeps normal inline
+      // formatting (and its whitespace/wrapping rules) in effect.
+      var wrapper = document.createElement("span");
       var words = textNode.nodeValue.split(/(\s+)/);
-      var frag = document.createDocumentFragment();
       words.forEach(function (word) {
         if (word.trim().length === 0) {
-          frag.appendChild(document.createTextNode(word));
+          wrapper.appendChild(document.createTextNode(word));
         } else {
           var span = document.createElement("span");
-          span.className = "philosophy__word";
+          span.className = "reveal-word";
           span.textContent = word;
-          frag.appendChild(span);
+          wrapper.appendChild(span);
         }
       });
-      textNode.parentNode.replaceChild(frag, textNode);
+      textNode.parentNode.replaceChild(wrapper, textNode);
     });
 
-    var wordSpans = statement.querySelectorAll(".philosophy__word");
+    return el.querySelectorAll(".reveal-word");
+  }
+
+  // ---- Step 5: philosophy statement, words/phrases fade in on scroll ----
+  function initPhilosophyReveal() {
+    var statement = document.querySelector(".philosophy");
+    if (!statement) return;
+
+    var wordSpans = wrapWords(statement);
     if (!wordSpans.length) return;
 
     gsap.set(wordSpans, { opacity: 0.25 });
@@ -354,22 +365,30 @@
     });
   }
 
-  // ---- Generic fade-up reveal for sections without a bespoke effect ----
+  // ---- Generic reveal for sections without a bespoke effect: words
+  // brighten in from a heavy dim as the section scrolls through, same
+  // technique as the philosophy statement but with a stronger dim state
+  // so it reads clearly against short headings/labels too ----
   function initGenericReveals() {
     var items = document.querySelectorAll(".reveal");
     if (!items.length) return;
 
-    ScrollTrigger.batch(items, {
-      start: "top 88%",
-      onEnter: function (batch) {
-        gsap.to(batch, {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.12,
-          ease: "power2.out",
-        });
-      },
+    items.forEach(function (el) {
+      var wordSpans = wrapWords(el);
+      if (!wordSpans.length) return;
+
+      gsap.set(wordSpans, { opacity: 0.08 });
+      gsap.to(wordSpans, {
+        opacity: 1,
+        stagger: 0.025,
+        ease: "none",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 90%",
+          end: "bottom 65%",
+          scrub: true,
+        },
+      });
     });
   }
 })();
