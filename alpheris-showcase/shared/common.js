@@ -176,7 +176,11 @@
     return el.querySelectorAll(".reveal-word");
   }
 
-  // ---- Step 5: philosophy statement, words/phrases fade in on scroll ----
+  // ---- Step 5: philosophy statement — a "spotlight" moves through the
+  // text as you scroll: only the word(s) near the middle of the viewport
+  // are bright, words above and below are dim. The two highlighted phrases
+  // ("discovered your business", "became your customers") are excluded —
+  // they stay fully bright the whole time. ----
   function initPhilosophyReveal() {
     var statement = document.querySelector(".philosophy");
     if (!statement) return;
@@ -184,17 +188,30 @@
     var wordSpans = wrapWords(statement);
     if (!wordSpans.length) return;
 
-    gsap.set(wordSpans, { opacity: 0.25 });
-    gsap.to(wordSpans, {
-      opacity: 1,
-      stagger: 0.02,
-      ease: "none",
-      scrollTrigger: {
-        trigger: statement,
-        start: "top 80%",
-        end: "bottom 55%",
-        scrub: true,
-      },
+    var DIM = 0.15;
+    var plainWords = [];
+
+    wordSpans.forEach(function (span) {
+      if (span.closest(".highlight")) {
+        gsap.set(span, { opacity: 1 });
+      } else {
+        plainWords.push(span);
+      }
+    });
+
+    gsap.set(plainWords, { opacity: DIM });
+
+    plainWords.forEach(function (span) {
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: span,
+          start: "top 68%",
+          end: "top 32%",
+          scrub: true,
+        },
+      })
+        .fromTo(span, { opacity: DIM }, { opacity: 1, ease: "none" })
+        .to(span, { opacity: DIM, ease: "none" });
     });
   }
 
