@@ -607,7 +607,13 @@ fieldset.form-field {
   color: var(--paper);
 }
 
-/* Pure client-photo deck: full-bleed images stacked, no text/captions */
+/* Pure client-photo deck: full-bleed images stacked, no text/captions.
+   No-JS fallback: plain CSS position:sticky, cards stack in normal
+   document flow. */
+
+.photo-deck {
+  position: relative;
+}
 
 .photo-deck__item {
   position: sticky;
@@ -632,26 +638,10 @@ fieldset.form-field {
 }
 
 .photo-deck__item--photo {
-  display: block;
-  position: relative;
-  height: 180vh;
   padding: 0;
-  border-top: none;
 }
 
-.photo-deck__frame {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow: hidden;
-  border-top: 1px solid var(--rule);
-}
-
-.photo-deck__item--photo:last-child .photo-deck__frame {
-  border-bottom: 1px solid var(--rule);
-}
-
-.photo-deck__frame img {
+.photo-deck__item--photo img {
   display: block;
   width: 100%;
   height: 100%;
@@ -659,10 +649,27 @@ fieldset.form-field {
   object-position: center top;
 }
 
-/* With JS, the image is taller than its frame and gets panned via scroll
-   (see initPhotoDeckPan in common.js) so the whole photo is revealed
-   instead of a fixed crop. */
-.js .photo-deck__frame img {
+/* With JS (see initPhotoDeckStack in common.js): all cards are absolutely
+   stacked inside one pinned, viewport-sized "stage" and JS slides each one
+   up to instantly cover the previous card, instead of relying on CSS
+   position:sticky's document-flow handoff (which forces a viewport-height
+   "catch up" scroll where both cards blend together). */
+.js .photo-deck {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.js .photo-deck__item {
+  position: absolute;
+  inset: 0;
+  border-top: none;
+}
+
+.js .photo-deck__item--photo {
+  overflow: hidden;
+}
+
+.js .photo-deck__item--photo img {
   height: 160%;
   position: absolute;
   top: 0;

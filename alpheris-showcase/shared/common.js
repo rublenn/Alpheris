@@ -18,7 +18,7 @@
     initPhilosophyTagToggles();
     initQuestionsFill();
     initGenericReveals();
-    initPhotoDeckPan();
+    initPhotoDeckStack();
   });
 
   // ---- Step 1 / Step 2: loader intro -> resolves into the header logo ----
@@ -223,31 +223,66 @@
     });
   }
 
-  // ---- Photo deck: pan each image top -> bottom while its card is pinned,
-  // so the whole photo is revealed instead of a fixed crop ----
-  function initPhotoDeckPan() {
-    var frames = document.querySelectorAll(".photo-deck__frame");
-    if (!frames.length || reduceMotion) return;
+  // ---- Photo deck: all cards sit absolutely stacked inside one pinned,
+  // viewport-sized stage. As the stage is pinned, each card slides up to
+  // instantly cover the previous one, then (for photo cards) its image
+  // pans top -> bottom for the rest of its turn. This avoids CSS
+  // position:sticky's document-flow handoff, which forces a viewport-height
+  // "catch up" scroll where the outgoing and incoming cards blend together ----
+  function initPhotoDeckStack() {
+    var deck = document.querySelector(".photo-deck");
+    var items = document.querySelectorAll(".photo-deck__item");
+    if (!deck || !items.length || reduceMotion) return;
 
-    frames.forEach(function (frame) {
-      var img = frame.querySelector("img");
-      var item = frame.closest(".photo-deck__item--photo");
-      if (!img || !item) return;
+    var n = items.length;
+    var imgs = [];
+    var maxOffsets = [];
 
-      var maxOffset = 0;
+    items.forEach(function (item, i) {
+      item.style.zIndex = i;
+      imgs[i] = item.querySelector("img");
+      maxOffsets[i] = 0;
+    });
 
-      ScrollTrigger.create({
-        trigger: item,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: true,
-        onRefresh: function () {
-          maxOffset = Math.max(0, img.offsetHeight - frame.offsetHeight);
-        },
-        onUpdate: function (self) {
-          gsap.set(img, { y: -maxOffset * self.progress });
-        },
-      });
+    gsap.set(items, { yPercent: 100 });
+    gsap.set(items[0], { yPercent: 0 });
+
+    var SLIDE_SHARE = 0.35; // portion of a card's turn spent sliding up
+
+    ScrollTrigger.create({
+      trigger: deck,
+      start: "top top",
+      end: function () {
+        return "+=" + (n - 1) * window.innerHeight;
+      },
+      pin: true,
+      scrub: true,
+      onRefresh: function () {
+        items.forEach(function (item, i) {
+          maxOffsets[i] = imgs[i] ? Math.max(0, imgs[i].offsetHeight - item.offsetHeight) : 0;
+        });
+      },
+      onUpdate: function (self) {
+        var overall = self.progress * (n - 1);
+
+        items.forEach(function (item, i) {
+          var turnProgress;
+
+          if (i === 0) {
+            turnProgress = Math.min(Math.max(overall, 0), 1);
+          } else {
+            turnProgress = Math.min(Math.max(overall - (i - 1), 0), 1);
+            var slide = Math.min(turnProgress / SLIDE_SHARE, 1);
+            gsap.set(item, { yPercent: 100 * (1 - slide) });
+          }
+
+          if (imgs[i] && maxOffsets[i] > 0) {
+            var panStart = i === 0 ? 0 : SLIDE_SHARE;
+            var pan = Math.min(Math.max((turnProgress - panStart) / (1 - panStart), 0), 1);
+            gsap.set(imgs[i], { y: -maxOffsets[i] * pan });
+          }
+        });
+      },
     });
   }
 
