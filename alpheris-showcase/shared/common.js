@@ -21,6 +21,7 @@
     initPhotoDeckStack();
     initWorkHeadingReveal();
     initWorkTriggerSpotlight();
+    initAmplifiersParallax();
   });
 
   // ---- Step 1 / Step 2: loader intro -> resolves into the header logo ----
@@ -138,6 +139,52 @@
         duration: 22,
         ease: "none",
         repeat: -1,
+      });
+    });
+  }
+
+  // ---- Amplifiers: scattered big words drift at different speeds as the
+  // page scrolls (parallax, via "y"), and fade/scale into place the first
+  // time each one enters the viewport (via "opacity"/"scale" — a separate
+  // transform component, so it doesn't fight the parallax tween's "y") ----
+  function initAmplifiersParallax() {
+    var section = document.querySelector(".amplifiers");
+    if (!section) return;
+
+    var words = section.querySelectorAll(".amplifiers__word");
+    if (!words.length) return;
+
+    if (reduceMotion) return;
+
+    // Below 640px the words stack in normal flow (see the CSS media query)
+    // instead of sitting scattered/absolute, so a "y" parallax drift would
+    // just shove them into their stacked neighbors — skip it there.
+    var isScattered = window.innerWidth > 640;
+    var driftDistance = [-70, 90, -50];
+
+    words.forEach(function (word, i) {
+      gsap.from(word, {
+        opacity: 0,
+        scale: 0.85,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: section,
+          start: "top 85%",
+        },
+      });
+
+      if (!isScattered) return;
+
+      gsap.to(word, {
+        y: driftDistance[i % driftDistance.length],
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
       });
     });
   }

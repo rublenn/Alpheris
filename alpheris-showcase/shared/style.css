@@ -868,6 +868,83 @@ fieldset.form-field {
   font-size: 0.8em;
 }
 
+/* Amplifiers: a scattered composition of big words (lircle.co reference)
+   instead of a horizontal ticker. Each word drifts at its own speed as
+   the page scrolls (see initAmplifiersParallax in common.js), and fades
+   up into place the first time it enters the viewport. */
+
+.amplifiers {
+  position: relative;
+  overflow: hidden;
+  max-width: 1440px;
+  margin: 0 auto;
+  height: 60vh;
+  min-height: 420px;
+}
+
+.amplifiers__word {
+  position: absolute;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.amplifiers__word--1 {
+  top: 12%;
+  left: 5%;
+  font-size: clamp(2.25rem, 7vw, 5.5rem);
+  color: var(--paper);
+}
+
+.amplifiers__word--2 {
+  top: 46%;
+  right: 6%;
+  font-size: clamp(1.75rem, 5.5vw, 4rem);
+  font-style: italic;
+  color: var(--gold);
+}
+
+.amplifiers__word--3 {
+  bottom: 10%;
+  left: 10%;
+  font-size: clamp(2rem, 7.5vw, 6rem);
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--rule);
+}
+
+@media (max-width: 640px) {
+  .amplifiers {
+    height: auto;
+    min-height: 0;
+    padding: 5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .amplifiers__word {
+    position: static;
+    white-space: normal;
+  }
+
+  .amplifiers__word--1 {
+    font-size: clamp(2.25rem, 11vw, 3rem);
+  }
+
+  .amplifiers__word--2 {
+    font-size: clamp(1.75rem, 9vw, 2.5rem);
+    align-self: flex-end;
+    text-align: right;
+  }
+
+  .amplifiers__word--3 {
+    font-size: clamp(2.25rem, 11vw, 3rem);
+    -webkit-text-stroke: 1px var(--rule);
+  }
+}
+
 /* Loader lockup (Pass 1: static end-state only, Pass 2 animates into this) */
 
 .loader {
