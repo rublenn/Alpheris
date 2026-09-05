@@ -632,11 +632,26 @@ fieldset.form-field {
 }
 
 .photo-deck__item--photo {
+  display: block;
+  position: relative;
+  height: 180vh;
   padding: 0;
-  overflow: hidden;
+  border-top: none;
 }
 
-.photo-deck__item--photo img {
+.photo-deck__frame {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  border-top: 1px solid var(--rule);
+}
+
+.photo-deck__item--photo:last-child .photo-deck__frame {
+  border-bottom: 1px solid var(--rule);
+}
+
+.photo-deck__frame img {
   display: block;
   width: 100%;
   height: 100%;
@@ -644,11 +659,10 @@ fieldset.form-field {
   object-position: center top;
 }
 
-/* With JS, the image is taller than its card and gets panned via scroll
+/* With JS, the image is taller than its frame and gets panned via scroll
    (see initPhotoDeckPan in common.js) so the whole photo is revealed
-   while the card is pinned — same dwell time as the other cards, no
-   extra scroll length added. */
-.js .photo-deck__item--photo img {
+   instead of a fixed crop. */
+.js .photo-deck__frame img {
   height: 160%;
   position: absolute;
   top: 0;
