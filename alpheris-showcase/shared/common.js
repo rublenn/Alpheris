@@ -249,11 +249,17 @@
 
     var SLIDE_SHARE = 0.35; // portion of a card's turn spent sliding up
 
+    // Every card gets its own full-length dedicated segment [i, i+1] of the
+    // overall scroll: card 0 occupies [0,1], card 1 occupies [1,2], etc.
+    // A card only starts being covered once scroll crosses into the NEXT
+    // card's segment, so each card's own pan always has its full, otherwise
+    // undisturbed segment to complete in — including card 0, which used to
+    // get covered mid-pan because it shared its segment with card 1's slide.
     ScrollTrigger.create({
       trigger: deck,
       start: "top top",
       end: function () {
-        return "+=" + (n - 1) * window.innerHeight;
+        return "+=" + n * window.innerHeight;
       },
       pin: true,
       scrub: true,
@@ -263,15 +269,12 @@
         });
       },
       onUpdate: function (self) {
-        var overall = self.progress * (n - 1);
+        var overall = self.progress * n;
 
         items.forEach(function (item, i) {
-          var turnProgress;
+          var turnProgress = Math.min(Math.max(overall - i, 0), 1);
 
-          if (i === 0) {
-            turnProgress = Math.min(Math.max(overall, 0), 1);
-          } else {
-            turnProgress = Math.min(Math.max(overall - (i - 1), 0), 1);
+          if (i > 0) {
             var slide = Math.min(turnProgress / SLIDE_SHARE, 1);
             gsap.set(item, { yPercent: 100 * (1 - slide) });
           }
