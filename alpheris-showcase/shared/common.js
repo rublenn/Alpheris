@@ -71,6 +71,7 @@
 
     ScrollTrigger.create({
       start: 40,
+      end: "max",
       toggleClass: { targets: header, className: "is-scrolled" },
     });
   }
@@ -154,7 +155,24 @@
     var words = section.querySelectorAll(".amplifiers__word");
     if (!words.length) return;
 
-    if (reduceMotion) return;
+    if (reduceMotion) {
+      // No scroll-tied animation — jump straight to the resting state so
+      // the black/outlined words aren't stuck invisible against the
+      // section's dark starting background (.js .amplifiers).
+      gsap.set(section, { backgroundColor: "#ffffff" });
+      return;
+    }
+
+    gsap.to(section, {
+      backgroundColor: "#ffffff",
+      ease: "none",
+      scrollTrigger: {
+        trigger: section,
+        start: "top 90%",
+        end: "top 20%",
+        scrub: true,
+      },
+    });
 
     // Below 640px the words stack in normal flow (see the CSS media query)
     // instead of sitting scattered/absolute, so a "y" parallax drift would

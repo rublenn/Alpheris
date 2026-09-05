@@ -878,8 +878,16 @@ fieldset.form-field {
   overflow: hidden;
   max-width: 1440px;
   margin: 0 auto;
-  height: 60vh;
-  min-height: 420px;
+  height: 70vh;
+  min-height: 520px;
+  /* Pass 1 default: solid white so the black/outlined words stay legible
+     with no JS. Under .js this starts dark instead, and common.js scrubs
+     it to white as the section scrolls through (initAmplifiersParallax). */
+  background-color: #ffffff;
+}
+
+.js .amplifiers {
+  background-color: var(--ink);
 }
 
 .amplifiers__word {
@@ -892,14 +900,20 @@ fieldset.form-field {
 }
 
 .amplifiers__word--1 {
-  top: 12%;
+  top: 10%;
   left: 5%;
+  font-family: var(--font-label);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
   font-size: clamp(2.25rem, 7vw, 5.5rem);
-  color: var(--paper);
+  /* Always black — invisible against the section's own starting black
+     background, revealed only once that background scrubs to white. */
+  color: #000000;
 }
 
 .amplifiers__word--2 {
-  top: 46%;
+  top: 42%;
   right: 6%;
   font-size: clamp(1.75rem, 5.5vw, 4rem);
   font-style: italic;
@@ -907,11 +921,15 @@ fieldset.form-field {
 }
 
 .amplifiers__word--3 {
-  bottom: 10%;
-  left: 10%;
-  font-size: clamp(2rem, 7.5vw, 6rem);
+  bottom: 6%;
+  left: 8%;
+  font-family: var(--font-label);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  font-size: clamp(1.75rem, 6.5vw, 5rem);
   color: transparent;
-  -webkit-text-stroke: 1.5px var(--rule);
+  -webkit-text-stroke: 1.5px #000000;
 }
 
 @media (max-width: 640px) {
@@ -927,6 +945,8 @@ fieldset.form-field {
   .amplifiers__word {
     position: static;
     white-space: normal;
+    overflow-wrap: break-word;
+    max-width: 100%;
   }
 
   .amplifiers__word--1 {
@@ -940,8 +960,8 @@ fieldset.form-field {
   }
 
   .amplifiers__word--3 {
-    font-size: clamp(2.25rem, 11vw, 3rem);
-    -webkit-text-stroke: 1px var(--rule);
+    font-size: clamp(1.75rem, 9vw, 2.5rem);
+    -webkit-text-stroke: 1px #000000;
   }
 }
 
