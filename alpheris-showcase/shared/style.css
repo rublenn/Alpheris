@@ -9,6 +9,7 @@
   --font-display: "Fraunces", serif;
   --font-body: "Newsreader", serif;
   --font-label: "Archivo", sans-serif;
+  --font-statement: "Bodoni Moda", serif;
 }
 
 *,
@@ -233,7 +234,7 @@ a {
 
 .philosophy {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-statement);
   font-weight: 500;
   font-size: clamp(1.5rem, 3.4vw, 2.75rem);
   line-height: 1.5;
@@ -789,7 +790,7 @@ fieldset.form-field {
   display: flex;
   flex-wrap: wrap;
   margin: 0 0 4rem;
-  font-family: var(--font-display);
+  font-family: var(--font-statement);
   font-weight: 700;
   font-size: clamp(2rem, 5.5vw, 3.5rem);
   line-height: 1.15;

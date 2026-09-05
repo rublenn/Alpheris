@@ -39,3 +39,22 @@
   font-display: swap;
   src: url("archivo-normal.woff2") format("woff2");
 }
+
+/* Bold Didone display serif (free, SIL OFL) — closest self-hostable match
+   to the paid "Goku" typeface, used for the philosophy statement and the
+   work-statement heading. */
+@font-face {
+  font-family: "Bodoni Moda";
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url("bodonimoda-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Bodoni Moda";
+  font-style: italic;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url("bodonimoda-italic.woff2") format("woff2");
+}
