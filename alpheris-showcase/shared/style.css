@@ -673,6 +673,21 @@ fieldset.form-field {
   left: 0;
 }
 
+/* On narrow/portrait screens these landscape photos are so much wider
+   than the viewport that object-fit: cover (plus the 160% pan zoom)
+   crops out key subjects entirely. Show the full photo instead, letting
+   it sit on the ink background rather than bleed edge-to-edge. The pan
+   in common.js already turns itself off when the image doesn't overflow
+   its card, so this alone disables it here. */
+@media (max-width: 640px) {
+  .js .photo-deck__item--photo img {
+    height: 100%;
+    position: static;
+    object-fit: contain;
+    object-position: center;
+  }
+}
+
 /* How We Make It Work: click-to-reveal statement */
 
 .work-statement {
