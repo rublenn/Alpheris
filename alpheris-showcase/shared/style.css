@@ -125,13 +125,10 @@ a {
   z-index: 1;
 }
 
-.hero__bg-video--2 {
-  z-index: 2;
-}
-
-/* Hidden until JS positions it off-screen via gsap.set, avoiding a
-   flash of video2 covering video1 before the script runs. */
-.js .hero__bg-video--2 {
+/* Every video after the first is hidden until JS positions it off-screen
+   via gsap.set, avoiding a flash of it covering video 1 before the
+   script runs. */
+.js .hero__bg-video:not(.hero__bg-video--1) {
   opacity: 0;
 }
 
