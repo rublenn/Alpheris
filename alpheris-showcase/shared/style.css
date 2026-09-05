@@ -205,7 +205,7 @@ a {
    in common.js) */
 
 .philosophy-section {
-  background: var(--paper);
+  background: #ffffff;
 }
 
 .philosophy-section__inner {
