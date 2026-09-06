@@ -144,20 +144,63 @@
     });
   }
 
-  // ---- Cosmic scene: the Creativity/Hype-Earth/Neuromarketing composition
-  // is one full-bleed image (see the CSS) — it simply fades and scales up
-  // into place the first time it scrolls into view. ----
+  // ---- Cosmic scene: Creativity / Hype-Earth / Neuromarketing assemble
+  // into one pinned, scroll-scrubbed composition. The three layers already
+  // sit in their correct resting spot via plain flex layout (see the CSS) —
+  // this only adds a translate/opacity offset on top of that resting spot,
+  // so the "journey" is animated but the destination is always the
+  // guaranteed-to-fit flex layout underneath. Creativity rises from below,
+  // Earth drops from above, Neuromarketing slides in from the left, each on
+  // its own segment of the pinned scroll distance (same "pin the trigger,
+  // drive everything from scroll progress" approach as initPhotoDeckStack).
+  // Earth also gets a slow independent float on its own <img> (a separate
+  // element, so it can't fight the scrubbed parent transform). ----
   function initCosmicScene() {
-    var image = document.querySelector(".cosmic-scene__image");
-    if (!image || reduceMotion) return;
+    var section = document.querySelector(".cosmic-scene");
+    var pin = section && section.querySelector(".cosmic-scene__pin");
+    if (!section || !pin) return;
 
-    gsap.from(image, {
-      opacity: 0,
-      scale: 1.06,
-      duration: 1.2,
-      ease: "power2.out",
-      scrollTrigger: { trigger: image, start: "top 85%" },
+    var creativity = pin.querySelector(".cosmic-scene__layer--creativity");
+    var earth = pin.querySelector(".cosmic-scene__layer--earth");
+    var neuro = pin.querySelector(".cosmic-scene__layer--neuro");
+    if (!creativity || !earth || !neuro) return;
+
+    if (reduceMotion) return;
+
+    var vh = window.innerHeight;
+    var vw = window.innerWidth;
+
+    gsap.set(creativity, { y: vh * 0.6, autoAlpha: 0 });
+    gsap.set(earth, { y: -vh * 0.5, autoAlpha: 0, scale: 0.88 });
+    gsap.set(neuro, { x: -vw * 0.75, autoAlpha: 0 });
+
+    var tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+    tl.to(creativity, { y: 0, autoAlpha: 1, duration: 0.25 }, 0.05)
+      .to(earth, { y: 0, autoAlpha: 1, scale: 1, duration: 0.23 }, 0.42)
+      .to(neuro, { x: 0, autoAlpha: 1, duration: 0.23 }, 0.72);
+
+    ScrollTrigger.create({
+      trigger: pin,
+      start: "top top",
+      end: function () {
+        return "+=" + Math.round(window.innerHeight * 2.2);
+      },
+      pin: true,
+      scrub: 0.4,
+      animation: tl,
+      invalidateOnRefresh: true,
     });
+
+    var earthImg = earth.querySelector("img");
+    if (earthImg) {
+      gsap.to(earthImg, {
+        y: "+=10",
+        duration: 4,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+      });
+    }
   }
 
   // Wrap every word of an element's text (including inside nested tags,
