@@ -786,6 +786,10 @@ fieldset.form-field {
   color: var(--gold);
 }
 
+.work-intro__cta-btn {
+  margin-top: 1.5rem;
+}
+
 /* How We Make It Work: click-to-reveal statement */
 
 .work-statement {
