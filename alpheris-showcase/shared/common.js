@@ -21,6 +21,7 @@
     initPhotoDeckStack();
     initWorkHeadingReveal();
     initWorkTriggerSpotlight();
+    initWorkIntroSpotlight();
     initCosmicScene();
   });
 
@@ -291,6 +292,14 @@
   // "...and Reasons"): same word spotlight, "Purpose"/"Reasons" stay lit ----
   function initWorkTriggerSpotlight() {
     document.querySelectorAll(".work-statement__trigger").forEach(initSpotlightWords);
+  }
+
+  // ---- Work-intro lines ("You have a business...", etc.): same word
+  // spotlight — Business/Aim/People/Needs/Behave (marked .highlight in the
+  // markup) stay gold and fully lit, every other word dims in/out as it
+  // scrolls through ----
+  function initWorkIntroSpotlight() {
+    document.querySelectorAll(".work-intro__line").forEach(initSpotlightWords);
   }
 
   // ---- Work-statement heading: each word is rebuilt as text sitting
