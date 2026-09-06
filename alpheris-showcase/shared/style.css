@@ -1,0 +1,1247 @@
+:root {
+  --ink: #0e0d0b;        /* background, near-black */
+  --paper: #f2ede3;      /* primary text, warm off-white */
+  --paper-dim: #c9c2b2;  /* secondary/muted text */
+  --gold: #e8b33d;       /* primary accent */
+  --pine: #4f9c7c;       /* secondary accent, used sparingly */
+  --rule: rgba(242, 237, 225, 0.12); /* hairline borders/dividers */
+
+  --font-display: "Fraunces", serif;
+  --font-body: "Newsreader", serif;
+  --font-label: "Archivo", sans-serif;
+  --font-statement: "Bodoni Moda", serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--ink);
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+/* Header / nav (Pass 1: solid background; Pass 2 fades it in from transparent on scroll) */
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: var(--ink);
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.4s ease, border-color 0.4s ease;
+}
+
+/* Pass 2: JS starts the header transparent once GSAP confirms it can drive
+   the scroll-triggered swap back to solid; .no-js / no-script stays solid. */
+.js .site-header {
+  background: transparent;
+}
+
+.js .site-header.is-scrolled {
+  background: var(--ink);
+  border-bottom-color: var(--rule);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.25rem 2rem;
+}
+
+.site-header__nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.site-header__nav a {
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--paper);
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .site-header__inner {
+    flex-wrap: wrap;
+    row-gap: 0.75rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .site-header__nav {
+    width: 100%;
+    gap: 1.25rem;
+  }
+
+  .site-header__nav a {
+    font-size: 0.68rem;
+  }
+}
+
+.site-header__nav a:hover {
+  color: var(--gold);
+}
+
+.logo {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  text-decoration: none;
+}
+
+.logo__name {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--paper);
+}
+
+.logo__sub {
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+}
+
+/* Hero */
+
+.hero {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.hero__bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero__bg-video--1 {
+  z-index: 1;
+}
+
+/* Every video after the first is hidden until JS positions it off-screen
+   via gsap.set, avoiding a flash of it covering video 1 before the
+   script runs. */
+.js .hero__bg-video:not(.hero__bg-video--1) {
+  opacity: 0;
+}
+
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(14, 13, 11, 0.55);
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 2;
+  padding: 8rem 2rem 6rem;
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+
+.hero__headline {
+  margin: 0;
+  max-width: 20ch;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.5rem, 6vw, 5.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--paper);
+}
+
+.hero__headline em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--gold);
+}
+
+.hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2.75rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.75rem;
+  border-radius: 999px;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn--primary {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--paper);
+  border: 1px solid var(--rule);
+}
+
+/* Philosophy statement: a light, full-bleed break from the dark page (Pass
+   2 fades individual words in from a dim, low-opacity dark-on-paper state
+   to fully bold as the section scrolls through — see initPhilosophyReveal
+   in common.js) */
+
+.philosophy-section {
+  background: #ffffff;
+}
+
+.philosophy-section__inner {
+  padding: 7rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.philosophy {
+  margin: 0;
+  font-family: var(--font-statement);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3.4vw, 2.75rem);
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.philosophy p {
+  margin: 0;
+}
+
+.philosophy p + p {
+  margin-top: 1.5rem;
+}
+
+.philosophy .highlight {
+  color: var(--gold);
+  font-weight: 700;
+  font-style: italic;
+  text-transform: uppercase;
+}
+
+.philosophy__trigger {
+  display: inline;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(232, 179, 61, 0.5);
+  text-underline-offset: 0.15em;
+}
+
+.philosophy__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.philosophy__tags[hidden] {
+  display: none;
+}
+
+.philosophy__tag {
+  display: inline-flex;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid rgba(14, 13, 11, 0.15);
+  border-radius: 999px;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+/* Shared section label (eyebrow) */
+
+.section-label {
+  margin: 0 0 2.5rem;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+}
+
+/* Pass 2: scroll-reveal utility. Words inside .reveal elements brighten in
+   as the section scrolls through (see initGenericReveals in common.js),
+   dimmed/brightened per-word via inline styles set by GSAP — nothing here
+   hides the block itself, so a no-JS load stays fully visible (Pass 1). */
+
+/* Footer */
+
+.site-footer {
+  border-top: 1px solid var(--rule);
+  padding: 4rem 2rem 2rem;
+}
+
+.site-footer__inner {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 2.5rem;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-bottom: 3rem;
+}
+
+.site-footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.site-footer__col a {
+  text-decoration: none;
+  color: var(--paper-dim);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+}
+
+.site-footer__col a:hover {
+  color: var(--gold);
+}
+
+.site-footer__brand {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.35rem;
+  color: var(--paper);
+}
+
+.site-footer__tag {
+  margin: 0;
+  max-width: 32ch;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--paper-dim);
+}
+
+.site-footer__heading {
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  margin-bottom: 0.2rem;
+}
+
+.site-footer__bottom {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-top: 2rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--paper-dim);
+}
+
+@media (max-width: 720px) {
+  .site-footer__inner {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Start a Conversation form */
+
+.start {
+  padding: 6rem 2rem 8rem;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.start__heading {
+  margin: 0 0 3rem;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  color: var(--paper);
+}
+
+.start-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-field,
+fieldset.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.form-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.form-field label,
+.form-field legend {
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  padding: 0;
+}
+
+.form-field input[type="text"],
+.form-field textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  padding: 0.6rem 0;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: var(--paper);
+}
+
+.form-field textarea {
+  min-height: 4.5rem;
+  resize: vertical;
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--gold);
+}
+
+.choice-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.choice-pill {
+  position: relative;
+}
+
+.choice-pill input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.choice-pill span {
+  display: inline-flex;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--paper-dim);
+  cursor: pointer;
+}
+
+.choice-pill input:checked + span {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.choice-pill input:focus-visible + span {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.start-form__more {
+  border-top: 1px solid var(--rule);
+  padding-top: 1.5rem;
+}
+
+.start-form__more summary {
+  cursor: pointer;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.start-form__more-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 640px) {
+  .form-field-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Closing image, between the Start form and footer */
+
+.closing-image {
+  max-height: 85vh;
+  overflow: hidden;
+}
+
+.closing-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: 85vh;
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+/* Contact page intro */
+
+.contact-intro {
+  padding: 10rem 2rem 4rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.contact-intro__heading {
+  margin: 0 0 2rem;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  line-height: 1.05;
+  color: var(--paper);
+}
+
+.contact-intro__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+}
+
+.contact-intro__cta {
+  margin-top: 2.5rem;
+}
+
+.contact-intro__details a {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: var(--paper-dim);
+  text-decoration: none;
+}
+
+.contact-intro__details a:hover {
+  color: var(--gold);
+}
+
+.impressum-body {
+  max-width: 65ch;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--paper-dim);
+}
+
+.impressum-body h2 {
+  margin: 2.5rem 0 0.75rem;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--paper);
+}
+
+.impressum-body h2:first-child {
+  margin-top: 0;
+}
+
+.impressum-body p {
+  margin: 0;
+}
+
+.impressum-body a {
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.about-founder {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 2.5rem 3rem;
+  align-items: start;
+}
+
+.about-body {
+  max-width: 65ch;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--paper-dim);
+}
+
+.about-body + .about-body {
+  margin-top: 1.5rem;
+}
+
+.about-founder__photo {
+  grid-row: 1 / 3;
+  grid-column: 2;
+  aspect-ratio: 4 / 5;
+  border-radius: 4px;
+  background: rgba(242, 237, 225, 0.04);
+  border: 1px dashed var(--rule);
+}
+
+@media (max-width: 800px) {
+  .about-founder {
+    grid-template-columns: 1fr;
+  }
+
+  .about-founder__photo {
+    grid-row: auto;
+    grid-column: auto;
+    max-width: 320px;
+    order: -1;
+  }
+}
+
+/* The Questions list (used inside the "...and Reasons" dropdown) */
+
+.questions__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.questions__list--nested {
+  margin-top: 3rem;
+}
+
+.questions__item {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding: 1.75rem 0;
+  border-top: 1px solid var(--rule);
+}
+
+.questions__list .questions__item:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.questions__number {
+  flex: none;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+}
+
+.questions__text {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.35rem, 3.2vw, 2.25rem);
+  color: var(--paper);
+}
+
+.photo-deck-label {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 3rem 2rem 0;
+}
+
+.photo-deck-label .section-label {
+  margin: 0;
+}
+
+/* Pure client-photo deck: full-bleed images stacked, no text/captions.
+   No-JS fallback: plain CSS position:sticky, cards stack in normal
+   document flow. */
+
+.photo-deck {
+  position: relative;
+}
+
+.photo-deck__item {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  background: var(--ink);
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+}
+
+.photo-deck__item:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.photo-deck__item--photo {
+  padding: 0;
+}
+
+.photo-deck__item--photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+/* With JS (see initPhotoDeckStack in common.js): all cards are absolutely
+   stacked inside one pinned, viewport-sized "stage" and JS slides each one
+   up to instantly cover the previous card, instead of relying on CSS
+   position:sticky's document-flow handoff (which forces a viewport-height
+   "catch up" scroll where both cards blend together). */
+.js .photo-deck {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.js .photo-deck__item {
+  position: absolute;
+  inset: 0;
+  border-top: none;
+}
+
+.js .photo-deck__item--photo {
+  overflow: hidden;
+}
+
+.js .photo-deck__item--photo img {
+  height: 160%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* On narrow/portrait screens these landscape photos are so much wider
+   than the viewport that object-fit: cover (plus the 160% pan zoom)
+   crops out key subjects entirely. Show the full photo instead, letting
+   it sit on the ink background rather than bleed edge-to-edge. The pan
+   in common.js already turns itself off when the image doesn't overflow
+   its card, so this alone disables it here. */
+@media (max-width: 640px) {
+  .js .photo-deck__item--photo img {
+    height: 100%;
+    position: static;
+    object-fit: contain;
+    object-position: center;
+  }
+}
+
+/* Story: pinned scroll sequence (Creativity-style "cards accumulate as you
+   scroll" interaction, lircle/grigoletti-inspired). One tall section pins
+   a 100vh viewport (initStorySection in common.js pins .story__pin and
+   drives everything off scroll progress); the narrative text crossfades
+   line to line while numbered cards stack up behind each new arrival,
+   ending in a cream "final statement" card. */
+
+.story {
+  background: #0d0d0c;
+  position: relative;
+}
+
+.story::after {
+  /* very subtle grain, so the near-black background doesn't read flat */
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.6) 0.6px, transparent 0.6px);
+  background-size: 3px 3px;
+}
+
+.story__pin {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  padding: 0 6vw;
+}
+
+.story__text {
+  position: absolute;
+  left: 6vw;
+  top: 24vh;
+  max-width: 46vw;
+  z-index: 5;
+}
+
+.story__line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
+  font-family: var(--font-statement);
+  font-weight: 500;
+  font-size: clamp(2rem, 4.6vw, 4.5rem);
+  line-height: 1.15;
+  color: var(--paper);
+  opacity: 0;
+  filter: blur(6px);
+  will-change: transform, opacity, filter;
+}
+
+.story__stack {
+  position: absolute;
+  right: 5vw;
+  bottom: 4vh;
+  width: clamp(340px, 42vw, 620px);
+  aspect-ratio: 1335 / 860;
+}
+
+.story-card {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: linear-gradient(155deg, #1c1a15 0%, #100f0c 100%);
+  border: 1px solid rgba(232, 179, 61, 0.25);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35), 0 6px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem;
+  opacity: 1;
+  transform: translateY(110vh) rotate(2deg) scale(0.94);
+  will-change: transform;
+}
+
+/* Cards with a real supplied image already bake in their own border,
+   number and label — drop the CSS chrome underneath so the artwork shows
+   edge to edge. */
+.story-card--photo {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.story-card__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.story-card__num {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  color: var(--gold);
+}
+
+.story-card__label {
+  align-self: flex-end;
+  font-family: var(--font-label);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--paper);
+}
+
+.story__final {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: min(64vw, 760px);
+  height: fit-content;
+  padding: 3.5rem 3.5rem 4rem;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 32px;
+  z-index: 40;
+  transform: translateY(120vh);
+  will-change: transform;
+}
+
+.story__final-eyebrow {
+  margin: 0 0 1.5rem;
+  font-family: var(--font-label);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(14, 13, 11, 0.55);
+}
+
+.story__final-lead {
+  margin: 0 0 1rem;
+  font-family: var(--font-statement);
+  font-style: italic;
+  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+  color: rgba(14, 13, 11, 0.7);
+}
+
+.story__final-statement {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.75rem, 3vw, 2.75rem);
+  line-height: 1.3;
+}
+
+.story__final-statement .highlight {
+  color: #b8790f;
+  font-style: italic;
+}
+
+.story__cta {
+  background: #0d0d0c;
+  padding: 0 6vw 6rem;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .story__text {
+    max-width: 78vw;
+    top: 12vh;
+  }
+
+  .story__stack {
+    right: 50%;
+    transform: translateX(50%);
+    bottom: 6vh;
+    width: min(90vw, 520px);
+  }
+
+  .story__final {
+    width: 86vw;
+    padding: 2.5rem 1.75rem 3rem;
+  }
+}
+
+/* How We Make It Work: click-to-reveal statement */
+
+.work-statement {
+  padding: 8rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.work-statement__heading {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 0 4rem;
+  font-family: var(--font-statement);
+  font-weight: 700;
+  font-size: clamp(2rem, 5.5vw, 3.5rem);
+  line-height: 1.15;
+  color: var(--paper);
+}
+
+/* Block-reveal ("morph") effect: each word sits under a solid block that
+   wipes away left -> right as the heading scrolls into view (see
+   initWorkHeadingReveal in common.js). Built by JS, so it degrades to
+   plain static text with no JS. */
+.wh-word {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  padding: 0 0.02em;
+}
+
+.wh-word:not(:last-child) {
+  margin-right: 0.28em;
+}
+
+.wh-word__block {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+  transform-origin: right;
+}
+
+.work-statement__toggle + .work-statement__toggle {
+  margin-top: 2rem;
+}
+
+.work-statement__toggle summary {
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2rem, 5.5vw, 3.5rem);
+  line-height: 1.15;
+  color: var(--paper);
+}
+
+.work-statement__trigger .highlight {
+  color: var(--gold);
+  font-weight: 700;
+  font-style: italic;
+  text-transform: uppercase;
+}
+
+.work-statement__toggle summary::-webkit-details-marker {
+  display: none;
+}
+
+.work-statement__toggle summary::after {
+  content: "+";
+  display: inline-block;
+  margin-left: 0.5rem;
+  color: var(--gold);
+  transition: transform 0.3s ease;
+}
+
+.work-statement__toggle[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.ads-list {
+  list-style: none;
+  margin: 3rem 0 0;
+  padding: 0;
+}
+
+.ads-list__item {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.75rem 0;
+  border-top: 1px solid var(--rule);
+}
+
+.ads-list__item:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.ads-list__number {
+  flex: none;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.25rem;
+  color: var(--gold);
+}
+
+.ads-list__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.ads-list__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+  color: var(--paper);
+}
+
+.ads-list__desc {
+  margin: 0;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--paper-dim);
+}
+
+/* Marquee ticker (Pass 1: static row; Pass 2 scrolls it leftward, infinite loop) */
+
+.marquee {
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  overflow: hidden;
+}
+
+.marquee__track {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1.75rem 2rem;
+  width: max-content;
+}
+
+.marquee__item {
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: clamp(0.95rem, 2vw, 1.35rem);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--paper);
+  white-space: nowrap;
+}
+
+.marquee__dot {
+  color: var(--gold);
+  font-size: 0.8em;
+}
+
+/* Cosmic scene: Creativity full-bleed (near full screen), then Earth close
+   beneath it at a much smaller size (it only fills part of its own frame),
+   then Neuromarketing close beneath that, full-bleed again. Plain flow
+   layout in both passes — under .js, initCosmicScene() (common.js) only
+   adds a scroll-scrubbed translate/opacity on top of that resting spot as
+   each layer individually scrolls through the viewport (creativity up,
+   earth down, neuromarketing from the left); layout/spacing itself never
+   changes, so it always fits the page. */
+
+.cosmic-scene {
+  background: var(--ink) url("../images/cosmic-starfield-tile.webp") repeat;
+  background-size: 900px 900px;
+}
+
+.cosmic-scene__pin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 3rem 0;
+}
+
+.cosmic-scene__layer,
+.cosmic-scene__layer img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.cosmic-scene__layer--creativity,
+.cosmic-scene__layer--neuro {
+  width: 100%;
+}
+
+.cosmic-scene__layer--earth {
+  width: min(26.4vw, 374px);
+  /* Pull up into Creativity's own frame (vw-based, like its full-bleed
+     width, so the overlap tracks it at any viewport size) so Earth nestles
+     just under the word instead of sitting in the empty gap below it. */
+  margin-top: -26vw;
+}
+
+.cosmic-scene__layer--neuro {
+  margin-top: -25vh;
+}
+
+@media (max-width: 640px) {
+  .cosmic-scene__pin {
+    gap: 1rem;
+  }
+
+  .cosmic-scene__layer--earth {
+    width: 40vw;
+    margin-top: -26vw;
+  }
+
+  .cosmic-scene__layer--neuro {
+    margin-top: -12.5vh;
+  }
+}
+
+/* Loader lockup (Pass 1: static end-state only, Pass 2 animates into this) */
+
+.loader {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.loader__lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.loader__name {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(3rem, 12vw, 8rem);
+  line-height: 0.95;
+  color: var(--paper);
+}
+
+.loader__sub {
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+}
