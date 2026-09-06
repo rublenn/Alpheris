@@ -144,75 +144,68 @@
     });
   }
 
-  // ---- Cosmic scene: Creativity / Hype-Earth / Neuromarketing assemble
-  // into one pinned, scroll-scrubbed composition. Creativity rises from
-  // below, Earth drops from above, Neuromarketing slides in from the left
-  // — each on its own segment of the pinned scroll distance, using the
-  // same "pin the trigger, drive everything from scroll progress" approach
-  // as initPhotoDeckStack. Earth also gets a slow independent float on its
-  // own <img> (a separate element, so it can't fight the scrubbed parent
-  // transform). ----
+  // ---- Cosmic scene: Creativity, then Hype-Earth, then Neuromarketing —
+  // stacked top to bottom in normal document flow (see the CSS), each
+  // scrubbed in from its own direction as it individually scrolls through
+  // the viewport: Creativity rises from below, Earth drops from above,
+  // Neuromarketing slides in from the left. Earth also gets a slow
+  // independent float on its own <img> (a separate element, so it can't
+  // fight the scrubbed parent transform). ----
   function initCosmicScene() {
     var section = document.querySelector(".cosmic-scene");
-    var pin = section && section.querySelector(".cosmic-scene__pin");
-    if (!section || !pin) return;
+    if (!section) return;
 
-    var creativity = pin.querySelector(".cosmic-scene__layer--creativity");
-    var earth = pin.querySelector(".cosmic-scene__layer--earth");
-    var neuro = pin.querySelector(".cosmic-scene__layer--neuro");
+    var creativity = section.querySelector(".cosmic-scene__layer--creativity");
+    var earth = section.querySelector(".cosmic-scene__layer--earth");
+    var neuro = section.querySelector(".cosmic-scene__layer--neuro");
     if (!creativity || !earth || !neuro) return;
 
-    if (reduceMotion) {
-      gsap.set([creativity, earth, neuro], { clearProps: "all" });
-      return;
-    }
+    if (reduceMotion) return;
 
-    function place() {
-      var vh = window.innerHeight;
-      var vw = window.innerWidth;
+    gsap.fromTo(
+      creativity,
+      { y: 100, autoAlpha: 0 },
+      {
+        y: 0,
+        autoAlpha: 1,
+        ease: "none",
+        scrollTrigger: { trigger: creativity, start: "top 95%", end: "top 55%", scrub: 0.4 },
+      }
+    );
 
-      // All three layers share one box (see .cosmic-scene__layer), centered
-      // at xPercent/yPercent -50 — that constant baseline is what keeps
-      // them in registration with each other; only x/y (the travel-in
-      // offset) differs per layer.
-      gsap.set(creativity, { xPercent: -50, yPercent: -50, y: vh * 0.6, autoAlpha: 0 });
-      gsap.set(earth, { xPercent: -50, yPercent: -50, y: -vh * 0.55, autoAlpha: 0, scale: 0.92 });
-      gsap.set(neuro, { xPercent: -50, yPercent: -50, x: -vw * 0.85, autoAlpha: 0 });
-    }
+    gsap.fromTo(
+      earth,
+      { y: -100, autoAlpha: 0, scale: 0.85 },
+      {
+        y: 0,
+        autoAlpha: 1,
+        scale: 1,
+        ease: "none",
+        scrollTrigger: { trigger: earth, start: "top 95%", end: "top 55%", scrub: 0.4 },
+      }
+    );
 
-    place();
-
-    var tl = gsap.timeline({ defaults: { ease: "power2.out" } });
-    tl.to(creativity, { y: 0, autoAlpha: 1, duration: 0.25 }, 0.05)
-      .to(earth, { y: 0, autoAlpha: 1, scale: 1, duration: 0.23 }, 0.42)
-      .to(neuro, { x: 0, autoAlpha: 1, duration: 0.23 }, 0.72);
-
-    var st = ScrollTrigger.create({
-      trigger: pin,
-      start: "top top",
-      end: function () {
-        return "+=" + Math.round(window.innerHeight * 2.5);
-      },
-      pin: true,
-      scrub: 0.4,
-      animation: tl,
-      invalidateOnRefresh: true,
-    });
+    gsap.fromTo(
+      neuro,
+      { x: -140, autoAlpha: 0 },
+      {
+        x: 0,
+        autoAlpha: 1,
+        ease: "none",
+        scrollTrigger: { trigger: neuro, start: "top 95%", end: "top 55%", scrub: 0.4 },
+      }
+    );
 
     var earthImg = earth.querySelector("img");
     if (earthImg) {
       gsap.to(earthImg, {
-        y: "+=14",
-        duration: 4.5,
+        y: "+=10",
+        duration: 4,
         ease: "sine.inOut",
         yoyo: true,
         repeat: -1,
       });
     }
-
-    window.addEventListener("resize", function () {
-      st.refresh();
-    });
   }
 
   // Wrap every word of an element's text (including inside nested tags,

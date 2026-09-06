@@ -948,28 +948,26 @@ fieldset.form-field {
   font-size: 0.8em;
 }
 
-/* Cosmic scene: Creativity / Hype-Earth / Neuromarketing assemble into one
-   continuous scroll-driven composition. Pass 1 default is a plain readable
-   vertical stack; under .js, initCosmicScene() (common.js) pins the section
-   and scrubs each layer in from its own direction as the section scrolls. */
+/* Cosmic scene: Creativity, then Hype-Earth, then Neuromarketing — stacked
+   top to bottom like the full-composition reference, each its own size
+   (Earth much smaller than the other two) with a slight overlap between
+   them. Normal document flow in both passes, so it always fits the page;
+   under .js, initCosmicScene() (common.js) scrubs each layer in from its
+   own direction (up / down / left) as it scrolls into view. */
 
 .cosmic-scene {
   position: relative;
   background: var(--ink);
+  padding: 5rem 0;
 }
 
 .cosmic-scene__pin {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
-  padding: 4rem 1.5rem;
+  padding: 0 1.5rem;
 }
 
-/* All three assets share one canvas (each is the same full frame with only
-   its own element visible, the rest transparent/black) — they must render
-   at the exact same box so they land in registration with each other,
-   pixel for pixel, exactly like the full-composition reference. */
 .cosmic-scene__layer,
 .cosmic-scene__layer img {
   display: block;
@@ -977,26 +975,34 @@ fieldset.form-field {
   height: auto;
 }
 
-.cosmic-scene__layer {
-  max-width: 1600px;
+.cosmic-scene__layer--creativity {
+  width: min(78vw, 1100px);
 }
 
-.js .cosmic-scene__pin {
-  position: relative;
-  height: 100vh;
-  overflow: hidden;
-  display: block;
-  padding: 0;
-  gap: 0;
+.cosmic-scene__layer--earth {
+  width: min(18vw, 260px);
+  margin-top: -3rem;
 }
 
-.js .cosmic-scene__layer {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: min(92vw, 1600px);
-  max-width: none;
-  will-change: transform, opacity;
+.cosmic-scene__layer--neuro {
+  width: min(85vw, 1300px);
+  margin-top: -3.5rem;
+}
+
+@media (max-width: 640px) {
+  .cosmic-scene__layer--creativity {
+    width: 92vw;
+  }
+
+  .cosmic-scene__layer--earth {
+    width: 32vw;
+    margin-top: -1.25rem;
+  }
+
+  .cosmic-scene__layer--neuro {
+    width: 96vw;
+    margin-top: -1.5rem;
+  }
 }
 
 /* Loader lockup (Pass 1: static end-state only, Pass 2 animates into this) */
