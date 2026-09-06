@@ -958,7 +958,8 @@ fieldset.form-field {
    changes, so it always fits the page. */
 
 .cosmic-scene {
-  background: var(--ink);
+  background: var(--ink) url("../images/cosmic-starfield-tile.webp") repeat;
+  background-size: 900px 900px;
 }
 
 .cosmic-scene__pin {
