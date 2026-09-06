@@ -990,7 +990,7 @@ fieldset.form-field {
 }
 
 .cosmic-scene__layer--neuro {
-  margin-top: -20.8vh;
+  margin-top: -25vh;
 }
 
 @media (max-width: 640px) {
@@ -1004,7 +1004,7 @@ fieldset.form-field {
   }
 
   .cosmic-scene__layer--neuro {
-    margin-top: -10.4vh;
+    margin-top: -12.5vh;
   }
 }
 
