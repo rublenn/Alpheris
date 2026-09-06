@@ -982,7 +982,12 @@ fieldset.form-field {
 }
 
 .cosmic-scene__layer--earth {
-  width: min(24vw, 340px);
+  width: min(26.4vw, 374px);
+  margin-top: -8vh;
+}
+
+.cosmic-scene__layer--neuro {
+  margin-top: -16vh;
 }
 
 @media (max-width: 640px) {
@@ -991,7 +996,12 @@ fieldset.form-field {
   }
 
   .cosmic-scene__layer--earth {
-    width: 36vw;
+    width: 40vw;
+    margin-top: -4vh;
+  }
+
+  .cosmic-scene__layer--neuro {
+    margin-top: -8vh;
   }
 }
 
