@@ -747,6 +747,45 @@ fieldset.form-field {
   }
 }
 
+/* Work intro: a short cause-and-effect build-up leading into the
+   "How do we make it happen?" section below */
+
+.work-intro {
+  padding: 7rem 2rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.work-intro__line {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-statement);
+  font-size: clamp(1.25rem, 2.6vw, 1.9rem);
+  line-height: 1.4;
+  color: var(--paper);
+}
+
+.work-intro__line--transition {
+  margin-top: 2rem;
+  font-style: italic;
+  color: var(--paper-dim);
+}
+
+.work-intro__line--statement {
+  margin-top: 1rem;
+  font-weight: 700;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  line-height: 1.3;
+  color: var(--paper);
+}
+
+.work-intro__line--cta {
+  margin-top: 2.5rem;
+  font-style: italic;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 3.2vw, 2.25rem);
+  color: var(--gold);
+}
+
 /* How We Make It Work: click-to-reveal statement */
 
 .work-statement {
