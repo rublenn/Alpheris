@@ -948,16 +948,14 @@ fieldset.form-field {
   font-size: 0.8em;
 }
 
-/* Cosmic scene: Creativity, Hype-Earth and Neuromarketing assemble into one
-   pinned, scroll-scrubbed composition (initCosmicScene in common.js).
-   Layout is a plain centered flex column in BOTH passes — that's what
-   guarantees the three pieces always end up correctly sized, spaced and
-   fully on-screen, in the same relative arrangement as the full-composition
-   reference (Earth much smaller than the other two, since it only fills
-   part of its own frame). Under .js, common.js pins this column in the
-   viewport and animates each layer in from off-screen (translate only —
-   layout/spacing itself never changes), so the resting position is exactly
-   this flex layout the whole time. */
+/* Cosmic scene: Creativity full-bleed (near full screen), then Earth close
+   beneath it at a much smaller size (it only fills part of its own frame),
+   then Neuromarketing close beneath that, full-bleed again. Plain flow
+   layout in both passes — under .js, initCosmicScene() (common.js) only
+   adds a scroll-scrubbed translate/opacity on top of that resting spot as
+   each layer individually scrolls through the viewport (creativity up,
+   earth down, neuromarketing from the left); layout/spacing itself never
+   changes, so it always fits the page. */
 
 .cosmic-scene {
   background: var(--ink);
@@ -967,15 +965,8 @@ fieldset.form-field {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 2.5vh;
-  padding: 4rem 1.5rem;
-}
-
-.js .cosmic-scene__pin {
-  height: 100vh;
-  overflow: hidden;
-  padding: 0 1.5rem;
+  gap: 1.25rem;
+  padding: 3rem 0;
 }
 
 .cosmic-scene__layer,
@@ -985,38 +976,22 @@ fieldset.form-field {
   height: auto;
 }
 
-/* All three source images share the same ~16:9 frame aspect ratio, so a
-   layer's height is always ~0.5625x its width — these widths are sized so
-   creativity + earth + neuro + the two gaps comfortably total well under
-   100vh on typical viewports, instead of relying on vh directly (which
-   would fight the aspect ratio and either clip or leave the layer tiny). */
-.cosmic-scene__layer--creativity {
-  width: min(34vw, 560px);
+.cosmic-scene__layer--creativity,
+.cosmic-scene__layer--neuro {
+  width: 100%;
 }
 
 .cosmic-scene__layer--earth {
-  width: min(12vw, 190px);
-}
-
-.cosmic-scene__layer--neuro {
-  width: min(38vw, 620px);
+  width: min(24vw, 340px);
 }
 
 @media (max-width: 640px) {
   .cosmic-scene__pin {
-    gap: 2vh;
-  }
-
-  .cosmic-scene__layer--creativity {
-    width: 70vw;
+    gap: 1rem;
   }
 
   .cosmic-scene__layer--earth {
-    width: 26vw;
-  }
-
-  .cosmic-scene__layer--neuro {
-    width: 82vw;
+    width: 36vw;
   }
 }
 
