@@ -18,7 +18,9 @@
         <span class="logo__sub">Medien</span>
       </a>
       <nav class="site-header__nav">
+        <a href="#work">How We Work</a>
         <a href="contact.html">Contact</a>
+        <a href="about.html">About Us</a>
       </nav>
     </div>
   </header>
@@ -205,118 +207,25 @@
         <input id="f-name" name="name" type="text" required />
       </div>
 
+      <div class="form-field">
+        <label for="f-business">Line of Business</label>
+        <input id="f-business" name="line_of_business" type="text" required />
+      </div>
+
       <fieldset class="form-field">
-        <legend>Primary Objective</legend>
+        <legend>Current Aim</legend>
         <div class="choice-group">
-          <label class="choice-pill"><input type="radio" name="objective" value="Followers" /><span>Followers</span></label>
-          <label class="choice-pill"><input type="radio" name="objective" value="Lead" /><span>Lead</span></label>
-          <label class="choice-pill"><input type="radio" name="objective" value="Sales" /><span>Sales</span></label>
+          <label class="choice-pill"><input type="radio" name="current_aim" value="More Leads" /><span>More Leads</span></label>
+          <label class="choice-pill"><input type="radio" name="current_aim" value="More Sales" /><span>More Sales</span></label>
+          <label class="choice-pill"><input type="radio" name="current_aim" value="Brand Awareness" /><span>Brand Awareness</span></label>
+          <label class="choice-pill"><input type="radio" name="current_aim" value="Customer Retention" /><span>Customer Retention</span></label>
         </div>
       </fieldset>
 
       <div class="form-field">
-        <label for="f-audience">Describe Your Target Audience</label>
-        <textarea id="f-audience" name="target_audience" placeholder="Demographics, interests, behavior…"></textarea>
+        <label for="f-social">Social Media Handle</label>
+        <input id="f-social" name="social_media_handle" type="text" placeholder="@yourbusiness" />
       </div>
-
-      <details class="start-form__more">
-        <summary>Fill in Detail</summary>
-
-        <div class="start-form__more-fields">
-          <div class="form-field">
-            <label for="f-business">Line of Business</label>
-            <input id="f-business" name="line_of_business" type="text" />
-          </div>
-
-          <div class="form-field-row">
-            <div class="form-field">
-              <label for="f-competitor">Best Performing Competitor</label>
-              <input id="f-competitor" name="competitor" type="text" />
-            </div>
-            <div class="form-field">
-              <label for="f-reference">Content Reference</label>
-              <input id="f-reference" name="content_reference" type="text" placeholder="Link" />
-            </div>
-          </div>
-
-          <fieldset class="form-field">
-            <legend>Content Type</legend>
-            <div class="choice-group">
-              <label class="choice-pill"><input type="checkbox" name="content_type" value="Static Posts" /><span>Static Posts</span></label>
-              <label class="choice-pill"><input type="checkbox" name="content_type" value="Cinematic Clips" /><span>Cinematic Clips</span></label>
-              <label class="choice-pill"><input type="checkbox" name="content_type" value="Interactive Reels" /><span>Interactive Reels</span></label>
-              <label class="choice-pill"><input type="checkbox" name="content_type" value="Acting Reels" /><span>Acting Reels</span></label>
-              <label class="choice-pill"><input type="checkbox" name="content_type" value="Advertisements" /><span>Advertisements</span></label>
-            </div>
-          </fieldset>
-
-          <fieldset class="form-field">
-            <legend>Content Tone</legend>
-            <div class="choice-group">
-              <label class="choice-pill"><input type="checkbox" name="content_tone" value="Formal" /><span>Formal</span></label>
-              <label class="choice-pill"><input type="checkbox" name="content_tone" value="Friendly" /><span>Friendly</span></label>
-              <label class="choice-pill"><input type="checkbox" name="content_tone" value="Informative" /><span>Informative</span></label>
-              <label class="choice-pill"><input type="checkbox" name="content_tone" value="Humorous" /><span>Humorous</span></label>
-              <label class="choice-pill"><input type="checkbox" name="content_tone" value="Comparative" /><span>Comparative</span></label>
-              <label class="choice-pill"><input type="checkbox" name="content_tone" value="Surprising" /><span>Surprising</span></label>
-              <label class="choice-pill"><input type="checkbox" name="content_tone" value="Creative" /><span>Creative</span></label>
-              <label class="choice-pill"><input type="checkbox" name="content_tone" value="Motivational" /><span>Motivational</span></label>
-              <label class="choice-pill"><input type="checkbox" name="content_tone" value="Storytelling" /><span>Storytelling</span></label>
-              <label class="choice-pill"><input type="checkbox" name="content_tone" value="Luxury" /><span>Luxury</span></label>
-            </div>
-          </fieldset>
-
-          <div class="form-field">
-            <label for="f-products">Products / Services Offered</label>
-            <textarea id="f-products" name="products_services"></textarea>
-          </div>
-
-          <div class="form-field">
-            <label for="f-usp">Unique Selling Point</label>
-            <textarea id="f-usp" name="usp"></textarea>
-          </div>
-
-          <fieldset class="form-field">
-            <legend>On Screen Talent</legend>
-            <div class="choice-group">
-              <label class="choice-pill"><input type="radio" name="on_screen_talent" value="Self" /><span>Self</span></label>
-              <label class="choice-pill"><input type="radio" name="on_screen_talent" value="Employee" /><span>Employee</span></label>
-              <label class="choice-pill"><input type="radio" name="on_screen_talent" value="Outsource" /><span>Outsource</span></label>
-            </div>
-          </fieldset>
-
-          <fieldset class="form-field">
-            <legend>Shooting Method</legend>
-            <div class="choice-group">
-              <label class="choice-pill"><input type="radio" name="shooting_method" value="Regular" /><span>Regular</span></label>
-              <label class="choice-pill"><input type="radio" name="shooting_method" value="Professional" /><span>Professional</span></label>
-            </div>
-          </fieldset>
-
-          <fieldset class="form-field">
-            <legend>Growth Strategy</legend>
-            <div class="choice-group">
-              <label class="choice-pill"><input type="radio" name="growth_strategy" value="Organic" /><span>Organic</span></label>
-              <label class="choice-pill"><input type="radio" name="growth_strategy" value="Paid" /><span>Paid</span></label>
-            </div>
-          </fieldset>
-
-          <fieldset class="form-field">
-            <legend>Challenges Faced</legend>
-            <div class="choice-group">
-              <label class="choice-pill"><input type="checkbox" name="challenges" value="Time" /><span>Time</span></label>
-              <label class="choice-pill"><input type="checkbox" name="challenges" value="Creativity" /><span>Creativity</span></label>
-              <label class="choice-pill"><input type="checkbox" name="challenges" value="Budget" /><span>Budget</span></label>
-              <label class="choice-pill"><input type="checkbox" name="challenges" value="Engagement" /><span>Engagement</span></label>
-            </div>
-          </fieldset>
-
-          <div class="form-field">
-            <label for="f-notes">Any Other Expectations / Notes</label>
-            <textarea id="f-notes" name="notes"></textarea>
-          </div>
-        </div>
-      </details>
 
       <button type="submit" class="btn btn--primary">Send It Over</button>
     </form>
