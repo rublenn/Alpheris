@@ -983,7 +983,10 @@ fieldset.form-field {
 
 .cosmic-scene__layer--earth {
   width: min(26.4vw, 374px);
-  margin-top: -8vh;
+  /* Pull up into Creativity's own frame (vw-based, like its full-bleed
+     width, so the overlap tracks it at any viewport size) so Earth nestles
+     just under the word instead of sitting in the empty gap below it. */
+  margin-top: -26vw;
 }
 
 .cosmic-scene__layer--neuro {
@@ -997,7 +1000,7 @@ fieldset.form-field {
 
   .cosmic-scene__layer--earth {
     width: 40vw;
-    margin-top: -4vh;
+    margin-top: -26vw;
   }
 
   .cosmic-scene__layer--neuro {
