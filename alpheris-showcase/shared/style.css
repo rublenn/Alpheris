@@ -948,61 +948,20 @@ fieldset.form-field {
   font-size: 0.8em;
 }
 
-/* Cosmic scene: Creativity, then Hype-Earth, then Neuromarketing — stacked
-   top to bottom like the full-composition reference, each its own size
-   (Earth much smaller than the other two) with a slight overlap between
-   them. Normal document flow in both passes, so it always fits the page;
-   under .js, initCosmicScene() (common.js) scrubs each layer in from its
-   own direction (up / down / left) as it scrolls into view. */
+/* Cosmic scene: the Creativity / Hype-Earth / Neuromarketing composition,
+   shown full-bleed as one image so it always matches the reference exactly.
+   A simple fade-and-scale-in plays once as it scrolls into view (see
+   .reveal-scale in common.js / initCosmicScene). */
 
 .cosmic-scene {
-  position: relative;
   background: var(--ink);
-  padding: 5rem 0;
+  padding: 3rem 0;
 }
 
-.cosmic-scene__pin {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0 1.5rem;
-}
-
-.cosmic-scene__layer,
-.cosmic-scene__layer img {
+.cosmic-scene__image {
   display: block;
   width: 100%;
   height: auto;
-}
-
-.cosmic-scene__layer--creativity {
-  width: min(78vw, 1100px);
-}
-
-.cosmic-scene__layer--earth {
-  width: min(18vw, 260px);
-  margin-top: -3rem;
-}
-
-.cosmic-scene__layer--neuro {
-  width: min(85vw, 1300px);
-  margin-top: -3.5rem;
-}
-
-@media (max-width: 640px) {
-  .cosmic-scene__layer--creativity {
-    width: 92vw;
-  }
-
-  .cosmic-scene__layer--earth {
-    width: 32vw;
-    margin-top: -1.25rem;
-  }
-
-  .cosmic-scene__layer--neuro {
-    width: 96vw;
-    margin-top: -1.5rem;
-  }
 }
 
 /* Loader lockup (Pass 1: static end-state only, Pass 2 animates into this) */

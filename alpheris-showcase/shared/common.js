@@ -144,68 +144,20 @@
     });
   }
 
-  // ---- Cosmic scene: Creativity, then Hype-Earth, then Neuromarketing —
-  // stacked top to bottom in normal document flow (see the CSS), each
-  // scrubbed in from its own direction as it individually scrolls through
-  // the viewport: Creativity rises from below, Earth drops from above,
-  // Neuromarketing slides in from the left. Earth also gets a slow
-  // independent float on its own <img> (a separate element, so it can't
-  // fight the scrubbed parent transform). ----
+  // ---- Cosmic scene: the Creativity/Hype-Earth/Neuromarketing composition
+  // is one full-bleed image (see the CSS) — it simply fades and scales up
+  // into place the first time it scrolls into view. ----
   function initCosmicScene() {
-    var section = document.querySelector(".cosmic-scene");
-    if (!section) return;
+    var image = document.querySelector(".cosmic-scene__image");
+    if (!image || reduceMotion) return;
 
-    var creativity = section.querySelector(".cosmic-scene__layer--creativity");
-    var earth = section.querySelector(".cosmic-scene__layer--earth");
-    var neuro = section.querySelector(".cosmic-scene__layer--neuro");
-    if (!creativity || !earth || !neuro) return;
-
-    if (reduceMotion) return;
-
-    gsap.fromTo(
-      creativity,
-      { y: 100, autoAlpha: 0 },
-      {
-        y: 0,
-        autoAlpha: 1,
-        ease: "none",
-        scrollTrigger: { trigger: creativity, start: "top 95%", end: "top 55%", scrub: 0.4 },
-      }
-    );
-
-    gsap.fromTo(
-      earth,
-      { y: -100, autoAlpha: 0, scale: 0.85 },
-      {
-        y: 0,
-        autoAlpha: 1,
-        scale: 1,
-        ease: "none",
-        scrollTrigger: { trigger: earth, start: "top 95%", end: "top 55%", scrub: 0.4 },
-      }
-    );
-
-    gsap.fromTo(
-      neuro,
-      { x: -140, autoAlpha: 0 },
-      {
-        x: 0,
-        autoAlpha: 1,
-        ease: "none",
-        scrollTrigger: { trigger: neuro, start: "top 95%", end: "top 55%", scrub: 0.4 },
-      }
-    );
-
-    var earthImg = earth.querySelector("img");
-    if (earthImg) {
-      gsap.to(earthImg, {
-        y: "+=10",
-        duration: 4,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-      });
-    }
+    gsap.from(image, {
+      opacity: 0,
+      scale: 1.06,
+      duration: 1.2,
+      ease: "power2.out",
+      scrollTrigger: { trigger: image, start: "top 85%" },
+    });
   }
 
   // Wrap every word of an element's text (including inside nested tags,
