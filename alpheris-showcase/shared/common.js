@@ -21,8 +21,7 @@
     initPhotoDeckStack();
     initWorkHeadingReveal();
     initWorkTriggerSpotlight();
-    initWorkIntroSpotlight();
-    initWorkIntroMagnify();
+    initStorySection();
     initCosmicScene();
   });
 
@@ -295,71 +294,94 @@
     document.querySelectorAll(".work-statement__trigger").forEach(initSpotlightWords);
   }
 
-  // ---- Work-intro lines ("You have a business...", etc.): same word
-  // spotlight — words dim in/out as they scroll through, the statement
-  // line's .highlight words (people/needs/behaviour/aim) stay gold and
-  // fully lit throughout ----
-  function initWorkIntroSpotlight() {
-    document.querySelectorAll(".work-intro__line").forEach(initSpotlightWords);
-  }
+  // ---- Story section: a pinned scroll sequence where the narrative text
+  // crossfades line to line while numbered cards arrive from below and
+  // stack up behind each new arrival (grigoletti.ch-style interaction),
+  // ending in a cream "final statement" card. One gsap timeline, pinned via
+  // ScrollTrigger on .story__pin (same "pin the trigger, drive everything
+  // off scroll progress" approach as initPhotoDeckStack), scrubbed so nothing
+  // depends on real time — only scroll position. ----
+  function initStorySection() {
+    var section = document.querySelector(".story");
+    var pin = section && section.querySelector(".story__pin");
+    if (!section || !pin) return;
 
-  // ---- Work-intro magnifying glass: a decorative lens scans down the
-  // section as you scroll (pure visual, tied to overall section progress),
-  // while every word individually scales up as it passes the viewport
-  // center and back down after — same trigger points as the opacity
-  // spotlight above, just a different transform property so the two don't
-  // fight. The nine chained words (marked [data-mg-color] in the markup —
-  // business/aim/people/needs/behave, alternating red/yellow) additionally
-  // snap to their assigned color right as they hit peak magnification, and
-  // stay that color for good (a one-shot, non-scrubbed tween). ----
-  function initWorkIntroMagnify() {
-    var section = document.querySelector(".work-intro");
-    var inner = section && section.querySelector(".work-intro__inner");
-    if (!section || !inner || reduceMotion) return;
+    var lines = Array.prototype.slice.call(pin.querySelectorAll(".story__line"));
+    var cards = Array.prototype.slice.call(pin.querySelectorAll(".story-card"));
+    var stack = pin.querySelector(".story__stack");
+    var final = pin.querySelector(".story__final");
+    if (!lines.length || !cards.length || !stack || !final) return;
 
-    var lens = document.createElement("div");
-    lens.className = "work-intro__lens";
-    lens.setAttribute("aria-hidden", "true");
-    lens.innerHTML = '<span class="work-intro__lens-glass"></span><span class="work-intro__lens-handle"></span>';
-    section.appendChild(lens);
+    if (reduceMotion) {
+      gsap.set(lines, { clearProps: "all" });
+      gsap.set(lines[lines.length - 1], { position: "static", opacity: 1, filter: "none" });
+      gsap.set(cards, { clearProps: "all", position: "static", marginBottom: "1.5rem" });
+      gsap.set(final, { clearProps: "all", position: "static", margin: "2rem auto" });
+      return;
+    }
 
-    gsap.to(lens, {
-      y: function () {
-        return Math.max(section.offsetHeight - lens.offsetHeight, 0);
-      },
-      ease: "none",
-      scrollTrigger: {
-        trigger: section,
-        start: "top 55%",
-        end: "bottom 55%",
-        scrub: true,
-      },
+    var isCompact = window.innerWidth <= 900;
+
+    // Each card's own resting tilt (its "identity" once settled), independent
+    // of how deep in the stack it later sits — matches the brief's example
+    // rotations across steps (card 1 stays near -5deg, card 2 near 2deg, etc).
+    var REST_ROTATE = isCompact ? [-2, 1.2, -1.2, 0.8, -0.8] : [-4, 2, -2, 1, -1.5];
+
+    function settledTransform(cardIndex, topIndex) {
+      var depth = topIndex - cardIndex;
+      return {
+        y: depth === 0 ? 0 : -Math.min(30 + (depth - 1) * 25, isCompact ? 50 : 100),
+        rotate: REST_ROTATE[cardIndex],
+        scale: depth === 0 ? 1 : Math.max(1 - depth * 0.025, 0.92),
+      };
+    }
+
+    gsap.set(lines, { opacity: 0, filter: "blur(6px)", y: 30 });
+    gsap.set(lines[0], { opacity: 1, filter: "blur(0px)", y: 0 });
+    gsap.set(cards, { y: "110vh", rotate: 2, scale: 0.94 });
+    gsap.set(final, { y: "120vh" });
+
+    var tl = gsap.timeline();
+
+    function crossfade(at, fromLine, toLine) {
+      tl.to(fromLine, { opacity: 0, y: -25, filter: "blur(6px)", duration: 0.3, ease: "power1.in" }, at)
+        .fromTo(
+          toLine,
+          { opacity: 0, y: 30, filter: "blur(6px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.3, ease: "power1.out" },
+          at + 0.08
+        );
+    }
+
+    cards.forEach(function (card, i) {
+      var at = 0.7 + i * 1;
+
+      crossfade(at, lines[i], lines[i + 1]);
+
+      var rest = settledTransform(i, i);
+      tl.to(card, { y: rest.y, rotate: rest.rotate, scale: rest.scale, duration: 0.45, ease: "power3.out" }, at);
+
+      for (var j = 0; j < i; j++) {
+        var back = settledTransform(j, i);
+        tl.to(cards[j], { y: back.y, rotate: back.rotate, scale: back.scale, duration: 0.45, ease: "power3.out" }, at);
+      }
     });
 
-    var words = inner.querySelectorAll(".work-intro__line .reveal-word");
-    words.forEach(function (word) {
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: word,
-          start: "top 58%",
-          end: "top 42%",
-          scrub: true,
-        },
-      })
-        .fromTo(word, { scale: 1 }, { scale: 1.18, ease: "none" })
-        .to(word, { scale: 1, ease: "none" });
+    var closeAt = 0.7 + cards.length * 1 - 0.3;
+    tl.to(lines[lines.length - 1], { opacity: 0, y: -25, filter: "blur(6px)", duration: 0.3, ease: "power1.in" }, closeAt)
+      .to(stack, { scale: 0.88, y: "-=40", duration: 0.4, ease: "power2.inOut" }, closeAt)
+      .to(final, { y: 0, duration: 0.55, ease: "power3.out" }, closeAt + 0.25);
 
-      var mgWord = word.closest(".mg-word");
-      if (!mgWord) return;
-
-      var color = mgWord.dataset.mgColor === "yellow" ? "var(--gold)" : "var(--magnify-red)";
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: word,
-          start: "top 55%",
-          toggleActions: "play none none none",
-        },
-      }).to(word, { color: color, duration: 0.4, ease: "power1.out" });
+    ScrollTrigger.create({
+      trigger: pin,
+      start: "top top",
+      end: function () {
+        return "+=" + Math.round(window.innerHeight * (tl.duration() + 0.6));
+      },
+      pin: true,
+      scrub: 0.5,
+      animation: tl,
+      invalidateOnRefresh: true,
     });
   }
 

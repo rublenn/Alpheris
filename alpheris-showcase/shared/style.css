@@ -4,7 +4,6 @@
   --paper-dim: #c9c2b2;  /* secondary/muted text */
   --gold: #e8b33d;       /* primary accent */
   --pine: #4f9c7c;       /* secondary accent, used sparingly */
-  --magnify-red: #d9503f; /* work-intro magnify-glass color chain */
   --rule: rgba(242, 237, 225, 0.12); /* hairline borders/dividers */
 
   --font-display: "Fraunces", serif;
@@ -812,117 +811,170 @@ fieldset.form-field {
   }
 }
 
-/* Work intro: a short cause-and-effect build-up leading into the
-   "How do we make it happen?" section below */
+/* Story: pinned scroll sequence (Creativity-style "cards accumulate as you
+   scroll" interaction, lircle/grigoletti-inspired). One tall section pins
+   a 100vh viewport (initStorySection in common.js pins .story__pin and
+   drives everything off scroll progress); the narrative text crossfades
+   line to line while numbered cards stack up behind each new arrival,
+   ending in a cream "final statement" card. */
 
-.work-intro {
+.story {
+  background: #0d0d0c;
   position: relative;
-  background:
-    radial-gradient(120% 70% at 22% 0%, rgba(255, 255, 255, 0.06), transparent 60%),
-    radial-gradient(90% 60% at 85% 100%, rgba(232, 179, 61, 0.05), transparent 55%),
-    linear-gradient(165deg, #030303 0%, #131210 45%, #050504 100%);
 }
 
-.work-intro__inner {
-  position: relative;
-  padding: 7rem 2rem 2rem;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-/* Magnifying-glass lens: a decorative circle that scans down the section as
-   you scroll (see initWorkIntroMagnify in common.js). Purely visual — the
-   actual word scale/color changes are driven independently per word. */
-.work-intro__lens {
-  position: absolute;
-  top: 0;
-  right: 2%;
-  width: 56px;
-  height: 56px;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.work-intro__lens-glass {
+.story::after {
+  /* very subtle grain, so the near-black background doesn't read flat */
+  content: "";
   position: absolute;
   inset: 0;
-  border-radius: 50%;
-  border: 2.5px solid var(--gold);
-  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.04) 55%, rgba(0, 0, 0, 0.15) 100%);
-  box-shadow: 0 0 22px rgba(232, 179, 61, 0.35), inset 0 0 14px rgba(255, 255, 255, 0.15);
+  opacity: 0.05;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.6) 0.6px, transparent 0.6px);
+  background-size: 3px 3px;
 }
 
-.work-intro__lens-handle {
+.story__pin {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  padding: 0 6vw;
+}
+
+.story__text {
   position: absolute;
-  width: 6px;
-  height: 26px;
-  right: 3px;
-  bottom: -19px;
-  background: var(--gold);
-  border-radius: 3px;
-  transform: rotate(45deg);
-  transform-origin: top center;
-  box-shadow: 0 0 10px rgba(232, 179, 61, 0.3);
+  left: 6vw;
+  top: 24vh;
+  max-width: 46vw;
+  z-index: 5;
 }
 
-/* Words need their own inline-block box for the magnify scale transform
-   (initWorkIntroMagnify in common.js) to expand cleanly in place. The small
-   horizontal margin is breathing room so a scaled-up word doesn't visually
-   collide with its neighbor. */
-.work-intro__inner .reveal-word {
-  display: inline-block;
-  margin: 0 0.06em;
-}
-
-@media (max-width: 640px) {
-  .work-intro__lens {
-    width: 40px;
-    height: 40px;
-    right: 4%;
-  }
-
-  .work-intro__lens-handle {
-    height: 18px;
-    bottom: -13px;
-  }
-}
-
-.work-intro__line {
-  margin: 0 0 0.75rem;
+.story__line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
   font-family: var(--font-statement);
-  font-size: clamp(1.25rem, 2.6vw, 1.9rem);
-  line-height: 1.4;
+  font-weight: 500;
+  font-size: clamp(2rem, 4.6vw, 4.5rem);
+  line-height: 1.15;
+  color: var(--paper);
+  opacity: 0;
+  filter: blur(6px);
+  will-change: transform, opacity, filter;
+}
+
+.story__stack {
+  position: absolute;
+  right: 5vw;
+  bottom: 4vh;
+  width: clamp(300px, 34vw, 480px);
+  aspect-ratio: 4 / 5;
+}
+
+.story-card {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: linear-gradient(155deg, #1c1a15 0%, #100f0c 100%);
+  border: 1px solid rgba(232, 179, 61, 0.25);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35), 0 6px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem;
+  opacity: 1;
+  transform: translateY(110vh) rotate(2deg) scale(0.94);
+  will-change: transform;
+}
+
+.story-card__num {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  color: var(--gold);
+}
+
+.story-card__label {
+  align-self: flex-end;
+  font-family: var(--font-label);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--paper);
 }
 
-.work-intro__line--transition {
-  margin-top: 2rem;
-  font-style: italic;
-  color: var(--paper-dim);
+.story__final {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: min(64vw, 760px);
+  height: fit-content;
+  padding: 3.5rem 3.5rem 4rem;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 32px;
+  z-index: 40;
+  transform: translateY(120vh);
+  will-change: transform;
 }
 
-.work-intro__line--statement {
-  margin-top: 1rem;
+.story__final-eyebrow {
+  margin: 0 0 1.5rem;
+  font-family: var(--font-label);
   font-weight: 700;
-  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(14, 13, 11, 0.55);
+}
+
+.story__final-lead {
+  margin: 0 0 1rem;
+  font-family: var(--font-statement);
+  font-style: italic;
+  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+  color: rgba(14, 13, 11, 0.7);
+}
+
+.story__final-statement {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.75rem, 3vw, 2.75rem);
   line-height: 1.3;
-  color: var(--paper);
 }
 
-.work-intro__line--cta {
-  margin-top: 2.5rem;
+.story__final-statement .highlight {
+  color: #b8790f;
   font-style: italic;
-  font-weight: 700;
-  font-size: clamp(1.5rem, 3.2vw, 2.25rem);
-  color: var(--gold);
 }
 
-.work-intro__cta-btn {
-  margin-top: 1.5rem;
+.story__cta {
+  background: #0d0d0c;
+  padding: 0 6vw 6rem;
+  text-align: center;
 }
 
-.work-intro .highlight {
-  color: var(--gold);
+@media (max-width: 900px) {
+  .story__text {
+    max-width: 78vw;
+    top: 12vh;
+  }
+
+  .story__stack {
+    right: 50%;
+    transform: translateX(50%);
+    bottom: 6vh;
+    width: min(86vw, 420px);
+  }
+
+  .story__final {
+    width: 86vw;
+    padding: 2.5rem 1.75rem 3rem;
+  }
 }
 
 /* How We Make It Work: click-to-reveal statement */
