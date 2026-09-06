@@ -962,26 +962,23 @@ fieldset.form-field {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3rem;
-  padding: 6rem 1.5rem;
+  gap: 1.5rem;
+  padding: 4rem 1.5rem;
 }
 
+/* All three assets share one canvas (each is the same full frame with only
+   its own element visible, the rest transparent/black) — they must render
+   at the exact same box so they land in registration with each other,
+   pixel for pixel, exactly like the full-composition reference. */
+.cosmic-scene__layer,
 .cosmic-scene__layer img {
   display: block;
   width: 100%;
   height: auto;
 }
 
-.cosmic-scene__layer--creativity {
-  max-width: 900px;
-}
-
-.cosmic-scene__layer--earth {
-  max-width: 380px;
-}
-
-.cosmic-scene__layer--neuro {
-  max-width: 950px;
+.cosmic-scene__layer {
+  max-width: 1600px;
 }
 
 .js .cosmic-scene__pin {
@@ -995,40 +992,11 @@ fieldset.form-field {
 
 .js .cosmic-scene__layer {
   position: absolute;
+  top: 50%;
   left: 50%;
-  width: min(60vw, 900px);
+  width: min(92vw, 1600px);
+  max-width: none;
   will-change: transform, opacity;
-}
-
-.js .cosmic-scene__layer--creativity {
-  top: 20%;
-  max-width: none;
-}
-
-.js .cosmic-scene__layer--earth {
-  top: 48%;
-  width: min(24vw, 380px);
-  max-width: none;
-}
-
-.js .cosmic-scene__layer--neuro {
-  top: 78%;
-  width: min(62vw, 950px);
-  max-width: none;
-}
-
-@media (max-width: 640px) {
-  .js .cosmic-scene__layer {
-    width: min(84vw, 620px);
-  }
-
-  .js .cosmic-scene__layer--earth {
-    width: min(46vw, 220px);
-  }
-
-  .js .cosmic-scene__layer--neuro {
-    width: min(92vw, 680px);
-  }
 }
 
 /* Loader lockup (Pass 1: static end-state only, Pass 2 animates into this) */

@@ -171,7 +171,11 @@
       var vh = window.innerHeight;
       var vw = window.innerWidth;
 
-      gsap.set(creativity, { xPercent: -50, yPercent: 0, y: vh * 0.6, autoAlpha: 0 });
+      // All three layers share one box (see .cosmic-scene__layer), centered
+      // at xPercent/yPercent -50 — that constant baseline is what keeps
+      // them in registration with each other; only x/y (the travel-in
+      // offset) differs per layer.
+      gsap.set(creativity, { xPercent: -50, yPercent: -50, y: vh * 0.6, autoAlpha: 0 });
       gsap.set(earth, { xPercent: -50, yPercent: -50, y: -vh * 0.55, autoAlpha: 0, scale: 0.92 });
       gsap.set(neuro, { xPercent: -50, yPercent: -50, x: -vw * 0.85, autoAlpha: 0 });
     }
