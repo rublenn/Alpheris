@@ -948,126 +948,86 @@ fieldset.form-field {
   font-size: 0.8em;
 }
 
-/* Amplifiers: a scattered composition of big words (lircle.co reference)
-   instead of a horizontal ticker. Each word drifts at its own speed as
-   the page scrolls (see initAmplifiersParallax in common.js), and fades
-   up into place the first time it enters the viewport. */
+/* Cosmic scene: Creativity / Hype-Earth / Neuromarketing assemble into one
+   continuous scroll-driven composition. Pass 1 default is a plain readable
+   vertical stack; under .js, initCosmicScene() (common.js) pins the section
+   and scrubs each layer in from its own direction as the section scrolls. */
 
-.amplifiers {
+.cosmic-scene {
   position: relative;
+  background: var(--ink);
+}
+
+.cosmic-scene__pin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  padding: 6rem 1.5rem;
+}
+
+.cosmic-scene__layer img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.cosmic-scene__layer--creativity {
+  max-width: 900px;
+}
+
+.cosmic-scene__layer--earth {
+  max-width: 380px;
+}
+
+.cosmic-scene__layer--neuro {
+  max-width: 950px;
+}
+
+.js .cosmic-scene__pin {
+  position: relative;
+  height: 100vh;
   overflow: hidden;
-  max-width: 1440px;
-  margin: 0 auto;
-  height: 56vh;
-  min-height: 460px;
-  /* Pass 1 default: solid white so the black/outlined words stay legible
-     with no JS. Under .js this starts dark instead, and common.js scrubs
-     it to white as the section scrolls through (initAmplifiersParallax). */
-  background-color: #ffffff;
+  display: block;
+  padding: 0;
+  gap: 0;
 }
 
-.js .amplifiers {
-  background-color: var(--ink);
-}
-
-.amplifiers__dot {
+.js .cosmic-scene__layer {
   position: absolute;
-  top: 16%;
-  left: 38%;
-  width: 1.1rem;
-  height: 1.1rem;
-  border: 1.5px solid var(--gold);
-  border-radius: 50%;
-}
-
-.amplifiers__dot::after {
-  content: "";
-  position: absolute;
-  top: 50%;
   left: 50%;
-  width: 0.3rem;
-  height: 0.3rem;
-  border-radius: 50%;
-  background: var(--gold);
-  transform: translate(-50%, -50%);
+  width: min(60vw, 900px);
+  will-change: transform, opacity;
 }
 
-.amplifiers__word {
-  position: absolute;
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 700;
-  line-height: 1;
-  white-space: nowrap;
+.js .cosmic-scene__layer--creativity {
+  top: 20%;
+  max-width: none;
 }
 
-.amplifiers__word--1 {
-  top: 8%;
-  left: 5%;
-  font-family: var(--font-label);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  font-size: clamp(2.5rem, 8vw, 6rem);
-  /* Always black — invisible against the section's own starting black
-     background, revealed only once that background scrubs to white. */
-  color: #000000;
+.js .cosmic-scene__layer--earth {
+  top: 48%;
+  width: min(24vw, 380px);
+  max-width: none;
 }
 
-.amplifiers__word--2 {
-  top: 34%;
-  right: 8%;
-  font-size: clamp(1.75rem, 5.5vw, 4rem);
-  font-style: italic;
-  color: var(--gold);
-}
-
-.amplifiers__word--3 {
-  bottom: 4%;
-  left: 4%;
-  font-family: var(--font-label);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  font-size: clamp(2.5rem, 9.5vw, 7.5rem);
-  color: transparent;
-  -webkit-text-stroke: 1.5px #000000;
+.js .cosmic-scene__layer--neuro {
+  top: 78%;
+  width: min(62vw, 950px);
+  max-width: none;
 }
 
 @media (max-width: 640px) {
-  .amplifiers {
-    height: auto;
-    min-height: 0;
-    padding: 5rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+  .js .cosmic-scene__layer {
+    width: min(84vw, 620px);
   }
 
-  .amplifiers__dot {
-    display: none;
+  .js .cosmic-scene__layer--earth {
+    width: min(46vw, 220px);
   }
 
-  .amplifiers__word {
-    position: static;
-    white-space: normal;
-    overflow-wrap: break-word;
-    max-width: 100%;
-  }
-
-  .amplifiers__word--1 {
-    font-size: clamp(2.25rem, 11vw, 3rem);
-  }
-
-  .amplifiers__word--2 {
-    font-size: clamp(1.75rem, 9vw, 2.5rem);
-    align-self: flex-end;
-    text-align: right;
-  }
-
-  .amplifiers__word--3 {
-    font-size: clamp(1.75rem, 9vw, 2.5rem);
-    -webkit-text-stroke: 1px #000000;
+  .js .cosmic-scene__layer--neuro {
+    width: min(92vw, 680px);
   }
 }
 

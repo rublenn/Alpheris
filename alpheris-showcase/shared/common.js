@@ -21,7 +21,7 @@
     initPhotoDeckStack();
     initWorkHeadingReveal();
     initWorkTriggerSpotlight();
-    initAmplifiersParallax();
+    initCosmicScene();
   });
 
   // ---- Step 1 / Step 2: loader intro -> resolves into the header logo ----
@@ -144,66 +144,70 @@
     });
   }
 
-  // ---- Amplifiers: scattered big words drift at different speeds as the
-  // page scrolls (parallax, via "y"), and fade/scale into place the first
-  // time each one enters the viewport (via "opacity"/"scale" — a separate
-  // transform component, so it doesn't fight the parallax tween's "y") ----
-  function initAmplifiersParallax() {
-    var section = document.querySelector(".amplifiers");
-    if (!section) return;
+  // ---- Cosmic scene: Creativity / Hype-Earth / Neuromarketing assemble
+  // into one pinned, scroll-scrubbed composition. Creativity rises from
+  // below, Earth drops from above, Neuromarketing slides in from the left
+  // — each on its own segment of the pinned scroll distance, using the
+  // same "pin the trigger, drive everything from scroll progress" approach
+  // as initPhotoDeckStack. Earth also gets a slow independent float on its
+  // own <img> (a separate element, so it can't fight the scrubbed parent
+  // transform). ----
+  function initCosmicScene() {
+    var section = document.querySelector(".cosmic-scene");
+    var pin = section && section.querySelector(".cosmic-scene__pin");
+    if (!section || !pin) return;
 
-    var words = section.querySelectorAll(".amplifiers__word");
-    if (!words.length) return;
+    var creativity = pin.querySelector(".cosmic-scene__layer--creativity");
+    var earth = pin.querySelector(".cosmic-scene__layer--earth");
+    var neuro = pin.querySelector(".cosmic-scene__layer--neuro");
+    if (!creativity || !earth || !neuro) return;
 
     if (reduceMotion) {
-      // No scroll-tied animation — jump straight to the resting state so
-      // the black/outlined words aren't stuck invisible against the
-      // section's dark starting background (.js .amplifiers).
-      gsap.set(section, { backgroundColor: "#ffffff" });
+      gsap.set([creativity, earth, neuro], { clearProps: "all" });
       return;
     }
 
-    gsap.to(section, {
-      backgroundColor: "#ffffff",
-      ease: "none",
-      scrollTrigger: {
-        trigger: section,
-        start: "top 90%",
-        end: "top 20%",
-        scrub: true,
+    function place() {
+      var vh = window.innerHeight;
+      var vw = window.innerWidth;
+
+      gsap.set(creativity, { xPercent: -50, yPercent: 0, y: vh * 0.6, autoAlpha: 0 });
+      gsap.set(earth, { xPercent: -50, yPercent: -50, y: -vh * 0.55, autoAlpha: 0, scale: 0.92 });
+      gsap.set(neuro, { xPercent: -50, yPercent: -50, x: -vw * 0.85, autoAlpha: 0 });
+    }
+
+    place();
+
+    var tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+    tl.to(creativity, { y: 0, autoAlpha: 1, duration: 0.25 }, 0.05)
+      .to(earth, { y: 0, autoAlpha: 1, scale: 1, duration: 0.23 }, 0.42)
+      .to(neuro, { x: 0, autoAlpha: 1, duration: 0.23 }, 0.72);
+
+    var st = ScrollTrigger.create({
+      trigger: pin,
+      start: "top top",
+      end: function () {
+        return "+=" + Math.round(window.innerHeight * 2.5);
       },
+      pin: true,
+      scrub: 0.4,
+      animation: tl,
+      invalidateOnRefresh: true,
     });
 
-    // Below 640px the words stack in normal flow (see the CSS media query)
-    // instead of sitting scattered/absolute, so a "y" parallax drift would
-    // just shove them into their stacked neighbors — skip it there.
-    var isScattered = window.innerWidth > 640;
-    var driftDistance = [-70, 90, -50];
-
-    words.forEach(function (word, i) {
-      gsap.from(word, {
-        opacity: 0,
-        scale: 0.85,
-        duration: 1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: section,
-          start: "top 85%",
-        },
+    var earthImg = earth.querySelector("img");
+    if (earthImg) {
+      gsap.to(earthImg, {
+        y: "+=14",
+        duration: 4.5,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
       });
+    }
 
-      if (!isScattered) return;
-
-      gsap.to(word, {
-        y: driftDistance[i % driftDistance.length],
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
+    window.addEventListener("resize", function () {
+      st.refresh();
     });
   }
 
