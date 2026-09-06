@@ -868,8 +868,8 @@ fieldset.form-field {
   position: absolute;
   right: 5vw;
   bottom: 4vh;
-  width: clamp(300px, 34vw, 480px);
-  aspect-ratio: 4 / 5;
+  width: clamp(340px, 42vw, 620px);
+  aspect-ratio: 1335 / 860;
 }
 
 .story-card {
@@ -886,6 +886,22 @@ fieldset.form-field {
   opacity: 1;
   transform: translateY(110vh) rotate(2deg) scale(0.94);
   will-change: transform;
+}
+
+/* Cards with a real supplied image already bake in their own border,
+   number and label — drop the CSS chrome underneath so the artwork shows
+   edge to edge. */
+.story-card--photo {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.story-card__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .story-card__num {
@@ -968,7 +984,7 @@ fieldset.form-field {
     right: 50%;
     transform: translateX(50%);
     bottom: 6vh;
-    width: min(86vw, 420px);
+    width: min(90vw, 520px);
   }
 
   .story__final {
