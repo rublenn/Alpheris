@@ -22,6 +22,7 @@
     initWorkHeadingReveal();
     initWorkTriggerSpotlight();
     initWorkIntroSpotlight();
+    initWorkIntroMagnify();
     initCosmicScene();
   });
 
@@ -295,11 +296,71 @@
   }
 
   // ---- Work-intro lines ("You have a business...", etc.): same word
-  // spotlight — Business/Aim/People/Needs/Behave (marked .highlight in the
-  // markup) stay gold and fully lit, every other word dims in/out as it
-  // scrolls through ----
+  // spotlight — words dim in/out as they scroll through, the statement
+  // line's .highlight words (people/needs/behaviour/aim) stay gold and
+  // fully lit throughout ----
   function initWorkIntroSpotlight() {
     document.querySelectorAll(".work-intro__line").forEach(initSpotlightWords);
+  }
+
+  // ---- Work-intro magnifying glass: a decorative lens scans down the
+  // section as you scroll (pure visual, tied to overall section progress),
+  // while every word individually scales up as it passes the viewport
+  // center and back down after — same trigger points as the opacity
+  // spotlight above, just a different transform property so the two don't
+  // fight. The nine chained words (marked [data-mg-color] in the markup —
+  // business/aim/people/needs/behave, alternating red/yellow) additionally
+  // snap to their assigned color right as they hit peak magnification, and
+  // stay that color for good (a one-shot, non-scrubbed tween). ----
+  function initWorkIntroMagnify() {
+    var section = document.querySelector(".work-intro");
+    var inner = section && section.querySelector(".work-intro__inner");
+    if (!section || !inner || reduceMotion) return;
+
+    var lens = document.createElement("div");
+    lens.className = "work-intro__lens";
+    lens.setAttribute("aria-hidden", "true");
+    lens.innerHTML = '<span class="work-intro__lens-glass"></span><span class="work-intro__lens-handle"></span>';
+    section.appendChild(lens);
+
+    gsap.to(lens, {
+      y: function () {
+        return Math.max(section.offsetHeight - lens.offsetHeight, 0);
+      },
+      ease: "none",
+      scrollTrigger: {
+        trigger: section,
+        start: "top 55%",
+        end: "bottom 55%",
+        scrub: true,
+      },
+    });
+
+    var words = inner.querySelectorAll(".work-intro__line .reveal-word");
+    words.forEach(function (word) {
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: word,
+          start: "top 58%",
+          end: "top 42%",
+          scrub: true,
+        },
+      })
+        .fromTo(word, { scale: 1 }, { scale: 1.18, ease: "none" })
+        .to(word, { scale: 1, ease: "none" });
+
+      var mgWord = word.closest(".mg-word");
+      if (!mgWord) return;
+
+      var color = mgWord.dataset.mgColor === "yellow" ? "var(--gold)" : "var(--magnify-red)";
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: word,
+          start: "top 55%",
+          toggleActions: "play none none none",
+        },
+      }).to(word, { color: color, duration: 0.4, ease: "power1.out" });
+    });
   }
 
   // ---- Work-statement heading: each word is rebuilt as text sitting
