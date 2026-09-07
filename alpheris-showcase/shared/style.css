@@ -845,7 +845,8 @@ fieldset.form-field {
   position: absolute;
   left: 6vw;
   top: 24vh;
-  max-width: 46vw;
+  width: 36vw;
+  max-width: 36vw;
   z-index: 5;
 }
 
@@ -856,16 +857,18 @@ fieldset.form-field {
   margin: 0;
   font-family: var(--font-display);
   font-style: italic;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: -0.01em;
-  font-size: clamp(2rem, 4.6vw, 4.5rem);
+  font-size: clamp(1.9rem, 4.1vw, 4rem);
   line-height: 1.15;
   /* A metallic gold sheen sweeps across the text as it scrolls in (see
-     initStorySection in common.js, which animates background-position in
-     lockstep with the opacity/blur/y entrance). */
-  background: linear-gradient(100deg, var(--paper) 25%, var(--paper) 42%, var(--gold) 49%, #fff6dd 52%, var(--gold) 55%, var(--paper) 62%, var(--paper) 100%);
-  background-size: 300% 100%;
-  background-position: 100% 0;
+     initStorySection in common.js, which animates background-position —
+     over a longer scroll span than the opacity/blur/y entrance, so the
+     sweep is slow and wide enough to actually read as a shine, not just a
+     color change). */
+  background: linear-gradient(100deg, var(--paper) 0%, var(--paper) 28%, #fff6dd 38%, var(--gold) 46%, var(--gold) 54%, #fff6dd 62%, var(--paper) 72%, var(--paper) 100%);
+  background-size: 240% 100%;
+  background-position: 160% 0;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -970,18 +973,9 @@ fieldset.form-field {
   will-change: transform;
 }
 
-.story__final-eyebrow {
-  margin: 0 0 1.5rem;
-  font-family: var(--font-label);
-  font-weight: 700;
-  font-size: 0.8rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(14, 13, 11, 0.55);
-}
-
 .story__final-lead {
-  margin: 0 0 1rem;
+  margin: 0 0 1.5rem;
+  text-align: center;
   font-family: var(--font-statement);
   font-style: italic;
   font-size: clamp(1.15rem, 1.6vw, 1.4rem);
@@ -1009,6 +1003,7 @@ fieldset.form-field {
 
 @media (max-width: 900px) {
   .story__text {
+    width: 78vw;
     max-width: 78vw;
     top: 12vh;
   }

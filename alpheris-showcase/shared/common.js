@@ -336,28 +336,24 @@
       };
     }
 
-    gsap.set(lines, { opacity: 0, filter: "blur(6px)", y: 30, backgroundPosition: "100% 0" });
+    gsap.set(lines, { opacity: 0, filter: "blur(6px)", y: 30, backgroundPosition: "160% 0" });
     gsap.set(lines[0], { opacity: 1, filter: "blur(0px)", y: 0 });
     gsap.set(cards, { y: "110vh", rotate: 2, scale: 0.94 });
     gsap.set(final, { y: "120vh" });
 
     var tl = gsap.timeline();
 
-    // Each line's own entrance also sweeps the gold sheen across it once
-    // (background-position, a separate property from opacity/blur/y so it
-    // never fights that tween) — it "shines and merges" into place instead
-    // of just fading in flat.
-    tl.to(lines[0], { backgroundPosition: "0% 0", duration: 0.6, ease: "power1.out" }, 0.1);
+    // Each line's own entrance sweeps a gold sheen across it — a slower,
+    // separate tween from the opacity/blur/y fade-in (different property,
+    // longer duration) so the sweep keeps visibly travelling across the
+    // word for a while after the text has already fully appeared, instead
+    // of finishing instantly and reading as a flat color change.
+    tl.fromTo(lines[0], { backgroundPosition: "160% 0" }, { backgroundPosition: "-20% 0", duration: 0.9, ease: "none" }, 0.1);
 
     function crossfade(at, fromLine, toLine) {
       tl.to(fromLine, { opacity: 0, y: -25, filter: "blur(6px)", duration: 0.3, ease: "power1.in" }, at)
-        .fromTo(
-          toLine,
-          { opacity: 0, y: 30, filter: "blur(6px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.3, ease: "power1.out" },
-          at + 0.08
-        )
-        .fromTo(toLine, { backgroundPosition: "100% 0" }, { backgroundPosition: "0% 0", duration: 0.6, ease: "power1.out" }, at + 0.08);
+        .fromTo(toLine, { opacity: 0, y: 30, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.3, ease: "power1.out" }, at + 0.08)
+        .fromTo(toLine, { backgroundPosition: "160% 0" }, { backgroundPosition: "-20% 0", duration: 0.9, ease: "none" }, at + 0.08);
     }
 
     cards.forEach(function (card, i) {
