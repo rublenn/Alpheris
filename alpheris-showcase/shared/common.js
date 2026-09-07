@@ -342,7 +342,19 @@
     gsap.set(cards, { y: "110vh", rotate: 2, scale: 0.94 });
     gsap.set(final, { y: "120vh" });
 
+    // Opening moment: the first line starts big and centered on the whole
+    // viewport (not just its usual left-hand column), then settles into
+    // its normal position/size as the user starts scrolling — right before
+    // card 1 arrives from below and the text changes for the first time.
+    var openRect = lines[0].getBoundingClientRect();
+    var openScale = Math.min(1.7, (window.innerWidth * 0.86) / openRect.width);
+    var openOffsetX = window.innerWidth / 2 - (openRect.left + openRect.width / 2);
+    var openOffsetY = window.innerHeight / 2 - (openRect.top + openRect.height / 2);
+    gsap.set(lines[0], { x: openOffsetX, y: openOffsetY, scale: openScale, transformOrigin: "center center" });
+
     var tl = gsap.timeline();
+
+    tl.to(lines[0], { x: 0, y: 0, scale: 1, duration: 0.6, ease: "power2.inOut" }, 0);
 
     // Each line's own entrance sweeps a gold sheen across it — a slower,
     // separate tween from the opacity/blur/y fade-in (different property,

@@ -854,6 +854,7 @@ fieldset.form-field {
   position: absolute;
   left: 0;
   top: 0;
+  width: 100%;
   margin: 0;
   font-family: var(--font-display);
   font-style: italic;
