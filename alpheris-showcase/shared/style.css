@@ -854,21 +854,31 @@ fieldset.form-field {
   left: 0;
   top: 0;
   margin: 0;
-  font-family: var(--font-statement);
+  font-family: var(--font-display);
+  font-style: italic;
   font-weight: 500;
+  letter-spacing: -0.01em;
   font-size: clamp(2rem, 4.6vw, 4.5rem);
   line-height: 1.15;
-  color: var(--paper);
+  /* A metallic gold sheen sweeps across the text as it scrolls in (see
+     initStorySection in common.js, which animates background-position in
+     lockstep with the opacity/blur/y entrance). */
+  background: linear-gradient(100deg, var(--paper) 25%, var(--paper) 42%, var(--gold) 49%, #fff6dd 52%, var(--gold) 55%, var(--paper) 62%, var(--paper) 100%);
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   opacity: 0;
   filter: blur(6px);
-  will-change: transform, opacity, filter;
+  will-change: transform, opacity, filter, background-position;
 }
 
 .story__stack {
   position: absolute;
   right: 5vw;
-  bottom: 4vh;
-  width: clamp(340px, 42vw, 620px);
+  bottom: 11vh;
+  width: clamp(380px, 47vw, 680px);
   aspect-ratio: 1335 / 860;
 }
 
@@ -1006,8 +1016,8 @@ fieldset.form-field {
   .story__stack {
     right: 50%;
     transform: translateX(50%);
-    bottom: 6vh;
-    width: min(90vw, 520px);
+    bottom: 10vh;
+    width: min(94vw, 560px);
   }
 
   .story__final {

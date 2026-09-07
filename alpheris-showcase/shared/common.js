@@ -314,7 +314,7 @@
 
     if (reduceMotion) {
       gsap.set(lines, { clearProps: "all" });
-      gsap.set(lines[lines.length - 1], { position: "static", opacity: 1, filter: "none" });
+      gsap.set(lines[lines.length - 1], { position: "static", opacity: 1, filter: "none", backgroundPosition: "0% 0" });
       gsap.set(cards, { clearProps: "all", position: "static", marginBottom: "1.5rem" });
       gsap.set(final, { clearProps: "all", position: "static", margin: "2rem auto" });
       return;
@@ -336,12 +336,18 @@
       };
     }
 
-    gsap.set(lines, { opacity: 0, filter: "blur(6px)", y: 30 });
+    gsap.set(lines, { opacity: 0, filter: "blur(6px)", y: 30, backgroundPosition: "100% 0" });
     gsap.set(lines[0], { opacity: 1, filter: "blur(0px)", y: 0 });
     gsap.set(cards, { y: "110vh", rotate: 2, scale: 0.94 });
     gsap.set(final, { y: "120vh" });
 
     var tl = gsap.timeline();
+
+    // Each line's own entrance also sweeps the gold sheen across it once
+    // (background-position, a separate property from opacity/blur/y so it
+    // never fights that tween) — it "shines and merges" into place instead
+    // of just fading in flat.
+    tl.to(lines[0], { backgroundPosition: "0% 0", duration: 0.6, ease: "power1.out" }, 0.1);
 
     function crossfade(at, fromLine, toLine) {
       tl.to(fromLine, { opacity: 0, y: -25, filter: "blur(6px)", duration: 0.3, ease: "power1.in" }, at)
@@ -350,7 +356,8 @@
           { opacity: 0, y: 30, filter: "blur(6px)" },
           { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.3, ease: "power1.out" },
           at + 0.08
-        );
+        )
+        .fromTo(toLine, { backgroundPosition: "100% 0" }, { backgroundPosition: "0% 0", duration: 0.6, ease: "power1.out" }, at + 0.08);
     }
 
     cards.forEach(function (card, i) {
