@@ -364,7 +364,10 @@
     cards.forEach(function (card, i) {
       var at = 0.7 + i * 1;
 
-      crossfade(at, lines[i], lines[i + 1]);
+      // line[0] ("You have a business?") is already visible from the very
+      // start — no preceding intro line to crossfade away from — so only
+      // cards after the first one trigger a text crossfade.
+      if (i > 0) crossfade(at, lines[i - 1], lines[i]);
 
       var rest = settledTransform(i, i);
       tl.to(card, { y: rest.y, rotate: rest.rotate, scale: rest.scale, duration: 0.45, ease: "power3.out" }, at);
