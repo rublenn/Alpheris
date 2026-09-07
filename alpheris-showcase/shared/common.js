@@ -316,6 +316,7 @@
       gsap.set(lines, { clearProps: "all" });
       gsap.set(lines[lines.length - 1], { position: "static", opacity: 1, filter: "none", backgroundPosition: "0% 0" });
       gsap.set(cards, { clearProps: "all", position: "static", marginBottom: "1.5rem" });
+      gsap.set(document.querySelectorAll(".story-card--image .story-card__num, .story-card--image .story-card__label"), { opacity: 1 });
       gsap.set(final, { clearProps: "all", position: "static", margin: "2rem auto" });
       return;
     }
@@ -356,6 +357,10 @@
         .fromTo(toLine, { backgroundPosition: "160% 0" }, { backgroundPosition: "-20% 0", duration: 0.9, ease: "none" }, at + 0.08);
     }
 
+    function cardCaption(card) {
+      return card.querySelectorAll(".story-card__num, .story-card__label");
+    }
+
     cards.forEach(function (card, i) {
       var at = 0.7 + i * 1;
 
@@ -363,10 +368,15 @@
 
       var rest = settledTransform(i, i);
       tl.to(card, { y: rest.y, rotate: rest.rotate, scale: rest.scale, duration: 0.45, ease: "power3.out" }, at);
+      // Only the newest (front) card shows its number/label — once a card
+      // is no longer front, its caption fades away so stacked cards behind
+      // it don't overlap into illegible garbled text.
+      tl.to(cardCaption(card), { opacity: 1, duration: 0.3, ease: "power1.out" }, at + 0.1);
 
       for (var j = 0; j < i; j++) {
         var back = settledTransform(j, i);
         tl.to(cards[j], { y: back.y, rotate: back.rotate, scale: back.scale, duration: 0.45, ease: "power3.out" }, at);
+        tl.to(cardCaption(cards[j]), { opacity: 0, duration: 0.3, ease: "power1.in" }, at);
       }
     });
 
