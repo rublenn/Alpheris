@@ -22,7 +22,7 @@
     initWorkHeadingReveal();
     initWorkTriggerSpotlight();
     initStorySection();
-    initProcessTransition();
+    initStoryFinalExpand();
     initProcessStages();
     initCosmicScene();
     initStartFormOtherAim();
@@ -329,15 +329,13 @@
     var lines = Array.prototype.slice.call(pin.querySelectorAll(".story__line"));
     var cards = Array.prototype.slice.call(pin.querySelectorAll(".story-card"));
     var stack = pin.querySelector(".story__stack");
-    var final = pin.querySelector(".story__final");
-    if (!lines.length || !cards.length || !stack || !final) return;
+    if (!lines.length || !cards.length || !stack) return;
 
     if (reduceMotion) {
       gsap.set(lines, { clearProps: "all" });
       gsap.set(lines[lines.length - 1], { position: "static", opacity: 1, filter: "none", backgroundPosition: "0% 0" });
       gsap.set(cards, { clearProps: "all", position: "static", marginBottom: "1.5rem" });
       gsap.set(document.querySelectorAll(".story-card--image .story-card__num, .story-card--image .story-card__label"), { opacity: 1 });
-      gsap.set(final, { clearProps: "all", position: "static", margin: "2rem auto" });
       return;
     }
 
@@ -360,7 +358,6 @@
     gsap.set(lines, { opacity: 0, filter: "blur(6px)", y: 30, backgroundPosition: "160% 0" });
     gsap.set(lines[0], { opacity: 1, filter: "blur(0px)", y: 0 });
     gsap.set(cards, { y: "110vh", rotate: 2, scale: 0.94 });
-    gsap.set(final, { y: "120vh" });
 
     // Opening moment: the first line starts big and centered on the whole
     // viewport (not just its usual left-hand column), then settles into
@@ -417,8 +414,7 @@
 
     var closeAt = 0.7 + cards.length * 1 - 0.3;
     tl.to(lines[lines.length - 1], { opacity: 0, y: -25, filter: "blur(6px)", duration: 0.3, ease: "power1.in" }, closeAt)
-      .to(stack, { scale: 0.88, y: "-=40", duration: 0.4, ease: "power2.inOut" }, closeAt)
-      .to(final, { y: 0, duration: 0.55, ease: "power3.out" }, closeAt + 0.25);
+      .to(stack, { scale: 0.88, y: "-=40", duration: 0.4, ease: "power2.inOut" }, closeAt);
 
     ScrollTrigger.create({
       trigger: pin,
@@ -433,38 +429,49 @@
     });
   }
 
-  // ---- Process transition: the story's resting "Now, this is how we
-  // work" card grows from a small paper card into a fullscreen dark panel,
-  // its lead line fading out as an eyebrow ("How Alpheris Executes")
-  // fades in — the bridge from the story's pinned section into the
-  // pinned Content/Performance/Ground stages below ----
-  function initProcessTransition() {
-    var section = document.querySelector(".process-transition");
-    var pin = section && section.querySelector(".process-transition__pin");
-    var card = pin && pin.querySelector(".process-transition__card");
-    var lead = pin && pin.querySelector(".process-transition__lead");
-    var eyebrow = pin && pin.querySelector(".process-transition__eyebrow");
-    if (!section || !pin || !card || !lead || !eyebrow) return;
+  // ---- The story's own final card (".story__final") is the single
+  // element that carries the reader from the answer into how Alpheris
+  // executes: it settles into view at its normal small size, then — the
+  // SAME card, never a second one — pins briefly and physically grows
+  // into a fullscreen dark panel, at which point it hands off directly
+  // (no gap) into the Content/Performance/Ground stages immediately
+  // below it, so there is never a moment with two cream cards or a
+  // visible seam between "the answer" and "the work" ----
+  function initStoryFinalExpand() {
+    var card = document.querySelector(".story__final");
+    var inner = card && card.querySelector(".story__final-inner");
+    if (!card || !inner) return;
 
     if (reduceMotion) {
-      gsap.set([card, lead, eyebrow], { clearProps: "all" });
+      gsap.set(card, { clearProps: "all" });
+      gsap.set(inner, { clearProps: "all" });
       return;
     }
 
-    gsap.set(eyebrow, { opacity: 0, y: 20 });
+    gsap.set(card, { y: 50, opacity: 0 });
+
+    gsap.to(card, {
+      y: 0,
+      opacity: 1,
+      ease: "none",
+      scrollTrigger: {
+        trigger: card,
+        start: "top 88%",
+        end: "top 60%",
+        scrub: true,
+      },
+    });
 
     var tl = gsap.timeline();
-    tl.to(lead, { opacity: 0, duration: 0.3, ease: "power1.in" }, 0.15)
-      .to(card, { width: "100vw", height: "100vh", borderRadius: 0, duration: 0.6, ease: "power2.inOut" }, 0.1)
-      .to(card, { backgroundColor: "#0d0d0c", borderColor: "transparent", duration: 0.3, ease: "none" }, 0.45)
-      .to(eyebrow, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.65)
-      .to(eyebrow, { opacity: 0, duration: 0.3, ease: "power1.in" }, 0.92);
+    tl.to(card, { width: "100vw", height: "100vh", borderRadius: 0, paddingLeft: 0, paddingRight: 0, paddingTop: 0, paddingBottom: 0, duration: 1, ease: "power2.inOut" }, 0)
+      .to(card, { backgroundColor: "#0d0d0c", borderColor: "transparent", duration: 0.35, ease: "none" }, 0.3)
+      .to(inner, { opacity: 0, duration: 0.25, ease: "power1.in" }, 0.05);
 
     ScrollTrigger.create({
-      trigger: section,
-      start: "top top",
-      end: "bottom top",
-      pin: pin,
+      trigger: card,
+      start: "top top+=110",
+      end: "+=" + Math.round(window.innerHeight * 1.2),
+      pin: card,
       scrub: 0.5,
       animation: tl,
       invalidateOnRefresh: true,

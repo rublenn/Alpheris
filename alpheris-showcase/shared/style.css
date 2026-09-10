@@ -1008,28 +1008,20 @@ fieldset.form-field {
 }
 
 .story__final {
-  position: absolute;
-  inset: 0;
-  margin: auto;
+  position: relative;
   width: min(64vw, 760px);
-  height: fit-content;
+  margin: 10vh auto 0;
   padding: 3.5rem 3.5rem 4rem;
   background: var(--paper);
   color: var(--ink);
   border: 1px solid var(--ink);
   border-radius: 32px;
   z-index: 40;
-  transform: translateY(120vh);
-  will-change: transform;
+  will-change: transform, opacity, width, height, padding, border-radius, background-color;
 }
 
-.story__final-lead {
-  margin: 0 0 1.5rem;
-  text-align: center;
-  font-family: var(--font-statement);
-  font-style: italic;
-  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
-  color: rgba(14, 13, 11, 0.7);
+.story__final-inner {
+  position: relative;
 }
 
 .story__final-statement {
@@ -1077,57 +1069,9 @@ fieldset.form-field {
    panel, then three pinned stage sections each reveal a heading, a line
    of thinking, and a progressively-connected step sequence. */
 
-.process {
-  background: #0d0d0c;
-}
-
-.process-transition {
-  position: relative;
-  height: 160vh;
-}
-
-.process-transition__pin {
-  position: relative;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.process-transition__card {
-  position: relative;
-  width: min(64vw, 760px);
-  padding: 3.5rem 3.5rem 4rem;
-  background: var(--paper);
-  border: 1px solid var(--ink);
-  border-radius: 32px;
-  text-align: center;
-  will-change: transform, width, height, border-radius;
-}
-
-.process-transition__lead {
-  margin: 0;
-  font-family: var(--font-statement);
-  font-style: italic;
-  font-size: clamp(1.4rem, 2.4vw, 2rem);
-  color: rgba(14, 13, 11, 0.75);
-}
-
-.process-transition__eyebrow {
-  position: absolute;
-  margin: 0;
-  font-family: var(--font-label);
-  font-weight: 600;
-  font-size: 0.85rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--gold);
-  opacity: 0;
-}
-
 .process-stage {
   position: relative;
+  background: #0d0d0c;
 }
 
 .process-stage__pin {
@@ -1232,11 +1176,6 @@ fieldset.form-field {
 }
 
 @media (max-width: 900px) {
-  .process-transition__card {
-    width: 86vw;
-    padding: 2.5rem 1.75rem 3rem;
-  }
-
   .process-stage__pin {
     padding: 0 6vw;
   }
