@@ -22,6 +22,8 @@
     initWorkHeadingReveal();
     initWorkTriggerSpotlight();
     initStorySection();
+    initProcessTransition();
+    initProcessStages();
     initCosmicScene();
     initStartFormOtherAim();
   });
@@ -428,6 +430,104 @@
       scrub: 0.5,
       animation: tl,
       invalidateOnRefresh: true,
+    });
+  }
+
+  // ---- Process transition: the story's resting "Now, this is how we
+  // work" card grows from a small paper card into a fullscreen dark panel,
+  // its lead line fading out as an eyebrow ("How Alpheris Executes")
+  // fades in — the bridge from the story's pinned section into the
+  // pinned Content/Performance/Ground stages below ----
+  function initProcessTransition() {
+    var section = document.querySelector(".process-transition");
+    var pin = section && section.querySelector(".process-transition__pin");
+    var card = pin && pin.querySelector(".process-transition__card");
+    var lead = pin && pin.querySelector(".process-transition__lead");
+    var eyebrow = pin && pin.querySelector(".process-transition__eyebrow");
+    if (!section || !pin || !card || !lead || !eyebrow) return;
+
+    if (reduceMotion) {
+      gsap.set([card, lead, eyebrow], { clearProps: "all" });
+      return;
+    }
+
+    gsap.set(eyebrow, { opacity: 0, y: 20 });
+
+    var tl = gsap.timeline();
+    tl.to(lead, { opacity: 0, duration: 0.3, ease: "power1.in" }, 0.15)
+      .to(card, { width: "100vw", height: "100vh", borderRadius: 0, duration: 0.6, ease: "power2.inOut" }, 0.1)
+      .to(card, { backgroundColor: "#0d0d0c", borderColor: "transparent", duration: 0.3, ease: "none" }, 0.45)
+      .to(eyebrow, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.65)
+      .to(eyebrow, { opacity: 0, duration: 0.3, ease: "power1.in" }, 0.92);
+
+    ScrollTrigger.create({
+      trigger: section,
+      start: "top top",
+      end: "bottom top",
+      pin: pin,
+      scrub: 0.5,
+      animation: tl,
+      invalidateOnRefresh: true,
+    });
+  }
+
+  // ---- Process stages (Content / Performance / Ground): each pins while
+  // its heading, line of thinking, and step sequence reveal in order,
+  // steps connected by arrows. The Performance stage's "Testing" step
+  // briefly shows two ghost outlines fanning out and converging, implying
+  // multiple variations being tried before the strongest continues on ----
+  function initProcessStages() {
+    var stages = Array.prototype.slice.call(document.querySelectorAll(".process-stage"));
+    if (!stages.length) return;
+
+    stages.forEach(function (stageSection) {
+      var pin = stageSection.querySelector(".process-stage__pin");
+      var index = stageSection.querySelector(".process-stage__index");
+      var heading = stageSection.querySelector(".process-stage__heading");
+      var idea = stageSection.querySelector(".process-stage__idea");
+      var steps = Array.prototype.slice.call(stageSection.querySelectorAll(".process-stage__step"));
+      if (!pin || !heading || !steps.length) return;
+
+      if (reduceMotion) {
+        gsap.set([index, heading, idea].concat(steps), { clearProps: "all" });
+        return;
+      }
+
+      gsap.set(index, { opacity: 0, y: 10 });
+      gsap.set(heading, { opacity: 0, y: 30 });
+      gsap.set(idea, { opacity: 0, y: 20 });
+      gsap.set(steps, { opacity: 0, y: 16 });
+
+      var tl = gsap.timeline();
+      tl.to(index, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 0)
+        .to(heading, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.05)
+        .to(idea, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 0.3);
+
+      var STEP_GAP = 0.22;
+      steps.forEach(function (step, i) {
+        var at = 0.6 + i * STEP_GAP;
+        tl.to(step, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, at);
+
+        var ghosts = step.querySelectorAll(".process-stage__ghost");
+        if (ghosts.length) {
+          tl.to(ghosts, { opacity: 0.5, duration: 0.2, ease: "power1.out" }, at + 0.05)
+            .to(ghosts, { opacity: 0, duration: 0.25, ease: "power1.in" }, at + 0.3);
+        }
+      });
+
+      var totalDuration = 0.6 + steps.length * STEP_GAP + 0.4;
+
+      ScrollTrigger.create({
+        trigger: stageSection,
+        start: "top top",
+        end: function () {
+          return "+=" + Math.round(window.innerHeight * totalDuration * 1.4);
+        },
+        pin: pin,
+        scrub: 0.5,
+        animation: tl,
+        invalidateOnRefresh: true,
+      });
     });
   }
 

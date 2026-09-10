@@ -419,11 +419,19 @@ a {
 }
 
 .start__heading {
-  margin: 0 0 3rem;
+  margin: 0 0 1.25rem;
   font-family: var(--font-display);
   font-weight: 500;
   font-size: clamp(2rem, 5vw, 3.25rem);
   color: var(--paper);
+}
+
+.start__subheading {
+  margin: 0 0 3rem;
+  max-width: 46ch;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: var(--paper-dim);
 }
 
 .start-form {
@@ -677,9 +685,17 @@ fieldset.form-field {
   margin-top: 1.5rem;
 }
 
+.about-body--footnote {
+  font-size: 0.95rem;
+  color: rgba(201, 194, 178, 0.6);
+  font-style: italic;
+}
+
 .about-founder__photo {
-  grid-row: 1 / 3;
+  grid-row: 1 / -1;
   grid-column: 2;
+  position: sticky;
+  top: 8rem;
   aspect-ratio: 4 / 5;
   border-radius: 4px;
   background: rgba(242, 237, 225, 0.04);
@@ -694,6 +710,7 @@ fieldset.form-field {
   .about-founder__photo {
     grid-row: auto;
     grid-column: auto;
+    position: static;
     max-width: 320px;
     order: -1;
   }
@@ -1051,6 +1068,191 @@ fieldset.form-field {
   .story__final {
     width: 86vw;
     padding: 2.5rem 1.75rem 3rem;
+  }
+}
+
+/* Process: continues the story's final card into a pinned reveal of how
+   Alpheris executes (Content / Performance / Ground). One small pinned
+   "morph" section grows the resting story card into a fullscreen dark
+   panel, then three pinned stage sections each reveal a heading, a line
+   of thinking, and a progressively-connected step sequence. */
+
+.process {
+  background: #0d0d0c;
+}
+
+.process-transition {
+  position: relative;
+  height: 160vh;
+}
+
+.process-transition__pin {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.process-transition__card {
+  position: relative;
+  width: min(64vw, 760px);
+  padding: 3.5rem 3.5rem 4rem;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: 32px;
+  text-align: center;
+  will-change: transform, width, height, border-radius;
+}
+
+.process-transition__lead {
+  margin: 0;
+  font-family: var(--font-statement);
+  font-style: italic;
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  color: rgba(14, 13, 11, 0.75);
+}
+
+.process-transition__eyebrow {
+  position: absolute;
+  margin: 0;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0;
+}
+
+.process-stage {
+  position: relative;
+}
+
+.process-stage__pin {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 6vw;
+  overflow: hidden;
+}
+
+.process-stage__head {
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.process-stage__index {
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  opacity: 0;
+}
+
+.process-stage__heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  font-size: clamp(3rem, 9vw, 6.5rem);
+  line-height: 1;
+  color: var(--paper);
+  opacity: 0;
+}
+
+.process-stage__idea {
+  margin: 1.5rem 0 3.5rem;
+  max-width: 48ch;
+  font-family: var(--font-body);
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  color: var(--paper-dim);
+  opacity: 0;
+}
+
+.process-stage__steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.process-stage__step {
+  position: relative;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+}
+
+.process-stage__step > span:not(.process-stage__ghost) {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: clamp(0.8rem, 1.2vw, 0.95rem);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.6rem 1.25rem;
+  white-space: nowrap;
+}
+
+.process-stage__step:not(:last-child)::after {
+  content: "\2192";
+  margin: 0 0.9rem;
+  color: var(--gold);
+  font-size: 1.1rem;
+}
+
+.process-stage__ghost {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.process-stage__ghost--a {
+  transform: translate(-10px, -8px) rotate(-5deg);
+}
+
+.process-stage__ghost--b {
+  transform: translate(10px, 8px) rotate(5deg);
+}
+
+@media (max-width: 900px) {
+  .process-transition__card {
+    width: 86vw;
+    padding: 2.5rem 1.75rem 3rem;
+  }
+
+  .process-stage__pin {
+    padding: 0 6vw;
+  }
+
+  .process-stage__head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  .process-stage__heading {
+    font-size: clamp(2.5rem, 12vw, 3.75rem);
+  }
+
+  .process-stage__step:not(:last-child)::after {
+    margin: 0 0.5rem;
   }
 }
 
