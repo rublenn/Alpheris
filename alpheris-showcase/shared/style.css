@@ -1007,6 +1007,10 @@ fieldset.form-field {
   color: var(--paper);
 }
 
+.story__final-scroll {
+  position: relative;
+}
+
 .story__final {
   position: relative;
   width: min(64vw, 760px);

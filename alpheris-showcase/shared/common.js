@@ -440,7 +440,8 @@
   function initStoryFinalExpand() {
     var card = document.querySelector(".story__final");
     var inner = card && card.querySelector(".story__final-inner");
-    if (!card || !inner) return;
+    var scrollWrapper = card && card.parentElement;
+    if (!card || !inner || !scrollWrapper) return;
 
     if (reduceMotion) {
       gsap.set(card, { clearProps: "all" });
@@ -466,17 +467,33 @@
     // fills the screen, the card's color IS the background, so the slow
     // expand reads as the whole page settling into the card's paper tone
     // before the (also light, ink-on-paper) Content/Performance/Ground
-    // stages take over immediately after.
+    // stages take over immediately after. The statement stays visible
+    // through almost the whole grow so it's unmistakably this same card
+    // that's becoming the background, not a different one arriving; the
+    // card then collapses back to nothing right at the very end, exactly
+    // as Content's own fullscreen pin engages and covers it, so the
+    // collapse itself is never seen — no dead scroll through a blank
+    // leftover card, no second card.
     var tl = gsap.timeline();
     tl.to(card, { width: "100vw", height: "100vh", borderRadius: 0, paddingLeft: 0, paddingRight: 0, paddingTop: 0, paddingBottom: 0, duration: 1.6, ease: "power2.inOut" }, 0)
-      .to(card, { borderColor: "transparent", duration: 0.3, ease: "none" }, 0.55)
-      .to(inner, { opacity: 0, duration: 0.3, ease: "power1.in" }, 0.2);
+      .to(card, { borderColor: "transparent", duration: 0.3, ease: "none" }, 0.5)
+      .to(inner, { opacity: 0, duration: 0.3, ease: "power1.in" }, 1.5)
+      .set(card, { overflow: "hidden" }, 1.9)
+      .to(card, { height: 0, duration: 0.2, ease: "none" }, 1.9);
+
+    // The wrapper's own height is the ONLY thing reserving scroll
+    // distance here (pinSpacing disabled) — so however the card's height
+    // fluctuates mid-animation, nothing leaks into extra dead space
+    // afterward for Content to have to be scrolled past.
+    var pinDistance = Math.round(window.innerHeight * (tl.duration() + 0.1));
+    gsap.set(scrollWrapper, { height: pinDistance });
 
     ScrollTrigger.create({
-      trigger: card,
+      trigger: scrollWrapper,
       start: "top top+=110",
-      end: "+=" + Math.round(window.innerHeight * 1.8),
+      end: "+=" + pinDistance,
       pin: card,
+      pinSpacing: false,
       scrub: 0.5,
       animation: tl,
       invalidateOnRefresh: true,
