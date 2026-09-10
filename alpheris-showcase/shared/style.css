@@ -694,6 +694,7 @@ fieldset.form-field {
 }
 
 .about-body {
+  grid-column: 1;
   max-width: 65ch;
   margin: 0;
   font-family: var(--font-sans);
