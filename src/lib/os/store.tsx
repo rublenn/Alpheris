@@ -7,8 +7,11 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
+import { doc, DocumentSnapshot, getDoc, onSnapshot, setDoc } from "firebase/firestore";
+import { ensureAnonymousAuth, getDb } from "./firebase";
 import {
   Asset,
   Capture,
@@ -43,29 +46,47 @@ import {
 } from "./types";
 
 const STORAGE_KEY = "alperis:os:v1";
+const UPDATED_AT_KEY = "alperis:os:v1:updatedAt";
+const SYNC_DOC_PATH = ["alperisOS", "state"] as const;
+const FIRESTORE_WRITE_DEBOUNCE_MS = 500;
 
-function readState(): OsState {
+function normalizeState(raw: Partial<OsState>): OsState {
+  const parsed = { ...EMPTY_STATE, ...raw };
+  parsed.leads = (parsed.leads ?? []).map(normalizeLead);
+  parsed.creativeScripts = (parsed.creativeScripts ?? []).map(normalizeCreativeScript);
+  parsed.postPerformance = (parsed.postPerformance ?? []).map(normalizePostPerformance);
+  parsed.monthlyReports = (parsed.monthlyReports ?? []).map(normalizeMonthlyReport);
+  const missingClients = (parsed.leads ?? [])
+    .filter((l) => l.stage === "Client" && !parsed.clients.some((c) => c.name === l.name))
+    .map((l) => createClientRecord(l.name));
+  if (missingClients.length > 0) parsed.clients = [...parsed.clients, ...missingClients];
+  return parsed;
+}
+
+function readLocalState(): OsState {
   if (typeof window === "undefined") return EMPTY_STATE;
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return EMPTY_STATE;
-    const parsed = { ...EMPTY_STATE, ...(JSON.parse(raw) as Partial<OsState>) };
-    parsed.leads = (parsed.leads ?? []).map(normalizeLead);
-    parsed.creativeScripts = (parsed.creativeScripts ?? []).map(normalizeCreativeScript);
-    parsed.postPerformance = (parsed.postPerformance ?? []).map(normalizePostPerformance);
-    parsed.monthlyReports = (parsed.monthlyReports ?? []).map(normalizeMonthlyReport);
-    const missingClients = (parsed.leads ?? [])
-      .filter((l) => l.stage === "Client" && !parsed.clients.some((c) => c.name === l.name))
-      .map((l) => createClientRecord(l.name));
-    if (missingClients.length > 0) parsed.clients = [...parsed.clients, ...missingClients];
-    return parsed;
+    return normalizeState(JSON.parse(raw) as Partial<OsState>);
   } catch {
     return EMPTY_STATE;
   }
 }
 
-function writeState(state: OsState) {
+function readLocalUpdatedAt(): number {
+  if (typeof window === "undefined") return 0;
+  return Number(window.localStorage.getItem(UPDATED_AT_KEY) ?? 0) || 0;
+}
+
+function writeLocalState(state: OsState, updatedAt: number) {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  window.localStorage.setItem(UPDATED_AT_KEY, String(updatedAt));
+}
+
+interface SyncDocShape {
+  data: Partial<OsState>;
+  updatedAt: number;
 }
 
 interface OsStore {
@@ -176,17 +197,109 @@ export function OsStoreProvider({ children }: { children: ReactNode }) {
   const [state, setStateRaw] = useState<OsState>(EMPTY_STATE);
   const [hydrated, setHydrated] = useState(false);
 
-  useEffect(() => {
-    setStateRaw(readState());
-    setHydrated(true);
+  // Tracks the freshness of `state` for last-writer-wins reconciliation against
+  // the shared Firestore document, and guards against a stale remote snapshot
+  // clobbering a newer local edit that hasn't been confirmed by the server yet.
+  const localUpdatedAtRef = useRef(0);
+  const writeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cloudReadyRef = useRef(false);
+
+  const pushToCloud = useCallback((next: OsState, updatedAt: number) => {
+    if (!cloudReadyRef.current) return;
+    if (writeTimerRef.current) clearTimeout(writeTimerRef.current);
+    writeTimerRef.current = setTimeout(() => {
+      const payload: SyncDocShape = { data: next, updatedAt };
+      setDoc(doc(getDb(), ...SYNC_DOC_PATH), payload).catch((err) => {
+        console.warn("Alpheris OS: cloud sync write failed, staying local-only for now.", err);
+      });
+    }, FIRESTORE_WRITE_DEBOUNCE_MS);
   }, []);
 
-  const setState = useCallback((updater: (prev: OsState) => OsState) => {
-    setStateRaw((prev) => {
-      const next = updater(prev);
-      writeState(next);
-      return next;
-    });
+  const setState = useCallback(
+    (updater: (prev: OsState) => OsState) => {
+      setStateRaw((prev) => {
+        const next = updater(prev);
+        const updatedAt = Date.now();
+        localUpdatedAtRef.current = updatedAt;
+        writeLocalState(next, updatedAt);
+        pushToCloud(next, updatedAt);
+        return next;
+      });
+    },
+    [pushToCloud]
+  );
+
+  /** Applies state that arrived from Firestore (our own confirmed write, or another
+   * device's), without re-pushing it back up. */
+  const applyRemote = useCallback((raw: Partial<OsState>, updatedAt: number) => {
+    const next = normalizeState(raw);
+    localUpdatedAtRef.current = updatedAt;
+    writeLocalState(next, updatedAt);
+    setStateRaw(next);
+  }, []);
+
+  useEffect(() => {
+    // Paint immediately from whatever's cached locally so the app never blocks on a
+    // network round trip, then reconcile with the shared cloud copy underneath.
+    const local = readLocalState();
+    const localUpdatedAt = readLocalUpdatedAt();
+    localUpdatedAtRef.current = localUpdatedAt;
+    setStateRaw(local);
+    setHydrated(true);
+
+    let unsubscribeSnapshot: (() => void) | null = null;
+    let cancelled = false;
+
+    (async () => {
+      try {
+        await ensureAnonymousAuth();
+        if (cancelled) return;
+        const db = getDb();
+        const docRef = doc(db, ...SYNC_DOC_PATH);
+
+        const snap = await getDoc(docRef);
+        if (cancelled) return;
+
+        if (snap.exists()) {
+          const remote = snap.data() as SyncDocShape;
+          if ((remote.updatedAt ?? 0) > localUpdatedAtRef.current) {
+            applyRemote(remote.data ?? {}, remote.updatedAt);
+          } else if ((remote.updatedAt ?? 0) < localUpdatedAtRef.current) {
+            // This device has newer local edits (e.g. made while offline) — push them up.
+            cloudReadyRef.current = true;
+            await setDoc(docRef, { data: local, updatedAt: localUpdatedAtRef.current } satisfies SyncDocShape);
+          }
+        } else {
+          // First time this project's cloud document is created — seed it from
+          // whatever this device already has (or a clean slate).
+          const seedAt = localUpdatedAtRef.current || Date.now();
+          localUpdatedAtRef.current = seedAt;
+          writeLocalState(local, seedAt);
+          cloudReadyRef.current = true;
+          await setDoc(docRef, { data: local, updatedAt: seedAt } satisfies SyncDocShape);
+        }
+
+        cloudReadyRef.current = true;
+
+        unsubscribeSnapshot = onSnapshot(docRef, (snapshot: DocumentSnapshot) => {
+          if (snapshot.metadata.hasPendingWrites) return; // our own optimistic echo
+          const remote = snapshot.data() as SyncDocShape | undefined;
+          if (!remote) return;
+          if ((remote.updatedAt ?? 0) > localUpdatedAtRef.current) {
+            applyRemote(remote.data ?? {}, remote.updatedAt);
+          }
+        });
+      } catch (err) {
+        console.warn("Alpheris OS: cloud sync unavailable, continuing with this device's local data only.", err);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      unsubscribeSnapshot?.();
+      if (writeTimerRef.current) clearTimeout(writeTimerRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const med = useMemo(() => collection(setState, "mediums"), [setState]);

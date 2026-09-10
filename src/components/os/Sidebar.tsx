@@ -144,7 +144,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 
       <div className="mt-auto px-3 pt-4 border-t border-border-soft">
         <p className="text-xs text-muted leading-relaxed">
-          Data stays on this device — stored in your browser, nothing sent anywhere.
+          Synced privately across your devices via your own cloud database — never shared elsewhere.
         </p>
       </div>
     </nav>
