@@ -215,6 +215,29 @@ export interface Lead {
   nextAction: string;
   nextActionDate: string;
   capturedAt: string;
+  mom: string;
+}
+
+export function emptyLead(): Lead {
+  return {
+    id: newId(),
+    name: "",
+    source: "Referral",
+    contact: "",
+    instagramFollowers: 0,
+    address: "",
+    stage: "Lead",
+    value: 0,
+    nextAction: "",
+    nextActionDate: todayISO(),
+    capturedAt: todayISO(),
+    mom: "",
+  };
+}
+
+export function normalizeLead(l: Partial<Lead>): Lead {
+  const empty = emptyLead();
+  return { ...empty, ...l, id: l.id ?? empty.id };
 }
 
 export interface ClientLearn {
@@ -278,6 +301,8 @@ export interface CreativeScript {
   genre: CreativeGenre;
   name: string;
   script: string;
+  problemAwareness: string;
+  desireOutcome: string;
   vibe: string;
   why: string;
   who: string;
@@ -306,6 +331,8 @@ export function emptyCreativeScript(client: string, kind: "Ad" | "Post", genre: 
     genre,
     name: "",
     script: "",
+    problemAwareness: "",
+    desireOutcome: "",
     vibe: "",
     why: "",
     who: "",
@@ -326,6 +353,19 @@ export function emptyCreativeScript(client: string, kind: "Ad" | "Post", genre: 
     createdAt: todayISO(),
   };
 }
+
+export const AD_STRATEGY_FIELDS = [
+  {
+    key: "problemAwareness",
+    label: "Problem / Awareness",
+    placeholder: "Name the problem or make them aware something's wrong — this is where the ad opens.",
+  },
+  {
+    key: "desireOutcome",
+    label: "Desire / Outcome",
+    placeholder: "Paint the outcome they actually want — what life looks like after.",
+  },
+] as const satisfies { key: keyof CreativeScript; label: string; placeholder: string }[];
 
 export function normalizeCreativeScript(s: Partial<CreativeScript>): CreativeScript {
   const empty = emptyCreativeScript(s.client ?? "", s.kind ?? "Ad", s.genre ?? AD_GENRES[0]);

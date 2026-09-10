@@ -27,6 +27,7 @@ import {
   Field,
   IconButton,
   NumberInput,
+  SaveButton,
   SectionHeader,
   SelectInput,
   StatTile,
@@ -118,11 +119,9 @@ function ClientSuccessPageInner() {
     setDrawerOpen(true);
   }
 
-  function save() {
-    if (!form.name.trim()) return;
+  function persist() {
     if (editingId) updateClient(editingId, form);
     else addClient(form);
-    setDrawerOpen(false);
   }
 
   function toggleExpand(id: string) {
@@ -505,9 +504,12 @@ function ClientSuccessPageInner() {
           </Field>
 
           <div className="flex items-center gap-2 pt-2">
-            <Button variant="primary" onClick={save}>
-              {editingId ? "Save changes" : "Add client"}
-            </Button>
+            <SaveButton
+              onSave={persist}
+              onDone={() => setDrawerOpen(false)}
+              disabled={!form.name.trim()}
+              idleLabel={editingId ? "Save changes" : "Add client"}
+            />
             {editingId && (
               <DeleteButton
                 label="Delete client"

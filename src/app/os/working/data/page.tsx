@@ -13,6 +13,7 @@ import {
   EmptyState,
   Field,
   IconButton,
+  SaveButton,
   SectionHeader,
   SelectInput,
   Tabs,
@@ -20,6 +21,27 @@ import {
   TextInput,
 } from "@/components/os/ui";
 import { IconClose, IconPlus, IconStrategies } from "@/components/os/icons";
+
+function LearnBlockEditor({
+  label,
+  placeholder,
+  value,
+  onSave,
+}: {
+  label: string;
+  placeholder: string;
+  value: string;
+  onSave: (v: string) => void;
+}) {
+  const [text, setText] = useState(value);
+  return (
+    <Card className="flex flex-col gap-2">
+      <p className="font-semibold">{label}</p>
+      <TextArea value={text} onChange={setText} placeholder={placeholder} />
+      <SaveButton onSave={() => onSave(text)} className="self-start" />
+    </Card>
+  );
+}
 
 function emptyPlaybook(): Playbook {
   return { id: newId(), name: "", version: 1, steps: [] };
@@ -101,13 +123,11 @@ function DataPageInner() {
     setForm({ ...form, steps: form.steps.filter((s) => s.id !== id) });
   }
 
-  function save() {
-    if (!form.name.trim()) return;
+  function persist() {
     const cleanSteps = form.steps.filter((s) => s.title.trim());
     const toSave = { ...form, steps: cleanSteps };
     if (editingId) updatePlaybook(editingId, toSave);
     else addPlaybook(toSave);
-    setDrawerOpen(false);
   }
 
   function bumpVersion() {
@@ -157,14 +177,13 @@ function DataPageInner() {
               {learnClient && (
                 <div className="grid gap-4 sm:grid-cols-2">
                   {LEARN_BLOCKS.map((block) => (
-                    <Card key={block.key} className="flex flex-col gap-2">
-                      <p className="font-semibold">{block.label}</p>
-                      <TextArea
-                        value={activeLearn?.[block.key] ?? ""}
-                        onChange={(v) => saveLearnField(block.key, v)}
-                        placeholder={block.placeholder}
-                      />
-                    </Card>
+                    <LearnBlockEditor
+                      key={`${learnClient}-${block.key}`}
+                      label={block.label}
+                      placeholder={block.placeholder}
+                      value={activeLearn?.[block.key] ?? ""}
+                      onSave={(v) => saveLearnField(block.key, v)}
+                    />
                   ))}
                 </div>
               )}
@@ -268,9 +287,12 @@ function DataPageInner() {
           </div>
 
           <div className="flex items-center gap-2 pt-2">
-            <Button variant="primary" onClick={save}>
-              {editingId ? "Save changes" : "Create playbook"}
-            </Button>
+            <SaveButton
+              onSave={persist}
+              onDone={() => setDrawerOpen(false)}
+              disabled={!form.name.trim()}
+              idleLabel={editingId ? "Save changes" : "Create playbook"}
+            />
             {editingId && (
               <DeleteButton
                 label="Delete playbook"

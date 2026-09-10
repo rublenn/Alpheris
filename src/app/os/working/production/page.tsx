@@ -1,11 +1,13 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useOsStore } from "@/lib/os/store";
 import {
   AD_GENRES,
   AD_QUESTION_FIELDS,
+  AD_STRATEGY_FIELDS,
   ALL_CREATIVE_GENRES,
   AMPLIFIER_FIELDS,
   CreativeGenre,
@@ -23,6 +25,7 @@ import {
   Drawer,
   EmptyState,
   Field,
+  SaveButton,
   SectionHeader,
   SelectInput,
   Tabs,
@@ -50,17 +53,30 @@ function ProductionPageInner() {
 
   const searchParams = useSearchParams();
   const queryClient = searchParams.get("client") || "";
+  const queryScriptId = searchParams.get("scriptId") || "";
   const initialTab = searchParams.get("focus") === "production" ? "Production" : "Creative";
   const [tab, setTab] = useState<"Creative" | "Production">(initialTab);
 
   const clientNames = Array.from(new Set(state.leads.filter((l) => l.stage === "Client").map((l) => l.name))).sort();
 
+  const scriptById = queryScriptId ? state.creativeScripts.find((s) => s.id === queryScriptId) : undefined;
+
   const [creativeClientSel, setCreativeClient] = useState("");
   const [productionClientSel, setProductionClient] = useState("");
   const creativeClient = creativeClientSel || queryClient || clientNames[0] || "";
-  const productionClient = productionClientSel || queryClient || clientNames[0] || "";
-  const [productionGenre, setProductionGenre] = useState<CreativeGenre | "">("");
+  const productionClient = productionClientSel || scriptById?.client || queryClient || clientNames[0] || "";
+  const [productionGenreSel, setProductionGenre] = useState<CreativeGenre | "">("");
+  const productionGenre = productionGenreSel || scriptById?.genre || "";
   const [equipmentDraft, setEquipmentDraft] = useState("");
+
+  useEffect(() => {
+    if (!scriptById) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing local selection to an incoming deep-link navigation, not derived state
+    setProductionClient(scriptById.client);
+    setProductionGenre(scriptById.genre);
+    setTab("Production");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queryScriptId]);
 
   const [scriptDrawer, setScriptDrawer] = useState(false);
   const [editingScriptId, setEditingScriptId] = useState<string | null>(null);
@@ -84,7 +100,7 @@ function ProductionPageInner() {
     setScriptDrawer(true);
   }
 
-  function saveScript() {
+  function persistScript() {
     if (!scriptForm) return;
     if (editingScriptId) {
       updateCreativeScript(editingScriptId, scriptForm);
@@ -92,16 +108,15 @@ function ProductionPageInner() {
       const equipment = state.equipmentDefaults[scriptForm.genre] ?? DEFAULT_EQUIPMENT[scriptForm.genre] ?? [];
       addCreativeScript({ ...scriptForm, equipment });
     }
-    setScriptDrawer(false);
   }
 
   const scriptsForProductionClient = productionClient
     ? state.creativeScripts.filter((s) => s.client === productionClient)
     : [];
   const genresWithScript = scriptsForProductionClient.map((s) => s.genre);
-  const activeProductionScript = productionClient && productionGenre
+  const activeProductionScript = scriptById ?? (productionClient && productionGenre
     ? scriptFor(productionClient, ALL_CREATIVE_GENRES.indexOf(productionGenre as CreativeGenre) < AD_GENRES.length ? "Ad" : "Post", productionGenre as CreativeGenre)
-    : undefined;
+    : undefined);
 
   function addEquipmentItem() {
     if (!activeProductionScript || !equipmentDraft.trim()) return;
@@ -270,9 +285,17 @@ function ProductionPageInner() {
                       ))}
                     </div>
                     {activeProductionScript.finalised && (
-                      <p className="text-xs text-muted">
-                        Finalised — this now shows up as a final outcome to select in Deliverables.
-                      </p>
+                      <div className="flex flex-col gap-2">
+                        <p className="text-xs text-muted">
+                          Finalised — this now shows up as a final outcome to select in Deliverables.
+                        </p>
+                        <Link
+                          href={`/os/working/deliverables?scriptId=${activeProductionScript.id}`}
+                          className="inline-flex w-fit items-center justify-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-medium text-white transition duration-150 ease-[var(--ease-smooth)] hover:opacity-90 active:scale-[0.97]"
+                        >
+                          Go to Delivery →
+                        </Link>
+                      </div>
                     )}
                   </div>
 
@@ -374,6 +397,16 @@ function ProductionPageInner() {
               </div>
             </div>
 
+            {AD_STRATEGY_FIELDS.map((f) => (
+              <Field key={f.key} label={f.label}>
+                <TextArea
+                  value={scriptForm[f.key]}
+                  onChange={(v) => setScriptForm({ ...scriptForm, [f.key]: v })}
+                  placeholder={f.placeholder}
+                />
+              </Field>
+            ))}
+
             <Field label="2. Script">
               <TextArea
                 value={scriptForm.script}
@@ -405,9 +438,11 @@ function ProductionPageInner() {
             ))}
 
             <div className="flex items-center gap-2 pt-2">
-              <Button variant="primary" onClick={saveScript}>
-                {editingScriptId ? "Save changes" : "Confirm this " + scriptForm.kind.toLowerCase()}
-              </Button>
+              <SaveButton
+                onSave={persistScript}
+                onDone={() => setScriptDrawer(false)}
+                idleLabel={editingScriptId ? "Save changes" : "Confirm this " + scriptForm.kind.toLowerCase()}
+              />
               {editingScriptId && (
                 <DeleteButton
                   label="Delete"
@@ -437,21 +472,30 @@ function GenreSlot({
 }) {
   const hasCustomName = !!script?.name.trim();
   return (
-    <button
-      onClick={onClick}
-      className={`text-left rounded-xl border p-3.5 transition ${
+    <div
+      className={`rounded-xl border p-3.5 transition ${
         script ? "border-border bg-surface hover:border-muted" : "border-dashed border-border-soft hover:border-accent"
       }`}
     >
-      <div className="flex items-center justify-between mb-1.5">
-        <p className="text-sm font-semibold leading-tight">{hasCustomName ? script!.name : genre}</p>
-        {script ? <Badge tone="good">Confirmed</Badge> : <Badge>Blank</Badge>}
-      </div>
-      {hasCustomName && <p className="text-xs text-muted mb-1">{genre}</p>}
-      <p className="text-xs text-muted line-clamp-2">
-        {script ? script.vibe || script.why || "Confirmed — tap to edit" : "Tap to confirm this genre"}
-      </p>
-    </button>
+      <button onClick={onClick} className="w-full text-left">
+        <div className="flex items-center justify-between mb-1.5">
+          <p className="text-sm font-semibold leading-tight">{hasCustomName ? script!.name : genre}</p>
+          {script ? <Badge tone="good">Confirmed</Badge> : <Badge>Blank</Badge>}
+        </div>
+        {hasCustomName && <p className="text-xs text-muted mb-1">{genre}</p>}
+        <p className="text-xs text-muted line-clamp-2">
+          {script ? script.vibe || script.why || "Confirmed — tap to edit" : "Tap to confirm this genre"}
+        </p>
+      </button>
+      {script && (
+        <Link
+          href={`/os/working/production?focus=production&scriptId=${script.id}`}
+          className="mt-2.5 inline-flex items-center justify-center gap-1.5 rounded-full bg-accent px-3.5 py-1.5 text-xs font-medium text-white transition duration-150 ease-[var(--ease-smooth)] hover:opacity-90 active:scale-[0.97]"
+        >
+          See Ad →
+        </Link>
+      )}
+    </div>
   );
 }
 

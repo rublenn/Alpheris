@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useOsStore } from "@/lib/os/store";
@@ -25,12 +25,25 @@ function DeliverablesPageInner() {
   const { state, hydrated, updateCreativeScript } = useOsStore();
   const searchParams = useSearchParams();
   const queryClient = searchParams.get("client") || "";
+  const queryScriptId = searchParams.get("scriptId") || "";
+
+  const scriptById = queryScriptId
+    ? state.creativeScripts.find((s) => s.id === queryScriptId && s.finalised)
+    : undefined;
 
   const clientNames = Array.from(new Set(state.leads.filter((l) => l.stage === "Client").map((l) => l.name))).sort();
 
   const [clientSel, setClient] = useState("");
-  const client = clientSel || queryClient || clientNames[0] || "";
+  const client = clientSel || scriptById?.client || queryClient || clientNames[0] || "";
   const [outcomeId, setOutcomeId] = useState("");
+
+  useEffect(() => {
+    if (!scriptById) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing local selection to an incoming deep-link navigation, not derived state
+    setClient(scriptById.client);
+    setOutcomeId(scriptById.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queryScriptId]);
 
   if (!hydrated) return null;
 
@@ -38,7 +51,8 @@ function DeliverablesPageInner() {
     ? state.creativeScripts.filter((s) => s.client === client && s.finalised)
     : [];
 
-  const activeOutcome: CreativeScript | undefined = finalisedForClient.find((s) => s.id === outcomeId) ?? finalisedForClient[0];
+  const activeOutcome: CreativeScript | undefined =
+    scriptById ?? finalisedForClient.find((s) => s.id === outcomeId) ?? finalisedForClient[0];
 
   return (
     <div className="flex flex-col gap-8">

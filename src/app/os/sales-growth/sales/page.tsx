@@ -1,15 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useOsStore } from "@/lib/os/store";
 import {
+  emptyLead,
   LEAD_STAGE_LABELS,
   LEAD_STAGES,
   Lead,
   LeadStage,
   SOURCES,
   Source,
-  newId,
   todayISO,
 } from "@/lib/os/types";
 import { conversionRate, formatCurrency, formatPct, openLeads, pipelineValue } from "@/lib/os/calc";
@@ -23,10 +24,12 @@ import {
   Field,
   NumberInput,
   ProgressBar,
+  SaveButton,
   SectionHeader,
   SelectInput,
   StatTile,
   Tabs,
+  TextArea,
   TextInput,
 } from "@/components/os/ui";
 import { IconPlus } from "@/components/os/icons";
@@ -42,22 +45,6 @@ function addDays(dateStr: string, days: number): string {
   const base = dateStr ? new Date(dateStr) : new Date();
   base.setDate(base.getDate() + days);
   return base.toISOString().slice(0, 10);
-}
-
-function emptyLead(): Lead {
-  return {
-    id: newId(),
-    name: "",
-    source: "Referral",
-    contact: "",
-    instagramFollowers: 0,
-    address: "",
-    stage: "Lead",
-    value: 0,
-    nextAction: "",
-    nextActionDate: todayISO(),
-    capturedAt: todayISO(),
-  };
 }
 
 export default function SalesPage() {
@@ -98,23 +85,21 @@ export default function SalesPage() {
     setDrawerOpen(true);
   }
 
-  function save() {
-    if (!form.name.trim()) return;
-    if (editingId) {
-      updateLead(editingId, form);
-    } else {
-      addLead(form);
-    }
-    setDrawerOpen(false);
+  function persistLead() {
+    if (editingId) updateLead(editingId, form);
+    else addLead(form);
   }
 
-  function saveTarget() {
+  function persistTarget() {
     setTarget(targetForm);
-    setEditingTarget(false);
   }
 
   function moveTo(l: Lead, stage: LeadStage) {
     updateLead(l.id, { stage });
+  }
+
+  function transitionsFor(l: Lead): LeadStage[] {
+    return LEAD_STAGES.filter((s) => s !== l.stage && !(l.stage === "InTalk" && s === "Lead"));
   }
 
   return (
@@ -128,53 +113,6 @@ export default function SalesPage() {
           </Button>
         }
       />
-
-      <Card>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold">This period&apos;s target</h3>
-          {!editingTarget && (
-            <Button
-              variant="ghost"
-              onClick={() => {
-                setTargetForm(state.target);
-                setEditingTarget(true);
-              }}
-            >
-              Edit
-            </Button>
-          )}
-        </div>
-
-        {editingTarget ? (
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Field label="Revenue goal">
-              <NumberInput value={targetForm.revenueGoal} onChange={(v) => setTargetForm({ ...targetForm, revenueGoal: v })} />
-            </Field>
-            <Field label="New clients goal">
-              <NumberInput value={targetForm.newClientsGoal} onChange={(v) => setTargetForm({ ...targetForm, newClientsGoal: v })} />
-            </Field>
-            <Field label="Qualified leads goal">
-              <NumberInput value={targetForm.qualifiedLeadsGoal} onChange={(v) => setTargetForm({ ...targetForm, qualifiedLeadsGoal: v })} />
-            </Field>
-            <div className="sm:col-span-3 flex gap-2">
-              <Button variant="primary" onClick={saveTarget}>Save target</Button>
-              <Button variant="ghost" onClick={() => setEditingTarget(false)}>Cancel</Button>
-            </div>
-          </div>
-        ) : (
-          <div className="grid gap-5 sm:grid-cols-3">
-            <TargetProgress label="Revenue" value={revenueWon} goal={state.target.revenueGoal} format={formatCurrency} />
-            <TargetProgress label="New clients" value={clients.length} goal={state.target.newClientsGoal} format={(n) => String(n)} />
-            <TargetProgress label="Qualified leads" value={qualifiedPlus} goal={state.target.qualifiedLeadsGoal} format={(n) => String(n)} />
-          </div>
-        )}
-      </Card>
-
-      <div className="grid gap-4 sm:grid-cols-3">
-        <StatTile label="Open pipeline value" value={formatCurrency(pipeline)} />
-        <StatTile label="Conversion rate" value={formatPct(conversion)} hint="Clients ÷ all leads" />
-        <StatTile label="In talks" value={openLeads(state.leads).length} />
-      </div>
 
       <Tabs
         value={tab}
@@ -219,27 +157,38 @@ export default function SalesPage() {
             const overdueItem = l.stage === "FollowUp" && l.nextActionDate && l.nextActionDate < today;
             return (
               <Card key={l.id} className="flex flex-col gap-3">
-                <div onClick={() => openEdit(l)} className="flex flex-col gap-2 cursor-pointer">
+                <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between">
                     <p className="font-medium text-sm">{l.name}</p>
                     <Badge tone={STAGE_TONE[l.stage]}>{LEAD_STAGE_LABELS[l.stage]}</Badge>
                   </div>
-                  <p className="text-xs text-muted">
-                    {l.source}
-                    {l.instagramFollowers > 0 ? ` · ${l.instagramFollowers.toLocaleString()} IG followers` : ""}
-                  </p>
-                  {l.address && <p className="text-xs text-muted line-clamp-1">{l.address}</p>}
-                  {l.value > 0 && <p className="text-xs text-muted">{formatCurrency(l.value)}</p>}
-                  {l.stage === "FollowUp" && l.nextAction && (
-                    <p className={`text-xs line-clamp-2 ${overdueItem ? "text-critical" : "text-muted"}`}>
-                      Next: {l.nextAction}
-                      {l.nextActionDate && ` · ${l.nextActionDate}`}
-                    </p>
+
+                  {l.nextAction.trim() ? (
+                    <button onClick={() => openEdit(l)} className="text-left">
+                      <p className={`text-sm font-medium leading-snug ${overdueItem ? "text-critical" : ""}`}>
+                        Next Action: <span className="font-normal">{l.nextAction}</span>
+                        {l.nextActionDate && <span className="text-xs text-muted"> · {l.nextActionDate}</span>}
+                      </p>
+                    </button>
+                  ) : (
+                    <button onClick={() => openEdit(l)} className="text-left text-sm text-muted italic">
+                      No next action set — tap to add one
+                    </button>
                   )}
-                  <p className="text-xs text-muted">Captured {l.capturedAt}</p>
+
+                  <div onClick={() => openEdit(l)} className="flex flex-col gap-1 cursor-pointer">
+                    <p className="text-xs text-muted">
+                      {l.source}
+                      {l.instagramFollowers > 0 ? ` · ${l.instagramFollowers.toLocaleString()} IG followers` : ""}
+                    </p>
+                    {l.address && <p className="text-xs text-muted line-clamp-1">{l.address}</p>}
+                    {l.value > 0 && <p className="text-xs text-muted">{formatCurrency(l.value)}</p>}
+                    <p className="text-xs text-muted">Captured {l.capturedAt}</p>
+                  </div>
                 </div>
+
                 <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t border-border-soft">
-                  {LEAD_STAGES.filter((s) => s !== l.stage).map((s) => (
+                  {transitionsFor(l).map((s) => (
                     <button
                       key={s}
                       onClick={() => moveTo(l, s)}
@@ -249,6 +198,7 @@ export default function SalesPage() {
                     </button>
                   ))}
                 </div>
+
                 {l.stage === "FollowUp" && (
                   <div className="flex items-center gap-2 pt-1">
                     <input
@@ -264,11 +214,71 @@ export default function SalesPage() {
                     </Button>
                   </div>
                 )}
+
+                {l.stage === "InTalk" && <MomEditor lead={l} onSave={(mom) => updateLead(l.id, { mom })} />}
+
+                {l.stage === "Client" && (
+                  <div className="pt-1 border-t border-border-soft">
+                    <Link
+                      href={`/os/operations/client-success?client=${encodeURIComponent(l.name)}`}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-medium text-white transition duration-150 ease-[var(--ease-smooth)] hover:opacity-90 active:scale-[0.97]"
+                    >
+                      View in Client Success →
+                    </Link>
+                  </div>
+                )}
               </Card>
             );
           })}
         </div>
       )}
+
+      <Card>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold">This period&apos;s target</h3>
+          {!editingTarget && (
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setTargetForm(state.target);
+                setEditingTarget(true);
+              }}
+            >
+              Edit
+            </Button>
+          )}
+        </div>
+
+        {editingTarget ? (
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Field label="Revenue goal">
+              <NumberInput value={targetForm.revenueGoal} onChange={(v) => setTargetForm({ ...targetForm, revenueGoal: v })} />
+            </Field>
+            <Field label="New clients goal">
+              <NumberInput value={targetForm.newClientsGoal} onChange={(v) => setTargetForm({ ...targetForm, newClientsGoal: v })} />
+            </Field>
+            <Field label="Qualified leads goal">
+              <NumberInput value={targetForm.qualifiedLeadsGoal} onChange={(v) => setTargetForm({ ...targetForm, qualifiedLeadsGoal: v })} />
+            </Field>
+            <div className="sm:col-span-3 flex gap-2">
+              <SaveButton onSave={persistTarget} onDone={() => setEditingTarget(false)} idleLabel="Save target" />
+              <Button variant="ghost" onClick={() => setEditingTarget(false)}>Cancel</Button>
+            </div>
+          </div>
+        ) : (
+          <div className="grid gap-5 sm:grid-cols-3">
+            <TargetProgress label="Revenue" value={revenueWon} goal={state.target.revenueGoal} format={formatCurrency} />
+            <TargetProgress label="New clients" value={clients.length} goal={state.target.newClientsGoal} format={(n) => String(n)} />
+            <TargetProgress label="Qualified leads" value={qualifiedPlus} goal={state.target.qualifiedLeadsGoal} format={(n) => String(n)} />
+          </div>
+        )}
+      </Card>
+
+      <div className="grid gap-4 sm:grid-cols-3">
+        <StatTile label="Open pipeline value" value={formatCurrency(pipeline)} />
+        <StatTile label="Conversion rate" value={formatPct(conversion)} hint="Clients ÷ all leads" />
+        <StatTile label="In talks" value={openLeads(state.leads).length} />
+      </div>
 
       <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)} title={editingId ? "Edit lead" : "New lead"}>
         <div className="flex flex-col gap-4">
@@ -307,7 +317,7 @@ export default function SalesPage() {
             </Field>
           </div>
           <Field label="Next action">
-            <TextInput value={form.nextAction} onChange={(v) => setForm({ ...form, nextAction: v })} placeholder="e.g. Send proposal" />
+            <TextInput value={form.nextAction} onChange={(v) => setForm({ ...form, nextAction: v })} placeholder="e.g. Call restaurant owner tomorrow at 14:00" />
           </Field>
           <Field label="Next action date">
             <TextInput type="date" value={form.nextActionDate} onChange={(v) => setForm({ ...form, nextActionDate: v })} />
@@ -320,9 +330,12 @@ export default function SalesPage() {
           )}
 
           <div className="flex items-center gap-2 pt-2">
-            <Button variant="primary" onClick={save}>
-              {editingId ? "Save changes" : "Add lead"}
-            </Button>
+            <SaveButton
+              onSave={persistLead}
+              onDone={() => setDrawerOpen(false)}
+              disabled={!form.name.trim()}
+              idleLabel={editingId ? "Save changes" : "Add lead"}
+            />
             {editingId && (
               <DeleteButton
                 label="Delete lead"
@@ -335,6 +348,17 @@ export default function SalesPage() {
           </div>
         </div>
       </Drawer>
+    </div>
+  );
+}
+
+function MomEditor({ lead, onSave }: { lead: Lead; onSave: (mom: string) => void }) {
+  const [text, setText] = useState(lead.mom);
+  return (
+    <div className="flex flex-col gap-1.5 pt-1 border-t border-border-soft">
+      <span className="text-xs font-medium tracking-wide uppercase text-muted">Minutes of Meeting</span>
+      <TextArea value={text} onChange={setText} placeholder="What was discussed, decided, and any objections raised" />
+      <SaveButton onSave={() => onSave(text)} idleLabel="Save MOM" className="self-start" />
     </div>
   );
 }

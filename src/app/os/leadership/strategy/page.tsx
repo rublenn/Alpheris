@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useOsStore } from "@/lib/os/store";
 import { CompanyStrategy, todayISO } from "@/lib/os/types";
 import { daysUntil } from "@/lib/os/calc";
-import { Badge, Button, Card, Field, SectionHeader, TextArea, TextInput } from "@/components/os/ui";
+import { Badge, Button, Card, Field, SaveButton, SectionHeader, TextArea, TextInput } from "@/components/os/ui";
 
 export default function CompanyStrategyPage() {
   const { state, hydrated, setStrategy } = useOsStore();
@@ -23,9 +23,8 @@ export default function CompanyStrategyPage() {
     setEditing(true);
   }
 
-  function save() {
+  function persist() {
     setStrategy(form);
-    setEditing(false);
   }
 
   function markReviewed() {
@@ -83,7 +82,7 @@ export default function CompanyStrategyPage() {
             <TextInput value={form.quarterlyPriority} onChange={(v) => setForm({ ...form, quarterlyPriority: v })} placeholder="One specific, hard goal — not 'grow the business'" />
           </Field>
           <div className="flex items-center gap-2 pt-2">
-            <Button variant="primary" onClick={save}>Save strategy</Button>
+            <SaveButton onSave={persist} onDone={() => setEditing(false)} idleLabel="Save strategy" />
             <Button variant="ghost" onClick={() => setEditing(false)}>Cancel</Button>
           </div>
         </Card>

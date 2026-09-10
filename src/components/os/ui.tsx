@@ -128,6 +128,47 @@ export function Button({
   );
 }
 
+export function SaveButton({
+  onSave,
+  onDone,
+  idleLabel = "Save",
+  savingLabel = "Saving…",
+  savedLabel = "Saved ✓",
+  variant = "primary",
+  className = "",
+  disabled = false,
+}: {
+  onSave: () => void;
+  onDone?: () => void;
+  idleLabel?: string;
+  savingLabel?: string;
+  savedLabel?: string;
+  variant?: ButtonVariant;
+  className?: string;
+  disabled?: boolean;
+}) {
+  const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle");
+
+  function handleClick() {
+    if (disabled || status !== "idle") return;
+    setStatus("saving");
+    window.setTimeout(() => {
+      onSave();
+      setStatus("saved");
+      window.setTimeout(() => {
+        setStatus("idle");
+        onDone?.();
+      }, 700);
+    }, 220);
+  }
+
+  return (
+    <Button variant={variant} onClick={handleClick} disabled={disabled || status !== "idle"} className={className}>
+      {status === "saving" ? savingLabel : status === "saved" ? savedLabel : idleLabel}
+    </Button>
+  );
+}
+
 export function IconButton({
   children,
   onClick,

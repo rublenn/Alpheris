@@ -31,6 +31,7 @@ import {
   MonthlyReport,
   MoneyEvent,
   normalizeCreativeScript,
+  normalizeLead,
   normalizeMonthlyReport,
   normalizePostPerformance,
   OsState,
@@ -49,6 +50,7 @@ function readState(): OsState {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return EMPTY_STATE;
     const parsed = { ...EMPTY_STATE, ...(JSON.parse(raw) as Partial<OsState>) };
+    parsed.leads = (parsed.leads ?? []).map(normalizeLead);
     parsed.creativeScripts = (parsed.creativeScripts ?? []).map(normalizeCreativeScript);
     parsed.postPerformance = (parsed.postPerformance ?? []).map(normalizePostPerformance);
     parsed.monthlyReports = (parsed.monthlyReports ?? []).map(normalizeMonthlyReport);

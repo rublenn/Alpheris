@@ -13,6 +13,7 @@ import {
   EmptyState,
   Field,
   NumberInput,
+  SaveButton,
   SectionHeader,
   SelectInput,
   StatTile,
@@ -127,11 +128,9 @@ export default function FinancePage() {
     setDrawerOpen(true);
   }
 
-  function save() {
-    if (!form.party.trim() || form.amount <= 0) return;
+  function persist() {
     if (editingId) updateMoneyEvent(editingId, form);
     else addMoneyEvent(form);
-    setDrawerOpen(false);
   }
 
   function openNewAsset() {
@@ -146,11 +145,9 @@ export default function FinancePage() {
     setAssetDrawer(true);
   }
 
-  function saveAsset() {
-    if (!assetForm.name.trim()) return;
+  function persistAsset() {
     if (editingAssetId) updateAsset(editingAssetId, assetForm);
     else addAsset(assetForm);
-    setAssetDrawer(false);
   }
 
   const sorted = [...state.moneyEvents].sort((a, b) => b.issuedDate.localeCompare(a.issuedDate));
@@ -304,9 +301,12 @@ export default function FinancePage() {
           )}
 
           <div className="flex items-center gap-2 pt-2">
-            <Button variant="primary" onClick={save}>
-              {editingId ? "Save changes" : "Add entry"}
-            </Button>
+            <SaveButton
+              onSave={persist}
+              onDone={() => setDrawerOpen(false)}
+              disabled={!form.party.trim() || form.amount <= 0}
+              idleLabel={editingId ? "Save changes" : "Add entry"}
+            />
             {editingId && (
               <DeleteButton
                 label="Delete entry"
@@ -337,9 +337,12 @@ export default function FinancePage() {
             <TextArea value={assetForm.notes} onChange={(v) => setAssetForm({ ...assetForm, notes: v })} placeholder="Serial number, condition, who has it" />
           </Field>
           <div className="flex items-center gap-2 pt-2">
-            <Button variant="primary" onClick={saveAsset}>
-              {editingAssetId ? "Save changes" : "Add asset"}
-            </Button>
+            <SaveButton
+              onSave={persistAsset}
+              onDone={() => setAssetDrawer(false)}
+              disabled={!assetForm.name.trim()}
+              idleLabel={editingAssetId ? "Save changes" : "Add asset"}
+            />
             {editingAssetId && (
               <DeleteButton
                 label="Delete asset"

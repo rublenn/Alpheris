@@ -24,6 +24,7 @@ import {
   EmptyState,
   Field,
   NumberInput,
+  SaveButton,
   SectionHeader,
   SelectInput,
   Tabs,
@@ -120,11 +121,9 @@ export default function MarketingPage() {
     setMediumDrawer(true);
   }
 
-  function saveMedium() {
-    if (!mediumForm.name.trim()) return;
+  function persistMedium() {
     if (editingMediumId) updateMedium(editingMediumId, mediumForm);
     else addMedium(mediumForm);
-    setMediumDrawer(false);
   }
 
   function openNewExperiment() {
@@ -139,11 +138,9 @@ export default function MarketingPage() {
     setExpDrawer(true);
   }
 
-  function saveExperiment() {
-    if (!expForm.name.trim()) return;
+  function persistExperiment() {
     if (editingExpId) updateExperiment(editingExpId, expForm);
     else addExperiment(expForm);
-    setExpDrawer(false);
   }
 
   function openNewIdea(channel: Channel) {
@@ -158,11 +155,9 @@ export default function MarketingPage() {
     setIdeaDrawer(true);
   }
 
-  function saveIdea() {
-    if (!ideaForm.title.trim()) return;
+  function persistIdea() {
     if (editingIdeaId) updateMarketingIdea(editingIdeaId, ideaForm);
     else addMarketingIdea(ideaForm);
-    setIdeaDrawer(false);
   }
 
   const currentChannel: Channel = tab === "Offline" ? "Offline" : "Online";
@@ -333,9 +328,12 @@ export default function MarketingPage() {
             Currently active
           </label>
           <div className="flex items-center gap-2 pt-2">
-            <Button variant="primary" onClick={saveMedium}>
-              {editingMediumId ? "Save changes" : "Add medium"}
-            </Button>
+            <SaveButton
+              onSave={persistMedium}
+              onDone={() => setMediumDrawer(false)}
+              disabled={!mediumForm.name.trim()}
+              idleLabel={editingMediumId ? "Save changes" : "Add medium"}
+            />
             {editingMediumId && (
               <DeleteButton
                 label="Delete medium"
@@ -369,9 +367,12 @@ export default function MarketingPage() {
             <SelectInput value={expForm.status} onChange={(v: ExperimentStatus) => setExpForm({ ...expForm, status: v })} options={["Active", "Won", "Killed"] as const} />
           </Field>
           <div className="flex items-center gap-2 pt-2">
-            <Button variant="primary" onClick={saveExperiment}>
-              {editingExpId ? "Save changes" : "Add experiment"}
-            </Button>
+            <SaveButton
+              onSave={persistExperiment}
+              onDone={() => setExpDrawer(false)}
+              disabled={!expForm.name.trim()}
+              idleLabel={editingExpId ? "Save changes" : "Add experiment"}
+            />
             {editingExpId && (
               <DeleteButton
                 label="Delete experiment"
@@ -409,9 +410,12 @@ export default function MarketingPage() {
             <TextArea value={ideaForm.notes} onChange={(v) => setIdeaForm({ ...ideaForm, notes: v })} placeholder="Optional" />
           </Field>
           <div className="flex items-center gap-2 pt-2">
-            <Button variant="primary" onClick={saveIdea}>
-              {editingIdeaId ? "Save changes" : "Add idea"}
-            </Button>
+            <SaveButton
+              onSave={persistIdea}
+              onDone={() => setIdeaDrawer(false)}
+              disabled={!ideaForm.title.trim()}
+              idleLabel={editingIdeaId ? "Save changes" : "Add idea"}
+            />
             {editingIdeaId && (
               <DeleteButton
                 label="Delete idea"
