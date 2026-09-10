@@ -522,6 +522,14 @@ fieldset.form-field {
   outline-offset: 2px;
 }
 
+.choice-other-input {
+  margin-top: 0.8rem;
+}
+
+.choice-other-input:disabled {
+  opacity: 0.35;
+}
+
 .start-form__more {
   border-top: 1px solid var(--rule);
   padding-top: 1.5rem;

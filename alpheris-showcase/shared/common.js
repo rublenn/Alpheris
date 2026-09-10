@@ -23,7 +23,25 @@
     initWorkTriggerSpotlight();
     initStorySection();
     initCosmicScene();
+    initStartFormOtherAim();
   });
+
+  // ---- "Others" aim option on the Start form: enable the text field only when chosen ----
+  function initStartFormOtherAim() {
+    var otherRadio = document.querySelector("#f-aim-other");
+    var otherInput = document.querySelector("#f-aim-other-text");
+    if (!otherRadio || !otherInput) return;
+
+    var aimRadios = document.querySelectorAll('input[name="current_aim"]');
+    aimRadios.forEach(function (radio) {
+      radio.addEventListener("change", function () {
+        var isOther = otherRadio.checked;
+        otherInput.disabled = !isOther;
+        if (isOther) otherInput.focus();
+        else otherInput.value = "";
+      });
+    });
+  }
 
   // ---- Step 1 / Step 2: loader intro -> resolves into the header logo ----
   function initLoader() {

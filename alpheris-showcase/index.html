@@ -219,14 +219,21 @@
         <input id="f-business" name="line_of_business" type="text" required />
       </div>
 
+      <div class="form-field">
+        <label for="f-contact">Your Contact Detail (Phone/Email)</label>
+        <input id="f-contact" name="contact_detail" type="text" required />
+      </div>
+
       <fieldset class="form-field">
         <legend>Current Aim</legend>
         <div class="choice-group">
-          <label class="choice-pill"><input type="radio" name="current_aim" value="More Leads" /><span>More Leads</span></label>
-          <label class="choice-pill"><input type="radio" name="current_aim" value="More Sales" /><span>More Sales</span></label>
-          <label class="choice-pill"><input type="radio" name="current_aim" value="Brand Awareness" /><span>Brand Awareness</span></label>
-          <label class="choice-pill"><input type="radio" name="current_aim" value="Customer Retention" /><span>Customer Retention</span></label>
+          <label class="choice-pill"><input type="radio" name="current_aim" value="More Leads" id="f-aim-leads" /><span>More Leads</span></label>
+          <label class="choice-pill"><input type="radio" name="current_aim" value="More Sales" id="f-aim-sales" /><span>More Sales</span></label>
+          <label class="choice-pill"><input type="radio" name="current_aim" value="Brand Awareness" id="f-aim-brand" /><span>Brand Awareness</span></label>
+          <label class="choice-pill"><input type="radio" name="current_aim" value="Customer Retention" id="f-aim-retention" /><span>Customer Retention</span></label>
+          <label class="choice-pill"><input type="radio" name="current_aim" value="Other" id="f-aim-other" /><span>Others</span></label>
         </div>
+        <input type="text" id="f-aim-other-text" name="current_aim_other" class="choice-other-input" placeholder="Tell us your aim" disabled />
       </fieldset>
 
       <div class="form-field">
