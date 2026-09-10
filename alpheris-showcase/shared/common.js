@@ -462,15 +462,20 @@
       },
     });
 
+    // The card keeps its own cream color as it grows — by the time it
+    // fills the screen, the card's color IS the background, so the slow
+    // expand reads as the whole page settling into the card's paper tone
+    // before the (also light, ink-on-paper) Content/Performance/Ground
+    // stages take over immediately after.
     var tl = gsap.timeline();
-    tl.to(card, { width: "100vw", height: "100vh", borderRadius: 0, paddingLeft: 0, paddingRight: 0, paddingTop: 0, paddingBottom: 0, duration: 1, ease: "power2.inOut" }, 0)
-      .to(card, { backgroundColor: "#0d0d0c", borderColor: "transparent", duration: 0.35, ease: "none" }, 0.3)
-      .to(inner, { opacity: 0, duration: 0.25, ease: "power1.in" }, 0.05);
+    tl.to(card, { width: "100vw", height: "100vh", borderRadius: 0, paddingLeft: 0, paddingRight: 0, paddingTop: 0, paddingBottom: 0, duration: 1.6, ease: "power2.inOut" }, 0)
+      .to(card, { borderColor: "transparent", duration: 0.3, ease: "none" }, 0.55)
+      .to(inner, { opacity: 0, duration: 0.3, ease: "power1.in" }, 0.2);
 
     ScrollTrigger.create({
       trigger: card,
       start: "top top+=110",
-      end: "+=" + Math.round(window.innerHeight * 1.2),
+      end: "+=" + Math.round(window.innerHeight * 1.8),
       pin: card,
       scrub: 0.5,
       animation: tl,

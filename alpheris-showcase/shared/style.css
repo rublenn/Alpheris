@@ -1024,6 +1024,14 @@ fieldset.form-field {
   position: relative;
 }
 
+.story__final-lead {
+  margin: 0 0 1rem;
+  font-family: var(--font-statement);
+  font-style: italic;
+  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  color: rgba(14, 13, 11, 0.65);
+}
+
 .story__final-statement {
   margin: 0;
   font-family: var(--font-display);
@@ -1038,7 +1046,7 @@ fieldset.form-field {
 }
 
 .story__cta {
-  background: #0d0d0c;
+  background: var(--paper);
   padding: 0 6vw 6rem;
   text-align: center;
 }
@@ -1065,13 +1073,15 @@ fieldset.form-field {
 
 /* Process: continues the story's final card into a pinned reveal of how
    Alpheris executes (Content / Performance / Ground). One small pinned
-   "morph" section grows the resting story card into a fullscreen dark
-   panel, then three pinned stage sections each reveal a heading, a line
-   of thinking, and a progressively-connected step sequence. */
+   "morph" section grows the resting story card into a fullscreen paper
+   panel — the same cream tone as the card itself — then three pinned
+   stage sections continue that light, ink-on-paper look as they each
+   reveal a heading, a line of thinking, and a progressively-connected
+   step sequence. */
 
 .process-stage {
   position: relative;
-  background: #0d0d0c;
+  background: var(--paper);
 }
 
 .process-stage__pin {
@@ -1095,7 +1105,7 @@ fieldset.form-field {
   font-weight: 600;
   font-size: 1rem;
   letter-spacing: 0.15em;
-  color: var(--gold);
+  color: #b8790f;
   opacity: 0;
 }
 
@@ -1106,7 +1116,7 @@ fieldset.form-field {
   font-weight: 700;
   font-size: clamp(3rem, 9vw, 6.5rem);
   line-height: 1;
-  color: var(--paper);
+  color: var(--ink);
   opacity: 0;
 }
 
@@ -1115,7 +1125,7 @@ fieldset.form-field {
   max-width: 48ch;
   font-family: var(--font-body);
   font-size: clamp(1.1rem, 1.6vw, 1.35rem);
-  color: var(--paper-dim);
+  color: rgba(14, 13, 11, 0.65);
   opacity: 0;
 }
 
@@ -1144,8 +1154,8 @@ fieldset.form-field {
   font-size: clamp(0.8rem, 1.2vw, 0.95rem);
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--paper);
-  border: 1px solid var(--rule);
+  color: var(--ink);
+  border: 1px solid rgba(14, 13, 11, 0.18);
   border-radius: 999px;
   padding: 0.6rem 1.25rem;
   white-space: nowrap;
@@ -1154,14 +1164,14 @@ fieldset.form-field {
 .process-stage__step:not(:last-child)::after {
   content: "\2192";
   margin: 0 0.9rem;
-  color: var(--gold);
+  color: #b8790f;
   font-size: 1.1rem;
 }
 
 .process-stage__ghost {
   position: absolute;
   inset: 0;
-  border: 1px solid var(--rule);
+  border: 1px solid rgba(14, 13, 11, 0.18);
   border-radius: 999px;
   opacity: 0;
   pointer-events: none;
