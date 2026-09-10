@@ -591,6 +591,20 @@ fieldset.form-field {
   color: var(--paper);
 }
 
+.contact-intro__heading--tight {
+  margin-bottom: 0.6rem;
+}
+
+.about-founder__title {
+  margin: 0 0 2rem;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
 .contact-intro__details {
   display: flex;
   flex-wrap: wrap;
