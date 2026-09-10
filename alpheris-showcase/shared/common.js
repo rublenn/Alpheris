@@ -449,47 +449,40 @@
       return;
     }
 
-    gsap.set(card, { y: 50, opacity: 0 });
-
-    gsap.to(card, {
-      y: 0,
-      opacity: 1,
-      ease: "none",
-      scrollTrigger: {
-        trigger: card,
-        start: "top 88%",
-        end: "top 60%",
-        scrub: true,
-      },
-    });
-
-    // The card keeps its own cream color as it grows — by the time it
-    // fills the screen, the card's color IS the background, so the slow
-    // expand reads as the whole page settling into the card's paper tone
-    // before the (also light, ink-on-paper) Content/Performance/Ground
-    // stages take over immediately after. The statement stays visible
-    // through almost the whole grow so it's unmistakably this same card
-    // that's becoming the background, not a different one arriving; the
-    // card then collapses back to nothing right at the very end, exactly
-    // as Content's own fullscreen pin engages and covers it, so the
-    // collapse itself is never seen — no dead scroll through a blank
-    // leftover card, no second card.
+    // Card sits normally, visible, unanimated, at the wrapper's very top
+    // (no margin offset) — trigger and pin target are the SAME element,
+    // so when the pin engages it catches the card exactly where it
+    // already was on screen. No jump, no reposition.
+    //
+    // Phase order (scrubbed against scroll progress):
+    //  0%  -20%  nothing moves
+    //  20% -45%  text fades — opacity only, no transform, no drift
+    //  30% -70%  the same card grows (width/height/padding), no scale
+    //  60% -75%  border radius relaxes to 0 as it becomes the background
+    //  75%-100%  Content's own pin takes over immediately, no gap
     var tl = gsap.timeline();
-    tl.to(card, { width: "100vw", height: "100vh", borderRadius: 0, paddingLeft: 0, paddingRight: 0, paddingTop: 0, paddingBottom: 0, duration: 1.6, ease: "power2.inOut" }, 0)
-      .to(card, { borderColor: "transparent", duration: 0.3, ease: "none" }, 0.5)
-      .to(inner, { opacity: 0, duration: 0.3, ease: "power1.in" }, 1.5)
-      .set(card, { overflow: "hidden" }, 1.9)
-      .to(card, { height: 0, duration: 0.2, ease: "none" }, 1.9);
+    tl.to(inner, { opacity: 0, duration: 0.55, ease: "power1.inOut" }, 0.44)
+      .to(card, {
+        width: "100vw",
+        height: "100vh",
+        paddingLeft: 0,
+        paddingRight: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
+        duration: 0.88,
+        ease: "power2.inOut",
+      }, 0.66)
+      .to(card, { borderRadius: 0, borderColor: "transparent", duration: 0.33, ease: "power1.inOut" }, 1.32);
 
     // The wrapper's own height is the ONLY thing reserving scroll
-    // distance here (pinSpacing disabled) — so however the card's height
+    // distance here (pinSpacing disabled) — so however the card's size
     // fluctuates mid-animation, nothing leaks into extra dead space
     // afterward for Content to have to be scrolled past.
-    var pinDistance = Math.round(window.innerHeight * (tl.duration() + 0.1));
+    var pinDistance = Math.round(window.innerHeight * (tl.duration() + 0.3));
     gsap.set(scrollWrapper, { height: pinDistance });
 
     ScrollTrigger.create({
-      trigger: scrollWrapper,
+      trigger: card,
       start: "top top+=110",
       end: "+=" + pinDistance,
       pin: card,
