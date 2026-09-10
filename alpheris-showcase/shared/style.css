@@ -693,8 +693,13 @@ fieldset.form-field {
   align-items: start;
 }
 
+.about-founder__text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
 .about-body {
-  grid-column: 1;
   max-width: 65ch;
   margin: 0;
   font-family: var(--font-sans);
@@ -704,19 +709,7 @@ fieldset.form-field {
   color: var(--paper-dim);
 }
 
-.about-body + .about-body {
-  margin-top: 1.5rem;
-}
-
-.about-body--footnote {
-  font-size: 0.95rem;
-  color: rgba(201, 194, 178, 0.6);
-  font-style: italic;
-}
-
 .about-founder__photo {
-  grid-row: 1 / -1;
-  grid-column: 2;
   position: sticky;
   top: 8rem;
   aspect-ratio: 4 / 5;
@@ -731,8 +724,6 @@ fieldset.form-field {
   }
 
   .about-founder__photo {
-    grid-row: auto;
-    grid-column: auto;
     position: static;
     max-width: 320px;
     order: -1;
