@@ -99,7 +99,7 @@ export default function SalesPage() {
   }
 
   function transitionsFor(l: Lead): LeadStage[] {
-    if (l.stage === "Client") return ["InTalk"];
+    if (l.stage === "Client") return [];
     return LEAD_STAGES.filter((s) => s !== l.stage && !(l.stage === "InTalk" && s === "Lead"));
   }
 
@@ -188,17 +188,19 @@ export default function SalesPage() {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t border-border-soft">
-                  {transitionsFor(l).map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => moveTo(l, s)}
-                      className="rounded-full border border-border px-2.5 py-1 text-xs font-medium text-muted transition hover:border-accent hover:text-accent"
-                    >
-                      → {LEAD_STAGE_LABELS[s]}
-                    </button>
-                  ))}
-                </div>
+                {transitionsFor(l).length > 0 && (
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t border-border-soft">
+                    {transitionsFor(l).map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => moveTo(l, s)}
+                        className="rounded-full border border-border px-2.5 py-1 text-xs font-medium text-muted transition hover:border-accent hover:text-accent"
+                      >
+                        → {LEAD_STAGE_LABELS[s]}
+                      </button>
+                    ))}
+                  </div>
+                )}
 
                 {l.stage === "FollowUp" && (
                   <div className="flex items-center gap-2 pt-1">
