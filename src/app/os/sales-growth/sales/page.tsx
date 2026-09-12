@@ -99,6 +99,7 @@ export default function SalesPage() {
   }
 
   function transitionsFor(l: Lead): LeadStage[] {
+    if (l.stage === "Client") return ["InTalk"];
     return LEAD_STAGES.filter((s) => s !== l.stage && !(l.stage === "InTalk" && s === "Lead"));
   }
 
@@ -218,12 +219,18 @@ export default function SalesPage() {
                 {l.stage === "InTalk" && <MomEditor lead={l} onSave={(mom) => updateLead(l.id, { mom })} />}
 
                 {l.stage === "Client" && (
-                  <div className="pt-1 border-t border-border-soft">
+                  <div className="flex items-center gap-2 pt-1 border-t border-border-soft">
                     <Link
-                      href={`/os/operations/client-success?client=${encodeURIComponent(l.name)}`}
-                      className="inline-flex items-center justify-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-medium text-white transition duration-150 ease-[var(--ease-smooth)] hover:opacity-90 active:scale-[0.97]"
+                      href={`/os/working/data?client=${encodeURIComponent(l.name)}`}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-full bg-accent px-3.5 py-1.5 text-xs font-medium text-white transition duration-150 ease-[var(--ease-smooth)] hover:opacity-90 active:scale-[0.97]"
                     >
-                      View in Client Success →
+                      Data →
+                    </Link>
+                    <Link
+                      href={`/os/working/production?client=${encodeURIComponent(l.name)}`}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-full bg-accent px-3.5 py-1.5 text-xs font-medium text-white transition duration-150 ease-[var(--ease-smooth)] hover:opacity-90 active:scale-[0.97]"
+                    >
+                      Creative →
                     </Link>
                   </div>
                 )}

@@ -1,6 +1,7 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useOsStore } from "@/lib/os/store";
 import { createClientLearn, Playbook, PlaybookStep, newId } from "@/lib/os/types";
@@ -22,23 +23,21 @@ import {
 } from "@/components/os/ui";
 import { IconClose, IconPlus, IconStrategies } from "@/components/os/icons";
 
-function LearnBlockEditor({
+function LearnFieldEditor({
   label,
   placeholder,
   value,
-  onSave,
+  onChange,
 }: {
   label: string;
   placeholder: string;
   value: string;
-  onSave: (v: string) => void;
+  onChange: (v: string) => void;
 }) {
-  const [text, setText] = useState(value);
   return (
     <Card className="flex flex-col gap-2">
       <p className="font-semibold">{label}</p>
-      <TextArea value={text} onChange={setText} placeholder={placeholder} />
-      <SaveButton onSave={() => onSave(text)} className="self-start" />
+      <TextArea value={value} onChange={onChange} placeholder={placeholder} />
     </Card>
   );
 }
@@ -52,7 +51,35 @@ const LEARN_BLOCKS = [
   { key: "problem", label: "Problem", placeholder: "What it's costing them, and the root cause" },
   { key: "audience", label: "Audience", placeholder: "Their ideal customer profile" },
   { key: "aim", label: "Aim", placeholder: "The growth objective beyond immediate sales" },
+  {
+    key: "targetAudience",
+    label: "Target Audience (Demographics, Interests, Behaviour)",
+    placeholder: "Age, location, interests, and online behaviour of who they should target",
+  },
+  {
+    key: "bestCompetitor",
+    label: "Best Performing Competitor",
+    placeholder: "Who's winning in this space, and what they're doing well",
+  },
+  {
+    key: "contentReference",
+    label: "Content Reference",
+    placeholder: "Links or examples of content style/format to reference",
+  },
+  {
+    key: "usp",
+    label: "Unique Selling Point",
+    placeholder: "What makes this client different from everyone else",
+  },
 ] as const;
+
+type LearnFormState = Record<(typeof LEARN_BLOCKS)[number]["key"], string>;
+
+function emptyLearnForm(): LearnFormState {
+  const form = {} as LearnFormState;
+  for (const block of LEARN_BLOCKS) form[block.key] = "";
+  return form;
+}
 
 export default function DataPage() {
   return (
@@ -85,18 +112,27 @@ function DataPageInner() {
   const [learnClientSel, setLearnClient] = useState("");
   const learnClient = learnClientSel || queryClient || clientNames[0] || "";
 
+  const [learnForm, setLearnForm] = useState<LearnFormState>(emptyLearnForm());
+
+  useEffect(() => {
+    const source = state.clientLearn.find((r) => r.client.toLowerCase() === learnClient.toLowerCase());
+    const next = emptyLearnForm();
+    if (source) for (const block of LEARN_BLOCKS) next[block.key] = source[block.key] ?? "";
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- resets the draft form when switching to a different client
+    setLearnForm(next);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [learnClient]);
+
   if (!hydrated) return null;
 
   const activeLearn = learnClient
     ? state.clientLearn.find((r) => r.client.toLowerCase() === learnClient.toLowerCase())
     : undefined;
 
-  function saveLearnField(key: (typeof LEARN_BLOCKS)[number]["key"], value: string) {
-    if (activeLearn) {
-      updateClientLearn(activeLearn.id, { [key]: value });
-    } else if (learnClient) {
-      addClientLearn({ ...createClientLearn(learnClient), [key]: value });
-    }
+  function saveLearnAll() {
+    if (!learnClient) return;
+    if (activeLearn) updateClientLearn(activeLearn.id, learnForm);
+    else addClientLearn({ ...createClientLearn(learnClient), ...learnForm });
   }
 
   function openNew() {
@@ -160,7 +196,7 @@ function DataPageInner() {
       {tab === "Learn" && (
         <>
           <p className="text-sm text-muted -mt-2">
-            Four things to learn about every client before anything else: business, problem, audience, aim.
+            What to learn about every client before anything else — their business, problem, audience, aim, target audience, competition, content style, and USP.
           </p>
 
           {clientNames.length === 0 ? (
@@ -170,22 +206,37 @@ function DataPageInner() {
             />
           ) : (
             <>
-              <Field label="Client">
-                <SelectInput value={learnClient} onChange={setLearnClient} options={clientNames} />
-              </Field>
+              <div className="flex items-end gap-3">
+                <div className="flex-1">
+                  <Field label="Client">
+                    <SelectInput value={learnClient} onChange={setLearnClient} options={clientNames} />
+                  </Field>
+                </div>
+                {learnClient && (
+                  <Link
+                    href={`/os/working/production?client=${encodeURIComponent(learnClient)}`}
+                    className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-accent px-4 py-2.5 text-sm font-medium text-white transition duration-150 ease-[var(--ease-smooth)] hover:opacity-90 active:scale-[0.97]"
+                  >
+                    Go to Creative →
+                  </Link>
+                )}
+              </div>
 
               {learnClient && (
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {LEARN_BLOCKS.map((block) => (
-                    <LearnBlockEditor
-                      key={`${learnClient}-${block.key}`}
-                      label={block.label}
-                      placeholder={block.placeholder}
-                      value={activeLearn?.[block.key] ?? ""}
-                      onSave={(v) => saveLearnField(block.key, v)}
-                    />
-                  ))}
-                </div>
+                <>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {LEARN_BLOCKS.map((block) => (
+                      <LearnFieldEditor
+                        key={block.key}
+                        label={block.label}
+                        placeholder={block.placeholder}
+                        value={learnForm[block.key]}
+                        onChange={(v) => setLearnForm({ ...learnForm, [block.key]: v })}
+                      />
+                    ))}
+                  </div>
+                  <SaveButton onSave={saveLearnAll} className="self-start" />
+                </>
               )}
             </>
           )}

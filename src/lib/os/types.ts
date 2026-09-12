@@ -247,10 +247,25 @@ export interface ClientLearn {
   problem: string;
   audience: string;
   aim: string;
+  targetAudience: string;
+  bestCompetitor: string;
+  contentReference: string;
+  usp: string;
 }
 
 export function createClientLearn(client: string): ClientLearn {
-  return { id: newId(), client, business: "", problem: "", audience: "", aim: "" };
+  return {
+    id: newId(),
+    client,
+    business: "",
+    problem: "",
+    audience: "",
+    aim: "",
+    targetAudience: "",
+    bestCompetitor: "",
+    contentReference: "",
+    usp: "",
+  };
 }
 
 export const AD_GENRES = [
