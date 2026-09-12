@@ -57,6 +57,14 @@ function OsShellInner({ children }: { children: ReactNode }) {
     if (e.pointerType !== "touch") return;
     if (window.innerWidth >= 768) return; // desktop: gestures never engage
     if (mobileOpen) return; // let the overlay/close-tap handle it while open
+    // Capture the pointer so move/up events keep reaching us even if the finger
+    // drifts off this element mid-swipe — without this, a fast or wide swipe can
+    // stop delivering events entirely, leaving the drag transform stuck on screen.
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      // Pointer capture can throw for an already-released pointer; safe to ignore.
+    }
     gesture.current = {
       mode: "pending",
       startX: e.clientX,
@@ -110,6 +118,11 @@ function OsShellInner({ children }: { children: ReactNode }) {
     const g = gesture.current;
     if (!g || g.pointerId !== e.pointerId) return;
     document.body.style.userSelect = "";
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {
+      // Already released — safe to ignore.
+    }
 
     if (g.mode === "edge") {
       const shouldOpen = g.dx / SIDEBAR_WIDTH_PX >= OPEN_THRESHOLD;
