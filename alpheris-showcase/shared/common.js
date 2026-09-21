@@ -28,6 +28,32 @@
     initStartFormOtherAim();
   });
 
+  // ---- Re-measure ScrollTrigger positions whenever the page's layout
+  // height can change after the initial pass: once every image has
+  // loaded (large images with no reserved aspect-ratio only get their
+  // real height once loaded), and whenever a <details> accordion (the
+  // "By Creating Ads With Purpose" / "...and Reasons" toggles) opens or
+  // closes, which shifts everything below it by a large amount.
+  //
+  // Without this, a trigger further down the page (e.g. the cosmic-scene
+  // reveal) keeps the start/end pixel range it was given on the very
+  // first pass. Open an accordion and the real element moves hundreds of
+  // pixels further down, but the trigger's stale range stays where it
+  // was — so by the time the user actually scrolls that element into
+  // view, the scrub animation already reports itself finished, and the
+  // element just sits in its settled end-state with no visible motion. ----
+  window.addEventListener("load", function () {
+    ScrollTrigger.refresh();
+  });
+
+  document.addEventListener(
+    "toggle",
+    function () {
+      ScrollTrigger.refresh();
+    },
+    true
+  );
+
   // ---- "Others" aim option on the Start form: enable the text field only when chosen ----
   function initStartFormOtherAim() {
     var otherRadio = document.querySelector("#f-aim-other");
