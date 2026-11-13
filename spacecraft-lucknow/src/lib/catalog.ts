@@ -193,7 +193,60 @@ export const products: Product[] = [
   sampleProduct("laminate-natural-teak", "Laminate — Natural Teak", "laminates", 2),
   sampleProduct("wall-panel-grid", "Wall Panel — Grid Relief", "wall-panels", 1),
   sampleProduct("handle-champagne", "Cabinet Handle — Champagne", "hardware-accessories", 5),
+  // Extra samples so each brand card has a few products to show.
+  sampleProduct("fluted-louver-ash", "Fluted Louver — Ash Tone", "louvers", 0, {
+    kind: "flute",
+    base: "#E6DCCB",
+    shade: "#B9AB94",
+    light: "#F7F1E6",
+  }),
+  sampleProduct("charcoal-panel-slim", "Charcoal Panel — Slim Flute", "charcoal-panels", 1, {
+    kind: "flute",
+    base: "#56524D",
+    shade: "#2F2C29",
+    light: "#77716A",
+  }),
+  sampleProduct("plywood-board-sample", "Plywood Board — Sample", "plywood-boards", 2),
+  sampleProduct("laminate-ash-grey", "Laminate — Ash Grey", "laminates", 2, {
+    kind: "wood",
+    base: "#CFC8BD",
+    shade: "#8F877B",
+    light: "#E7E1D7",
+  }),
+  sampleProduct("acrylic-laminate-sand", "Acrylic Laminate — Sand Gloss", "acrylic-laminates", 3, {
+    kind: "gloss",
+    base: "#E6D6BF",
+    shade: "#BFA583",
+    light: "#FBF4E8",
+  }),
+  sampleProduct("door-panelled-sample", "Door — Panelled Sample", "doors", 3),
+  sampleProduct("marble-sheet-grey", "UV Marble Sheet — Grey Vein", "uv-marble-sheets", 4, {
+    kind: "marble",
+    base: "#EFEDEA",
+    shade: "#6F6A62",
+    light: "#A9A297",
+  }),
+  sampleProduct("sideboard-sample", "Sideboard — Sample", "furniture", 4),
+  sampleProduct("wpc-louver-sand", "WPC Louver — Sand Tone", "wpc-louvers", 5, {
+    kind: "flute",
+    base: "#D2B994",
+    shade: "#A38560",
+    light: "#EBD9BC",
+  }),
+  sampleProduct("pull-handle-sample", "Pull Handle — Sample", "hardware-accessories", 5, {
+    kind: "metal",
+    base: "#C9C4BB",
+    shade: "#8A847A",
+    light: "#F1EEE8",
+  }),
 ];
+
+/** The first eight are shown in the homepage "Featured products" section. */
+export const featuredProducts = products.slice(0, 8);
+
+export function getBrandProducts(brandSlug: string) {
+  return products.filter((p) => p.brandSlug === brandSlug);
+}
 
 export function getCategory(slug: string) {
   return categories.find((c) => c.slug === slug);

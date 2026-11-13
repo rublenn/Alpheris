@@ -64,6 +64,7 @@ export function Categories() {
                   href="/categories"
                   onMouseEnter={() => setActive(i)}
                   onFocus={() => setActive(i)}
+                  data-cursor="View"
                   className="group flex items-center gap-6 py-5"
                 >
                   <span className="w-8 text-[11px] font-semibold tracking-[0.2em] text-muted">

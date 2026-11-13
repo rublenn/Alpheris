@@ -33,9 +33,9 @@ const MOTION: Record<string, Motion> = {
   louver: { hero: [-0.75, -0.1, 0], heroRot: [0, -0.05, -0.03], away: [-0.9, 0.34, -2.2], speed: 0.42, spin: [0.15, 0.7, -0.1] },
   charcoal: { hero: [1.55, -0.95, 0.55], heroRot: [0, -0.6, 0.05], away: [0.9, -0.36, -3], speed: 0.34, spin: [-0.2, -0.6, 0.15] },
   acrylic: { hero: [1.75, 1.25, 0.2], heroRot: [0.1, -0.8, 0.12], away: [-0.8, -0.22, -5], speed: 0.18, spin: [0.5, 0.4, 0.3] },
-  trim: { hero: [-2.05, 0.2, 0.3], heroRot: [0, 0, 0.04], away: [0.62, 0.42, -6], speed: 0.14, spin: [0, 0, 0.5] },
-  ring: { hero: [-1.75, 1.55, 0.9], heroRot: [0.6, 0.2, 0], away: [-0.6, 0, -1], speed: 0.6, spin: [1.4, 0.9, 0] },
-  pearl: { hero: [0.1, -1.75, 1.1], heroRot: [0, 0, 0], away: [0.55, -0.1, -0.5], speed: 0.75, spin: [0, 0, 0] },
+  plywood: { hero: [-2.0, -1.05, 0.7], heroRot: [1.05, 0.2, 0.45], away: [0.62, 0.42, -4], speed: 0.2, spin: [0.3, 0.2, 0.5] },
+  handle: { hero: [-2.25, 1.35, 0.5], heroRot: [0.35, -0.45, 0.12], away: [-0.6, 0, -1.2], speed: 0.6, spin: [0.9, 0.7, 0.3] },
+  chip: { hero: [0.45, -1.45, 1.1], heroRot: [0.25, -0.35, 0.3], away: [0.55, -0.1, -0.8], speed: 0.7, spin: [0.6, 0.9, 0.2] },
 };
 
 /**
@@ -174,6 +174,44 @@ function FlutedPanel({ colour, slats = 9, height = 3 }: { colour: string; slats?
   );
 }
 
+/** Three stacked plywood boards, each showing its layered edge. */
+function PlywoodStack() {
+  const layers = ["#e9d5b3", "#b99468", "#e2cba6", "#b99468", "#e9d5b3"];
+  return (
+    <group>
+      {[0, 1, 2].map((board) => (
+        <group key={board} position={[board * 0.09, board * -0.06, board * 0.15 - 0.15]} rotation={[0, 0, board * 0.05]}>
+          {layers.map((colour, i) => (
+            <mesh key={i} position={[0, 0, (i - 2) * 0.022]}>
+              <boxGeometry args={[1.35, 0.95, 0.022]} />
+              <meshStandardMaterial color={colour} roughness={0.75} />
+            </mesh>
+          ))}
+        </group>
+      ))}
+    </group>
+  );
+}
+
+/** A champagne bar handle on two short posts, like a cabinet pull. */
+function CabinetHandle() {
+  const metal = <meshStandardMaterial color="#b58b60" metalness={1} roughness={0.22} />;
+  return (
+    <group>
+      <mesh rotation={[0, 0, Math.PI / 2]}>
+        <capsuleGeometry args={[0.045, 1.15, 8, 24]} />
+        {metal}
+      </mesh>
+      {[-0.42, 0.42].map((x) => (
+        <mesh key={x} position={[x, 0, -0.1]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.032, 0.032, 0.2, 20]} />
+          {metal}
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 function Pieces({
   animate,
   onDepth,
@@ -244,22 +282,17 @@ function Pieces({
           <meshPhysicalMaterial color="#e6dccd" roughness={0.04} clearcoat={1} reflectivity={1} />
         </mesh>
       </Drift>
-      <Drift name="trim" scroll={scroll} floatSpeed={1.2 * float}>
-        <mesh>
-          <boxGeometry args={[0.05, 3.6, 0.05]} />
-          <meshStandardMaterial color="#b58b60" metalness={1} roughness={0.25} />
-        </mesh>
+      <Drift name="plywood" scroll={scroll} floatSpeed={1.2 * float}>
+        <PlywoodStack />
       </Drift>
-      <Drift name="ring" scroll={scroll} floatSpeed={2 * float}>
-        <mesh>
-          <torusGeometry args={[0.36, 0.035, 20, 72]} />
-          <meshStandardMaterial color="#b58b60" metalness={1} roughness={0.2} />
-        </mesh>
+      <Drift name="handle" scroll={scroll} floatSpeed={2 * float}>
+        <CabinetHandle />
       </Drift>
-      <Drift name="pearl" scroll={scroll} floatSpeed={2.2 * float}>
+      {/* A small walnut laminate sample chip */}
+      <Drift name="chip" scroll={scroll} floatSpeed={2.2 * float}>
         <mesh>
-          <sphereGeometry args={[0.16, 40, 40]} />
-          <meshStandardMaterial color="#e9dccb" metalness={1} roughness={0.15} />
+          <boxGeometry args={[0.5, 0.7, 0.035]} />
+          <meshPhysicalMaterial color="#7a5637" roughness={0.35} clearcoat={0.6} clearcoatRoughness={0.3} />
         </mesh>
       </Drift>
     </group>

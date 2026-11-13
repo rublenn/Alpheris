@@ -1,4 +1,4 @@
-import { products } from "@/lib/catalog";
+import { featuredProducts } from "@/lib/catalog";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { ProductCard } from "./ProductCard";
@@ -17,7 +17,7 @@ export function Products() {
         </SectionHeader>
 
         <ul className="mt-14 grid grid-cols-2 gap-x-4 gap-y-12 sm:gap-x-6 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-16">
-          {products.map((product, i) => (
+          {featuredProducts.map((product, i) => (
             <li key={product.slug}>
               <Reveal delay={(i % 4) * 0.07}>
                 <ProductCard product={product} />

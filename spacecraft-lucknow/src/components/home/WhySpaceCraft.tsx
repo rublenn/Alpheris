@@ -115,6 +115,7 @@ function Panel({
       transition={{ duration: 0.8, ease }}
       onPointerEnter={(e) => e.pointerType === "mouse" && onOpen()}
       onClick={onOpen}
+      data-cursor={open ? undefined : "Open"}
       onPointerMove={onMove}
       onPointerLeave={onLeave}
       className="min-w-0 cursor-pointer [perspective:1100px] lg:basis-0"
