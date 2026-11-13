@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionTemplate, useMotionValue, useSpring } from "framer-motion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
+import { useTouchReveal } from "@/components/ui/useTouchReveal";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -86,6 +87,10 @@ function Panel({
   open: boolean;
   onOpen: () => void;
 }) {
+  const item = useRef<HTMLLIElement>(null);
+  // On phones the panel opens by itself as it scrolls in, and tilts with the scroll.
+  const { touch, seen, tilt } = useTouchReveal(item);
+  const expanded = touch ? seen || open : open;
   const rotateX = useSpring(useMotionValue(0), { stiffness: 140, damping: 16 });
   const rotateY = useSpring(useMotionValue(0), { stiffness: 140, damping: 16 });
   const lightX = useMotionValue(50);
@@ -110,20 +115,26 @@ function Panel({
 
   return (
     <motion.li
+      ref={item}
       initial={false}
       animate={{ flexGrow: open ? 2.6 : 1 }}
       transition={{ duration: 0.8, ease }}
       onPointerEnter={(e) => e.pointerType === "mouse" && onOpen()}
       onClick={onOpen}
-      data-cursor={open ? undefined : "Open"}
+      data-cursor={expanded ? undefined : "Open"}
       onPointerMove={onMove}
       onPointerLeave={onLeave}
       className="min-w-0 cursor-pointer [perspective:1100px] lg:basis-0"
     >
       <motion.div
-        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        style={{
+          rotateX: touch ? tilt.rotateX : rotateX,
+          rotateY,
+          scale: touch ? tilt.scale : 1,
+          transformStyle: "preserve-3d",
+        }}
         className={`relative h-full overflow-hidden border transition-[background-color,border-color,box-shadow] duration-700 ${
-          open
+          expanded
             ? "border-accent/50 bg-ivory shadow-[0_40px_70px_-40px_rgba(37,37,37,0.45)]"
             : "border-ink/10 bg-beige"
         }`}
@@ -132,7 +143,7 @@ function Panel({
         <motion.span aria-hidden="true" style={{ background: light }} className="absolute inset-0" />
         <span
           className={`absolute inset-x-0 top-0 h-[2px] origin-left bg-accent transition-transform duration-700 ease-luxe ${
-            open ? "scale-x-100" : "scale-x-0"
+            expanded ? "scale-x-100" : "scale-x-0"
           }`}
         />
 
@@ -143,7 +154,7 @@ function Panel({
           <span
             style={{ transform: "translateZ(60px)" }}
             className={`display text-6xl transition-colors duration-700 lg:text-7xl ${
-              open ? "text-accent-deep" : "text-accent-deep/45"
+              expanded ? "text-accent-deep" : "text-accent-deep/45"
             }`}
           >
             0{index + 1}
@@ -151,13 +162,13 @@ function Panel({
 
           <div style={{ transform: "translateZ(35px)" }}>
             <h3 className="display text-[1.9rem] leading-tight">
-              <button type="button" aria-expanded={open} className="text-left">
+              <button type="button" aria-expanded={expanded} className="text-left">
                 {reason.title}
               </button>
             </h3>
 
             <AnimatePresence initial={false}>
-              {open && (
+              {expanded && (
                 <motion.div
                   key="details"
                   initial={{ height: 0, opacity: 0 }}

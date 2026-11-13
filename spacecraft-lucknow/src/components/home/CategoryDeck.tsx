@@ -15,7 +15,7 @@ const count = categories.length;
  *
  * The stack is sized from the screen height, so a board is never cut off.
  */
-export function CategoryDeck({ active }: { active: number }) {
+export function CategoryDeck({ active, compact = false }: { active: number; compact?: boolean }) {
   const tiltX = useSpring(useMotionValue(0), { stiffness: 120, damping: 16 });
   const tiltY = useSpring(useMotionValue(0), { stiffness: 120, damping: 16 });
 
@@ -32,10 +32,10 @@ export function CategoryDeck({ active }: { active: number }) {
   }
 
   return (
-    <div onPointerMove={onMove} onPointerLeave={onLeave} className="flex justify-center pt-24 [perspective:1300px]">
+    <div onPointerMove={onMove} onPointerLeave={onLeave} className={`flex justify-center [perspective:1300px] ${compact ? "pt-20" : "pt-24"}`}>
       <motion.div
         style={{ rotateX: tiltX, rotateY: tiltY, transformStyle: "preserve-3d" }}
-        className="relative aspect-[4/5] h-[min(54svh,540px)]"
+        className={`relative aspect-[4/5] ${compact ? "h-[min(42svh,440px)]" : "h-[min(54svh,540px)]"}`}
       >
         {categories.map((category, i) => {
           // Place in the queue: 0 = front, 1–3 = visible behind, more = tucked away at the back.

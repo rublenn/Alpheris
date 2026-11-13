@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   brands,
@@ -11,6 +11,7 @@ import {
 import { MaterialSwatch } from "@/components/ui/MaterialSwatch";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
+import { useTouchReveal } from "@/components/ui/useTouchReveal";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -78,15 +79,21 @@ function BrandCard({
   onOpen: () => void;
 }) {
   const items = getBrandProducts(brand.slug).slice(0, 3);
+  const item = useRef<HTMLLIElement>(null);
+  // On phones the card opens by itself as it scrolls in, and tilts with the scroll.
+  const { touch, seen, tilt } = useTouchReveal(item);
+  const expanded = touch ? seen || open : open;
 
   return (
     <motion.li
+      ref={item}
+      style={touch ? { ...tilt, transformPerspective: 1000 } : undefined}
       initial={false}
       animate={{ flexGrow: open ? 2.4 : 1 }}
       transition={{ duration: 0.8, ease }}
       onPointerEnter={(e) => e.pointerType === "mouse" && onOpen()}
       onClick={onOpen}
-      data-cursor={open ? undefined : "Open"}
+      data-cursor={expanded ? undefined : "Open"}
       className={`relative min-w-0 cursor-pointer overflow-hidden border transition-[background-color,border-color,box-shadow] duration-700 lg:basis-0 ${
         open
           ? "border-accent/50 bg-ivory shadow-[0_40px_70px_-45px_rgba(37,37,37,0.45)]"
@@ -95,7 +102,7 @@ function BrandCard({
     >
       <span
         className={`absolute inset-x-0 top-0 h-[2px] origin-left bg-accent transition-transform duration-700 ease-luxe ${
-          open ? "scale-x-100" : "scale-x-0"
+          expanded ? "scale-x-100" : "scale-x-0"
         }`}
       />
 
@@ -115,11 +122,11 @@ function BrandCard({
         <div className="xl:flex xl:items-end xl:justify-between xl:gap-8">
           <div className="min-w-0">
             <h3
-              className={`display leading-tight transition-colors duration-500 ${open ? "text-ink" : "text-ink/60"}`}
+              className={`display leading-tight transition-colors duration-500 ${expanded ? "text-ink" : "text-ink/60"}`}
             >
               <button
                 type="button"
-                aria-expanded={open}
+                aria-expanded={expanded}
                 className="text-left text-[clamp(1.6rem,2.4vw,2.3rem)]"
               >
                 {brand.name}
@@ -133,7 +140,7 @@ function BrandCard({
           </div>
 
           <AnimatePresence initial={false}>
-            {open && (
+            {expanded && (
               <motion.div
                 key="products"
                 initial={{ height: 0, opacity: 0 }}

@@ -4,10 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { categories } from "@/lib/catalog";
-import { MaterialSwatch } from "@/components/ui/MaterialSwatch";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Arrow } from "@/components/ui/Button";
-import { Reveal } from "@/components/ui/Reveal";
 import { CategoryDeck } from "./CategoryDeck";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -16,6 +14,30 @@ export function Categories() {
   const [active, setActive] = useState(0);
   const current = categories[active];
   const list = useRef<HTMLUListElement>(null);
+  const track = useRef<HTMLDivElement>(null);
+
+  // Phones and tablets: the stack stays on screen while you scroll, and the
+  // distance scrolled decides which board is at the front.
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const el = track.current;
+      if (!el || el.offsetParent === null) return; // hidden on desktop
+      const box = el.getBoundingClientRect();
+      const distance = box.height - window.innerHeight;
+      const progress = Math.min(0.999, Math.max(0, -box.top / distance));
+      setActive(Math.floor(progress * categories.length));
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
 
   // Scrolling through the list also leafs through the boards: whichever row
   // sits near the middle of the screen becomes the active category.
@@ -112,27 +134,47 @@ export function Categories() {
           </div>
         </div>
 
-        {/* Mobile & tablet: simple, touch-friendly cards. */}
-        <ul className="mt-12 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:hidden">
-          {categories.map((category, i) => (
-            <li key={category.slug}>
-              <Reveal delay={(i % 3) * 0.06}>
-                <Link href="/categories" className="group block">
-                  <div className="aspect-[4/5] overflow-hidden bg-beige">
-                    <MaterialSwatch
-                      swatch={category.swatch}
-                      className="transition-transform duration-700 ease-luxe group-active:scale-105"
-                    />
-                  </div>
-                  <p className="mt-3 text-[10px] font-semibold tracking-[0.2em] text-muted">
-                    {String(i + 1).padStart(2, "0")}
-                  </p>
-                  <h3 className="display mt-1 text-[1.45rem] leading-tight">{category.name}</h3>
-                </Link>
-              </Reveal>
-            </li>
-          ))}
-        </ul>
+        {/* Mobile & tablet: the same 3D stack, pinned and driven by scrolling. */}
+        <div ref={track} className="relative mt-6 h-[320svh] lg:hidden">
+          <div className="sticky top-[72px] flex h-[calc(100svh-72px)] flex-col justify-center pb-6">
+            <CategoryDeck active={active} compact />
+            <div className="mt-6 flex items-end justify-between gap-4">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={current.slug}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -16 }}
+                  transition={{ duration: 0.3, ease }}
+                  className="min-w-0"
+                >
+                  <h3 className="display text-[2rem] leading-tight">{current.name}</h3>
+                  <p className="mt-2 text-[14px] leading-relaxed text-muted">{current.blurb}</p>
+                </motion.div>
+              </AnimatePresence>
+              <p className="display shrink-0 text-3xl text-accent-deep">
+                {String(active + 1).padStart(2, "0")}
+                <span className="text-base text-muted"> / {categories.length}</span>
+              </p>
+            </div>
+            {/* Progress through the categories */}
+            <div aria-hidden="true" className="mt-5 flex gap-1">
+              {categories.map((c, i) => (
+                <span
+                  key={c.slug}
+                  className={`h-[3px] flex-1 transition-colors duration-500 ${i <= active ? "bg-accent" : "bg-line"}`}
+                />
+              ))}
+            </div>
+            <Link
+              href="/categories"
+              className="mt-5 inline-flex items-center gap-3 self-start text-[12px] font-semibold uppercase tracking-[0.2em] text-ink"
+            >
+              View all categories
+              <Arrow />
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
   );
