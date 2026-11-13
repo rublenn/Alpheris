@@ -8,7 +8,7 @@ import { site } from "@/lib/site";
 
 /**
  * "Find us" — a map that flies in as you scroll:
- * India → Lucknow → Phoenix Palassio → the Space Craft location.
+ * Lucknow → Phoenix Palassio → the Space Craft location.
  *
  * It shows real satellite imagery (Esri World Imagery) drawn with the
  * open-source MapLibre library, with place names layered on top.
@@ -39,7 +39,7 @@ const satelliteStyle = {
   layers: [
     { id: "ground", type: "background", paint: { "background-color": "#27313a" } },
     { id: "imagery", type: "raster", source: "imagery" },
-    { id: "names", type: "raster", source: "names", maxzoom: 14.5 },
+    { id: "names", type: "raster", source: "names", maxzoom: 13.5 },
   ],
 };
 const { landmark, coordinates: shop } = site.location;
@@ -64,19 +64,17 @@ type Shot = { at: number; center: [number, number]; zoom: number; pitch: number;
 
 /** The camera path. "at" is how far through the scroll (0–1) each shot is reached. */
 const shots: Shot[] = [
-  { at: 0, center: [80.95, 24.5], zoom: 3.4, pitch: 0, bearing: 0 },
-  { at: 0.3, center: [80.9462, 26.8467], zoom: 10.3, pitch: 0, bearing: 0 },
-  { at: 0.58, center: landmark.coordinates, zoom: 15.4, pitch: 55, bearing: 25 },
-  { at: 0.7, center: landmark.coordinates, zoom: 15.6, pitch: 58, bearing: 42 },
-  { at: 0.93, center: shop, zoom: 16.4, pitch: 60, bearing: -18 },
+  { at: 0, center: [80.9462, 26.8467], zoom: 10.3, pitch: 0, bearing: 0 },
+  { at: 0.4, center: landmark.coordinates, zoom: 15.4, pitch: 55, bearing: 25 },
+  { at: 0.55, center: landmark.coordinates, zoom: 15.6, pitch: 58, bearing: 42 },
+  { at: 0.92, center: shop, zoom: 16.4, pitch: 60, bearing: -18 },
   { at: 1, center: shop, zoom: 16.6, pitch: 60, bearing: -24 },
 ];
 
 const steps = [
-  { until: 0.2, kicker: "Find us", title: "From anywhere in India…", text: "Scroll to fly in." },
-  { until: 0.47, kicker: "Uttar Pradesh", title: "…to Lucknow.", text: "The city we call home." },
+  { until: 0.22, kicker: "Find us", title: "We are in Lucknow.", text: "Scroll to fly in." },
   {
-    until: 0.74,
+    until: 0.62,
     kicker: "Landmark",
     title: `Head for ${landmark.name}.`,
     text: "Lucknow’s landmark mall on Shaheed Path.",
@@ -264,7 +262,7 @@ export default function LocationJourney() {
       id="location"
       ref={section}
       aria-label="Where to find us"
-      className={`relative bg-beige ${still ? "h-[100svh]" : "h-[380vh]"}`}
+      className={`relative bg-beige ${still ? "h-[100svh]" : "h-[230vh]"}`}
     >
       <div ref={frame} data-near="false" className="group sticky top-0 h-[100svh] overflow-hidden">
         {/* The map library restyles its own container, so it gets a plain inner box. */}
