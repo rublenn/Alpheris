@@ -1,14 +1,10 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Button } from "@/components/ui/Button";
 import { site, whatsappLink } from "@/lib/site";
-
-// The 3D scene is loaded separately, after the text, so the page appears fast.
-const HeroScene = dynamic(() => import("./HeroScene"), { ssr: false });
 
 const headline = [["Materials", "that"], ["shape", "*remarkable*"], ["spaces."]];
 
@@ -25,14 +21,9 @@ export function Hero() {
       intro
         .from("[data-hero-word]", { yPercent: 115, duration: 1.4, stagger: 0.09 }, 0.15)
         .from("[data-hero-fade]", { opacity: 0, y: 24, duration: 1.1, stagger: 0.1 }, 0.7)
-        .from("[data-hero-scene]", { opacity: 0, scale: 0.94, duration: 2 }, 0.2)
         .from("[data-hero-rule]", { scaleX: 0, duration: 1.6 }, 0.6);
 
-      // As you scroll away, the scene drifts up and the text fades slightly.
-      gsap.to("[data-hero-scene]", {
-        yPercent: -14,
-        scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: 0.6 },
-      });
+      // As you scroll away, the text lifts and fades.
       gsap.to("[data-hero-copy]", {
         yPercent: -8,
         opacity: 0.2,
@@ -44,14 +35,8 @@ export function Hero() {
   }, []);
 
   return (
-    <section ref={root} className="relative overflow-hidden bg-ivory">
+    <section ref={root} className="relative overflow-hidden">
       <div aria-hidden="true" className="blueprint absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent_85%)]" />
-      {/* Soft warm glow behind the 3D materials */}
-      <div
-        aria-hidden="true"
-        className="absolute right-[-10%] top-[8%] h-[70vmin] w-[70vmin] rounded-full bg-[radial-gradient(closest-side,rgba(181,139,96,0.2),transparent)]"
-      />
-
       <div className="shell relative flex min-h-[100svh] flex-col pt-[72px]">
         <div className="grid flex-1 items-center gap-2 lg:grid-cols-12">
           <div data-hero-copy className="relative z-10 pt-10 lg:col-span-7 lg:pt-0">
@@ -100,12 +85,8 @@ export function Hero() {
             </div>
           </div>
 
-          <div
-            data-hero-scene
-            className="pointer-events-none relative h-[40svh] min-h-[280px] lg:absolute lg:inset-y-0 lg:right-0 lg:h-auto lg:w-[54%]"
-          >
-            <HeroScene />
-          </div>
+          {/* Space kept free on phones for the 3D materials (drawn by the page backdrop). */}
+          <div aria-hidden="true" data-scene-slot className="h-[40svh] min-h-[280px] lg:hidden" />
         </div>
 
         {/* Info strip along the bottom of the hero */}

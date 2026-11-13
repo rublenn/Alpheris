@@ -32,7 +32,7 @@ export function Enquiry() {
   }
 
   return (
-    <section id="contact" className="bg-ivory py-24 lg:py-36">
+    <section id="contact" className="py-24 lg:py-36">
       <div className="shell grid gap-16 lg:grid-cols-12">
         <div className="lg:col-span-5">
           <Reveal>

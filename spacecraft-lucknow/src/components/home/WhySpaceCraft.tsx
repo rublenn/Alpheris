@@ -23,7 +23,7 @@ const reasons = [
 
 export function WhySpaceCraft() {
   return (
-    <section id="why" className="relative overflow-hidden bg-beige py-24 lg:py-36">
+    <section id="why" className="relative overflow-hidden bg-beige/85 py-24 lg:py-36">
       <div aria-hidden="true" className="blueprint absolute inset-0 opacity-70" />
       <div className="shell relative">
         <SectionHeader index="04" eyebrow="Why Space Craft" title="The right choice, *made simple.*" />

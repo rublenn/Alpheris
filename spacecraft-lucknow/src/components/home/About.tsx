@@ -39,7 +39,7 @@ export function About() {
   }, []);
 
   return (
-    <section id="about" ref={root} className="overflow-hidden bg-white py-24 lg:py-40">
+    <section id="about" ref={root} className="overflow-hidden bg-white/75 py-24 lg:py-40">
       <div className="shell grid gap-16 lg:grid-cols-12 lg:items-center">
         <div className="relative mx-auto aspect-[5/6] w-full max-w-md lg:col-span-5 lg:max-w-none">
           <div data-parallax="6" className="absolute left-0 top-0 h-[78%] w-[68%] overflow-hidden bg-beige">

@@ -5,7 +5,7 @@ import { ProductCard } from "./ProductCard";
 
 export function Products() {
   return (
-    <section id="products" className="bg-ivory py-24 lg:py-36">
+    <section id="products" className="py-24 lg:py-36">
       <div className="shell">
         <SectionHeader index="03" eyebrow="Featured products" title="A closer look at the *collection.*">
           A preview of how products will be presented.

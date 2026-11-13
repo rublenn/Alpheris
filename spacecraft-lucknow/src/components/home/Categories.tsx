@@ -8,6 +8,7 @@ import { MaterialSwatch } from "@/components/ui/MaterialSwatch";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Arrow } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
+import { CategoryDeck } from "./CategoryDeck";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -16,10 +17,10 @@ export function Categories() {
   const current = categories[active];
 
   return (
-    <section id="categories" className="bg-ivory py-24 lg:py-36">
+    <section id="categories" className="py-24 lg:py-36">
       <div className="shell">
         <SectionHeader index="01" eyebrow="Featured categories" title="Every surface, *considered.*">
-          Browse the material families we supply. Hover a category to preview its character.
+          Browse the material families we supply. Hover a category to leaf through the sample boards.
         </SectionHeader>
 
         {/* Desktop: interactive list on the left, large live preview on the right. */}
@@ -54,26 +55,21 @@ export function Categories() {
           </ul>
 
           <div className="lg:col-span-5">
-            <div className="sticky top-28">
-              <div className="relative aspect-[4/5] overflow-hidden bg-beige">
-                <AnimatePresence initial={false}>
-                  <motion.div
+            <div className="sticky top-20">
+              <CategoryDeck active={active} />
+              <div className="mt-8 flex items-start justify-between gap-6">
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.p
                     key={current.slug}
-                    className="absolute inset-0"
-                    initial={{ clipPath: "inset(100% 0 0 0)", scale: 1.12 }}
-                    animate={{ clipPath: "inset(0% 0 0 0)", scale: 1 }}
-                    exit={{ opacity: 0.6 }}
-                    transition={{ duration: 0.8, ease }}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.3, ease }}
+                    className="max-w-xs text-[15px] leading-relaxed text-muted"
                   >
-                    <MaterialSwatch swatch={current.swatch} />
-                  </motion.div>
+                    {current.blurb}
+                  </motion.p>
                 </AnimatePresence>
-                <span className="absolute left-4 top-4 bg-white/90 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-ink">
-                  Illustrative texture
-                </span>
-              </div>
-              <div className="mt-5 flex items-start justify-between gap-6">
-                <p className="max-w-xs text-[15px] leading-relaxed text-muted">{current.blurb}</p>
                 <p className="display text-4xl text-accent-deep">
                   {String(active + 1).padStart(2, "0")}
                   <span className="text-lg text-muted"> / {categories.length}</span>

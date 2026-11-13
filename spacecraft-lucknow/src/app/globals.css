@@ -35,6 +35,11 @@ html {
   scroll-padding-top: 5rem;
 }
 
+/* When the smooth-scroll script is active it handles easing itself. */
+html.lenis {
+  scroll-behavior: auto;
+}
+
 body {
   background: var(--color-ivory);
   color: var(--color-ink);

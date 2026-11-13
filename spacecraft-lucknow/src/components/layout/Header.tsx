@@ -97,6 +97,7 @@ export function Header() {
         {open && (
           <motion.div
             id="mobile-menu"
+            data-lenis-prevent
             role="dialog"
             aria-modal="true"
             aria-label="Menu"

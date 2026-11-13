@@ -1,3 +1,4 @@
+import { SceneBackground } from "@/components/home/SceneBackground";
 import { Hero } from "@/components/home/Hero";
 import { Marquee } from "@/components/home/Marquee";
 import { Categories } from "@/components/home/Categories";
@@ -32,6 +33,7 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
+      <SceneBackground />
       <Hero />
       <Marquee />
       <Categories />

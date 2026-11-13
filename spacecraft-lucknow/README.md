@@ -30,7 +30,7 @@ Then open http://localhost:3000
 - `src/lib/site.ts` — business details (phone, address, hours). Edit here, updates everywhere.
 - `src/lib/catalog.ts` — catalogue structure (Category → Brand → Product → Variant) with **sample data**.
 - `src/app/globals.css` — the design system (colours, fonts).
-- `src/components/home/` — one file per homepage section.
+- `src/components/home/` — one file per homepage section. `MaterialScene.tsx` is the 3D backdrop that follows the scroll.
 - `src/components/ui/` — reusable pieces (buttons, reveal animations, material textures).
 - `src/components/layout/` — header and footer.
 

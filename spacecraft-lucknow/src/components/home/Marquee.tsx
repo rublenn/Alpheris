@@ -13,7 +13,7 @@ export function Marquee() {
     </div>
   );
   return (
-    <div aria-hidden="true" className="overflow-hidden border-y border-line bg-white py-6">
+    <div aria-hidden="true" className="overflow-hidden border-y border-line bg-white/80 py-6">
       <div className="flex w-max animate-marquee">
         {row}
         {row}

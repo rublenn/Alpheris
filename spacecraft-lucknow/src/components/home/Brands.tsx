@@ -4,7 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 
 export function Brands() {
   return (
-    <section id="brands" className="border-y border-line bg-white py-24 lg:py-32">
+    <section id="brands" className="border-y border-line bg-white/75 py-24 lg:py-32">
       <div className="shell">
         <SectionHeader index="02" eyebrow="Featured brands" title="Trusted names, *one roof.*">
           Each category is organised by brand, so comparing options is simple.
