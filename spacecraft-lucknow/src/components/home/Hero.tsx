@@ -97,10 +97,10 @@ export function Hero() {
             className="grid grid-cols-2 gap-x-6 gap-y-4 pt-5 text-[12px] sm:grid-cols-4"
           >
             {[
-              ["Showroom", "Lucknow, Uttar Pradesh"],
+              ["Find us", "Near Phoenix Palassio, Lucknow"],
               ["Hours", site.hours],
               ["Open", "All 7 days"],
-              ["Coordinates", "26.85° N · 80.95° E"],
+              ["Coordinates", "26.80° N · 80.99° E"],
             ].map(([term, value]) => (
               <div key={term}>
                 <dt className="font-semibold uppercase tracking-[0.22em] text-muted">{term}</dt>

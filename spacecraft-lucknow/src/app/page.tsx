@@ -6,6 +6,7 @@ import { Brands } from "@/components/home/Brands";
 import { Products } from "@/components/home/Products";
 import { WhySpaceCraft } from "@/components/home/WhySpaceCraft";
 import { About } from "@/components/home/About";
+import { Location } from "@/components/home/Location";
 import { Enquiry } from "@/components/home/Enquiry";
 import { site } from "@/lib/site";
 
@@ -20,9 +21,14 @@ const jsonLd = {
     "@type": "PostalAddress",
     addressLocality: "Lucknow",
     addressRegion: "Uttar Pradesh",
-    postalCode: "226002",
     addressCountry: "IN",
   },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: site.location.coordinates[1],
+    longitude: site.location.coordinates[0],
+  },
+  hasMap: site.location.mapsUrl,
   openingHours: "Mo-Su 09:00-21:00",
 };
 
@@ -41,6 +47,7 @@ export default function HomePage() {
       <Products />
       <WhySpaceCraft />
       <About />
+      <Location />
       <Enquiry />
     </>
   );

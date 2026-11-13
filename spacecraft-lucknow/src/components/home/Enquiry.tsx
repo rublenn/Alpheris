@@ -66,7 +66,17 @@ export function Enquiry() {
               </div>
               <div>
                 <dt className={label}>Location</dt>
-                <dd className="mt-1">{site.address}</dd>
+                <dd className="mt-1">
+                  {site.address}
+                  <a
+                    href={site.location.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 block font-semibold text-accent-deep underline-offset-4 hover:underline"
+                  >
+                    Open in Google Maps
+                  </a>
+                </dd>
               </div>
               <div>
                 <dt className={label}>Hours</dt>
