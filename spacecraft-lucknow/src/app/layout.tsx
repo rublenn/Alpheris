@@ -38,6 +38,9 @@ export const metadata: Metadata = {
     template: `%s — ${site.fullName}`,
   },
   description: site.description,
+  // PREVIEW ONLY: keeps this unfinished site out of Google so it cannot compete
+  // with the live website. Remove this line when the site officially launches.
+  robots: { index: false, follow: false },
   openGraph: {
     title: site.fullName,
     description: site.description,
