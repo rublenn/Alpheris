@@ -6,3 +6,7 @@
 
 [build.environment]
   NODE_VERSION = "22"
+
+# Lets Netlify run this Next.js site (pages, images, caching).
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
