@@ -34,11 +34,12 @@ Then open http://localhost:3000
 - `src/components/ui/` — reusable pieces (buttons, reveal animations, material textures).
 - `src/components/layout/` — header and footer.
 
-## Satellite map (optional)
+## The "Find us" map
 
-The "Find us" map shows satellite imagery when a Mapbox public token is set.
-Copy `.env.example` to `.env.local` and paste the token (it starts with `pk.`).
-Without a token, a free street map is shown instead.
+Uses Esri World Imagery (satellite) through the open-source MapLibre library.
+No token is needed to run it. Before the public launch, check Esri's terms:
+a free ArcGIS developer account / API key is the expected way to use it on a
+business website.
 
 ## Important notes
 

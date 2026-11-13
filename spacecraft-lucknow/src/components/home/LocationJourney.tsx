@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import "maplibre-gl/dist/maplibre-gl.css";
-import "mapbox-gl/dist/mapbox-gl.css";
 import { Arrow } from "@/components/ui/Button";
 import { site } from "@/lib/site";
 
@@ -11,17 +10,38 @@ import { site } from "@/lib/site";
  * "Find us" — a map that flies in as you scroll:
  * India → Lucknow → Phoenix Palassio → the Space Craft location.
  *
- * Two map sources, chosen automatically:
- *  - If a Mapbox token is set (NEXT_PUBLIC_MAPBOX_TOKEN in .env.local),
- *    it shows real SATELLITE imagery from Mapbox.
- *  - Otherwise it shows a free, light street map (OpenFreeMap), so the
- *    section always works.
+ * It shows real satellite imagery (Esri World Imagery) drawn with the
+ * open-source MapLibre library, with place names layered on top.
  *
  * The map cannot be dragged or zoomed by hand — scrolling drives the camera,
  * so it never traps the page scroll on phones.
  */
 
-const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+const esri = "https://server.arcgisonline.com/ArcGIS/rest/services";
+
+/** Satellite photos, with a transparent layer of place names and borders above. */
+const satelliteStyle = {
+  version: 8,
+  sources: {
+    imagery: {
+      type: "raster",
+      tiles: [`${esri}/World_Imagery/MapServer/tile/{z}/{y}/{x}`],
+      tileSize: 256,
+      maxzoom: 18,
+    },
+    names: {
+      type: "raster",
+      tiles: [`${esri}/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}`],
+      tileSize: 256,
+      maxzoom: 15,
+    },
+  },
+  layers: [
+    { id: "ground", type: "background", paint: { "background-color": "#27313a" } },
+    { id: "imagery", type: "raster", source: "imagery" },
+    { id: "names", type: "raster", source: "names", maxzoom: 14.5 },
+  ],
+};
 const { landmark, coordinates: shop } = site.location;
 
 // The small part of the two map libraries that this section uses.
@@ -34,7 +54,6 @@ type MapLike = {
   remove(): void;
 };
 type MapLibrary = {
-  accessToken?: string;
   Map: new (options: Record<string, unknown>) => MapLike;
   Marker: new (options: { element: HTMLElement; anchor: string }) => {
     setLngLat(position: [number, number]): { addTo(map: MapLike): unknown };
@@ -159,33 +178,39 @@ export default function LocationJourney() {
     // The map is only downloaded when the visitor gets close to this section.
     const start = async () => {
       try {
-        const loaded: unknown = token ? await import("mapbox-gl") : await import("maplibre-gl");
+        const loaded: unknown = await import("maplibre-gl");
         const lib = ((loaded as { default?: unknown }).default ?? loaded) as MapLibrary;
         if (cancelled) return;
-        if (token) lib.accessToken = token;
         map = new lib.Map({
           container: box,
-          style: token
-            ? "mapbox://styles/mapbox/satellite-streets-v12"
-            : "https://tiles.openfreemap.org/styles/positron",
+          style: satelliteStyle,
+          maxPitch: 70,
           interactive: false,
           attributionControl: false,
           ...cameraAt(progress()),
         });
         map.on("load", () => {
           if (cancelled || !map) return;
-          setCredit(token ? "© Mapbox © OpenStreetMap © Maxar" : "© OpenFreeMap © OpenMapTiles © OpenStreetMap");
+          setCredit("Imagery © Esri, Maxar, Earthstar Geographics");
           // Dashed line from the landmark to the shop.
           map.addSource("route", {
             type: "geojson",
             data: { type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: [landmark.coordinates, shop] } },
+          });
+          // A dark outline under the white dashes keeps the line visible on any ground.
+          map.addLayer({
+            id: "route-shadow",
+            type: "line",
+            source: "route",
+            layout: { "line-cap": "round" },
+            paint: { "line-color": "#252525", "line-width": 6, "line-opacity": 0.45 },
           });
           map.addLayer({
             id: "route",
             type: "line",
             source: "route",
             layout: { "line-cap": "round" },
-            paint: { "line-color": token ? "#ffffff" : "#8a6540", "line-width": 3, "line-dasharray": [1, 2] },
+            paint: { "line-color": "#ffffff", "line-width": 3, "line-dasharray": [1, 2] },
           });
           new lib.Marker({ element: pin(landmark.name, "Shaheed Path", false), anchor: "bottom" })
             .setLngLat(landmark.coordinates)
@@ -250,7 +275,7 @@ export default function LocationJourney() {
         </div>
 
         {/* Soft fades so the header and caption stay readable over the map */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ivory to-transparent" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ivory via-ivory/40 to-transparent" />
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-ivory/90 to-transparent" />
 
         {/* Map data credit (required by the map providers) */}
