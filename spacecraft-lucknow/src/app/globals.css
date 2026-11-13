@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+/*
+ * SPACE CRAFT DESIGN SYSTEM
+ * Bright futuristic luxury: ~70% white/ivory, ~20% beige/warm grey, ~10% accent.
+ * Change a colour here and it updates across the whole site.
+ */
+@theme {
+  --color-white: #ffffff;
+  --color-ivory: #faf9f6;
+  --color-beige: #e8e3da;
+  --color-accent: #b58b60;
+  /* Darker accent for small text, so it stays readable on white. */
+  --color-accent-deep: #8a6540;
+  --color-ink: #252525;
+  --color-muted: #6f6a62;
+  --color-line: #ddd7cd;
+
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-instrument), ui-serif, Georgia, serif;
+
+  --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-marquee: marquee 40s linear infinite;
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--color-ivory);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-white);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent-deep);
+  outline-offset: 3px;
+}
+
+@layer components {
+  /* Page gutter + max width used by every section. */
+  .shell {
+    @apply mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-14;
+  }
+
+  /* Small uppercase label that sits above headings. */
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.28em] text-accent-deep;
+  }
+
+  .display {
+    @apply font-display font-normal leading-[0.98] tracking-[-0.015em] text-ink;
+  }
+
+  /* Fine technical grid used as a subtle "futuristic" backdrop. */
+  .blueprint {
+    background-image:
+      linear-gradient(to right, rgb(37 37 37 / 0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(37 37 37 / 0.045) 1px, transparent 1px);
+    background-size: 72px 72px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
