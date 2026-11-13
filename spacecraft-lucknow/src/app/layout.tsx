@@ -51,8 +51,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
+    // suppressHydrationWarning: browser extensions (e.g. translators) add their
+    // own attributes to <html>; this stops a harmless dev-only warning about it.
     <html
       lang="en-IN"
+      suppressHydrationWarning
       className={`${manrope.variable} ${instrument.variable} antialiased`}
     >
       <body className="flex min-h-screen flex-col overflow-x-clip">
