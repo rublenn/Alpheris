@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { MotionProvider } from "@/components/layout/MotionProvider";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
+import { Cursor } from "@/components/layout/Cursor";
 import { Footer } from "@/components/layout/Footer";
 import { site } from "@/lib/site";
 
@@ -71,6 +72,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <MotionProvider>
           <SmoothScroll />
+          <Cursor />
           <Header />
           <main id="main" className="relative z-10 flex-1">
             {children}

@@ -4,13 +4,16 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 import { categories } from "@/lib/catalog";
 import { MaterialSwatch } from "@/components/ui/MaterialSwatch";
 
-const spring = { type: "spring", stiffness: 110, damping: 19, mass: 0.9 } as const;
+const glide = { duration: 0.95, ease: [0.22, 1, 0.36, 1] } as const;
+const count = categories.length;
 
 /**
- * A 3D stack of material cards. The active category sits at the front, the
- * next few wait behind it in depth, and cards you have passed sweep forward
- * and away — like leafing through physical sample boards.
- * The whole stack also tilts gently toward the pointer.
+ * A 3D stack of material sample boards. The active category is at the front
+ * and the next three wait behind it. When you move on, the front board lifts
+ * and tucks away to the back of the stack while the others step forward —
+ * like leafing through physical samples. The stack tilts toward the pointer.
+ *
+ * The stack is sized from the screen height, so a board is never cut off.
  */
 export function CategoryDeck({ active }: { active: number }) {
   const tiltX = useSpring(useMotionValue(0), { stiffness: 120, damping: 16 });
@@ -29,36 +32,33 @@ export function CategoryDeck({ active }: { active: number }) {
   }
 
   return (
-    <div onPointerMove={onMove} onPointerLeave={onLeave} className="pt-24 [perspective:1300px]">
+    <div onPointerMove={onMove} onPointerLeave={onLeave} className="flex justify-center pt-24 [perspective:1300px]">
       <motion.div
         style={{ rotateX: tiltX, rotateY: tiltY, transformStyle: "preserve-3d" }}
-        className="relative aspect-[4/5]"
+        className="relative aspect-[4/5] h-[min(54svh,540px)]"
       >
         {categories.map((category, i) => {
-          const offset = i - active; // 0 = front, 1+ = waiting behind, negative = passed
-          const behind = Math.min(offset, 3);
-          const pose =
-            offset === 0
-              ? { y: 0, z: 0, rotateX: 0, rotateY: 0, opacity: 1 }
-              : offset > 0
-                ? { y: -46 * behind, z: -70 * behind, rotateX: 0, rotateY: 0, opacity: offset > 3 ? 0 : 1 }
-                : { y: 90, z: 220, rotateX: -32, rotateY: -14, opacity: 0 };
+          // Place in the queue: 0 = front, 1–3 = visible behind, more = tucked away at the back.
+          const place = (i - active + count) % count;
+          const visible = place <= 3;
+          const pose = visible
+            ? { y: -32 * place, z: -70 * place, opacity: 1 }
+            : { y: -150, z: -340, opacity: 0 };
           return (
             <motion.div
               key={category.slug}
               initial={false}
               animate={pose}
-              transition={{ ...spring, opacity: { duration: 0.45 } }}
-              style={{ transformOrigin: "50% 100%" }}
+              transition={{ ...glide, opacity: { duration: 0.5, delay: visible ? 0.2 : 0.1 } }}
               className="absolute inset-0 overflow-hidden bg-beige shadow-[0_30px_60px_-30px_rgba(37,37,37,0.35)] will-change-transform"
             >
               <MaterialSwatch swatch={category.swatch} />
-              {/* Cards waiting behind are veiled so the front one stands out. */}
+              {/* Boards waiting behind are veiled so the front one stands out. */}
               <motion.span
                 aria-hidden="true"
                 initial={false}
-                animate={{ opacity: offset > 0 ? 0.3 + 0.18 * behind : 0 }}
-                transition={{ duration: 0.5 }}
+                animate={{ opacity: place === 0 ? 0 : 0.3 + 0.18 * Math.min(place, 3) }}
+                transition={{ duration: 0.6 }}
                 className="absolute inset-0 bg-ivory"
               />
             </motion.div>

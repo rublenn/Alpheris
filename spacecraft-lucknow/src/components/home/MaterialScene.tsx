@@ -64,9 +64,10 @@ function Drift({
   children: ReactNode;
 }) {
   const ref = useRef<THREE.Group>(null);
+  const nudge = useRef({ x: 0, y: 0 }); // how far the cursor is currently pushing this piece
   const m = MOTION[name];
 
-  useFrame(({ viewport }) => {
+  useFrame(({ viewport, pointer }, delta) => {
     const group = ref.current;
     if (!group) return;
     const pages = scroll.current.pages;
@@ -91,10 +92,24 @@ function Drift({
     const awayX = m.away[0] * (viewport.width / 2) * depth;
     const awayY = wrap((m.away[1] + 0.5) * range + pages * m.speed * viewport.height, range) - range / 2;
 
-    group.position.set(mix(heroX, awayX, t), mix(heroY, awayY, t), mix(heroZ, m.away[2], t));
+    const x = mix(heroX, awayX, t);
+    const y = mix(heroY, awayY, t);
+    const z = mix(heroZ, m.away[2], t);
+
+    // Pieces lean and slide away from the cursor, as if it stirs the air.
+    const reach = (9 - z) / 9;
+    const dx = x - pointer.x * (viewport.width / 2) * reach;
+    const dy = y - pointer.y * (viewport.height / 2) * reach;
+    const distance = Math.hypot(dx, dy) || 1;
+    const push = floatSpeed > 0 ? Math.max(0, 1 - distance / 2.6) ** 2 * 0.55 : 0;
+    const k = 1 - Math.exp(-delta * 4);
+    nudge.current.x += ((dx / distance) * push - nudge.current.x) * k;
+    nudge.current.y += ((dy / distance) * push - nudge.current.y) * k;
+
+    group.position.set(x + nudge.current.x, y + nudge.current.y, z);
     group.rotation.set(
-      m.heroRot[0] + pages * m.spin[0],
-      m.heroRot[1] + pages * m.spin[1],
+      m.heroRot[0] + pages * m.spin[0] - nudge.current.y * 0.7,
+      m.heroRot[1] + pages * m.spin[1] + nudge.current.x * 0.7,
       m.heroRot[2] + pages * m.spin[2],
     );
     group.scale.setScalar(mix(fit, narrow ? 0.55 : 0.9, t));

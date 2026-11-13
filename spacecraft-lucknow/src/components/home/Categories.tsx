@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { categories } from "@/lib/catalog";
 import { MaterialSwatch } from "@/components/ui/MaterialSwatch";
@@ -15,17 +15,49 @@ const ease = [0.22, 1, 0.36, 1] as const;
 export function Categories() {
   const [active, setActive] = useState(0);
   const current = categories[active];
+  const list = useRef<HTMLUListElement>(null);
+
+  // Scrolling through the list also leafs through the boards: whichever row
+  // sits near the middle of the screen becomes the active category.
+  useEffect(() => {
+    let lastRow = -1;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const ul = list.current;
+      if (!ul || ul.offsetParent === null) return; // hidden on phones
+      const line = window.innerHeight * 0.45;
+      const box = ul.getBoundingClientRect();
+      if (line < box.top || line > box.bottom) return;
+      const row = Math.min(
+        categories.length - 1,
+        Math.floor(((line - box.top) / box.height) * categories.length),
+      );
+      if (row !== lastRow) {
+        lastRow = row;
+        setActive(row);
+      }
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
 
   return (
     <section id="categories" className="py-24 lg:py-36">
       <div className="shell">
         <SectionHeader index="01" eyebrow="Featured categories" title="Every surface, *considered.*">
-          Browse the material families we supply. Hover a category to leaf through the sample boards.
+          Browse the material families we supply. Scroll or hover to leaf through the sample boards.
         </SectionHeader>
 
         {/* Desktop: interactive list on the left, large live preview on the right. */}
         <div className="mt-16 hidden gap-14 lg:grid lg:grid-cols-12">
-          <ul className="border-t border-line lg:col-span-7">
+          <ul ref={list} className="border-t border-line lg:col-span-7">
             {categories.map((category, i) => (
               <li key={category.slug} className="border-b border-line">
                 <Link
@@ -55,9 +87,9 @@ export function Categories() {
           </ul>
 
           <div className="lg:col-span-5">
-            <div className="sticky top-20">
+            <div className="sticky top-[72px]">
               <CategoryDeck active={active} />
-              <div className="mt-8 flex items-start justify-between gap-6">
+              <div className="mt-6 flex items-start justify-between gap-6">
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.p
                     key={current.slug}
