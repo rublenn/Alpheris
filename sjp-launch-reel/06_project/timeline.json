@@ -1,0 +1,128 @@
+[
+ {
+  "id": "01",
+  "start": 0.35,
+  "end": 1.135,
+  "hinglish": "Ek sawaal hai.",
+  "hindi": "एक सवाल है।"
+ },
+ {
+  "id": "02",
+  "start": 1.685,
+  "end": 5.722,
+  "hinglish": "Jis sabhyata ne duniya ko Ved, Upanishad, Gita aur Darshan diye...",
+  "hindi": "जिस सभ्यता ने दुनिया को वेद, उपनिषद, गीता और दर्शन दिए,"
+ },
+ {
+  "id": "03",
+  "start": 5.872,
+  "end": 8.481,
+  "hinglish": "...aaj uske log apne hi dharm ko kitna jaante hain?",
+  "hindi": "आज उसके लोग अपने ही धर्म को कितना जानते हैं?"
+ },
+ {
+  "id": "04",
+  "start": 8.981,
+  "end": 13.702,
+  "hinglish": "Humne hamle dekhe. Mandir toote. Nalanda jaise vidya-kendra ujad gaye.",
+  "hindi": "हमने हमले देखे। मंदिर टूटे। नालंदा जैसे विद्या केंद्र उजड़ गए।"
+ },
+ {
+  "id": "05",
+  "start": 14.002,
+  "end": 21.253,
+  "hinglish": "Phir 1835: British raj ne sarkari paisa Sanskrit aur paramparik shiksha se hata kar English shiksha par laga diya.",
+  "hindi": "फिर अठारह सौ पैंतीस। ब्रिटिश राज ने सरकारी पैसा संस्कृत और पारंपरिक शिक्षा से हटाकर, इंग्लिश शिक्षा पर लगा दिया।"
+ },
+ {
+  "id": "06",
+  "start": 21.553,
+  "end": 24.569,
+  "hinglish": "Aur hum dheere-dheere apne hi gyaan se door hote gaye.",
+  "hindi": "और हम धीरे धीरे अपने ही ज्ञान से दूर होते गए।"
+ },
+ {
+  "id": "07",
+  "start": 25.069,
+  "end": 27.785,
+  "hinglish": "Aaj koi bina padhe hamare granthon ko myth keh deta hai...",
+  "hindi": "आज कोई बिना पढ़े हमारे ग्रंथों को मिथ कह देता है,"
+ },
+ {
+  "id": "08",
+  "start": 27.935,
+  "end": 31.594,
+  "hinglish": "...aur koi bina samjhe, bina sawaal kiye, bas rasmein nibhata hai.",
+  "hindi": "और कोई बिना समझे, बिना सवाल किए, बस रस्में निभाता है।"
+ },
+ {
+  "id": "09",
+  "start": 31.994,
+  "end": 35.058,
+  "hinglish": "Ram ka naam lete hain, par unke aadarsh bhool jaate hain.",
+  "hindi": "राम का नाम लेते हैं, पर उनके आदर्श भूल जाते हैं।"
+ },
+ {
+  "id": "10",
+  "start": 35.308,
+  "end": 38.061,
+  "hinglish": "Gita ghar mein hai, par Karmayog jeevan mein nahi.",
+  "hindi": "गीता घर में है, पर कर्मयोग जीवन में नहीं।"
+ },
+ {
+  "id": "11",
+  "start": 38.511,
+  "end": 38.922,
+  "hinglish": "Bas.",
+  "hindi": "बस!"
+ },
+ {
+  "id": "12",
+  "start": 39.822,
+  "end": 41.953,
+  "hinglish": "Na andh-bhakti. Na andh-virodh.",
+  "hindi": "ना अंधभक्ति। ना अंधविरोध।"
+ },
+ {
+  "id": "13",
+  "start": 42.203,
+  "end": 45.383,
+  "hinglish": "Padho. Sawaal karo. Samjho. Aur jiyo.",
+  "hindi": "पढ़ो। सवाल करो। समझो। और जियो।"
+ },
+ {
+  "id": "14",
+  "start": 45.783,
+  "end": 49.083,
+  "hinglish": "Isi sankalp ke saath shuru hoti hai SATYA JANTA PARTY.",
+  "hindi": "इसी संकल्प के साथ शुरू होती है, सत्य जनता पार्टी।"
+ },
+ {
+  "id": "15",
+  "start": 49.383,
+  "end": 51.492,
+  "hinglish": "Na paisa chahiye, na koi bada vaada.",
+  "hindi": "ना पैसा चाहिए, ना कोई बड़ा वादा।"
+ },
+ {
+  "id": "16",
+  "start": 51.642,
+  "end": 53.636,
+  "hinglish": "Bas ek request: follow kijiye.",
+  "hindi": "बस एक रिक्वेस्ट, फ़ॉलो कीजिए।"
+ },
+ {
+  "id": "17",
+  "start": 54.036,
+  "end": 56.045,
+  "hinglish": "Satya ko jaano. Satya ko jiyo.",
+  "hindi": "सत्य को जानो। सत्य को जियो।"
+ },
+ {
+  "id": "18",
+  "start": 56.345,
+  "end": 58.113,
+  "hinglish": "Jai Hind. Jai Sanatan.",
+  "hindi": "जय हिंद। जय सनातन।"
+ }
+]
