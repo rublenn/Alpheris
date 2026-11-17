@@ -21,7 +21,7 @@ export function SideRails() {
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-20 hidden lg:block">
       {/* Left: measured rail with a scroll marker */}
       <div style={{ left: edge }} className="absolute bottom-[78px] top-[100px] w-px bg-ink/12">
-        <div className="absolute inset-y-0 -left-[3px] w-[7px] [background-image:repeating-linear-gradient(to_bottom,rgb(37_37_37/0.2)_0_1px,transparent_1px_28px)]" />
+        <div className="absolute inset-y-0 -left-[3px] w-[7px] [background-image:repeating-linear-gradient(to_bottom,rgb(242_238_230/0.18)_0_1px,transparent_1px_28px)]" />
         <motion.div style={{ top }} className="absolute -left-[2px] h-12 w-[5px] -translate-y-1/2 bg-accent" />
       </div>
       <motion.p

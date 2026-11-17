@@ -95,7 +95,7 @@ function Panel({
   const rotateY = useSpring(useMotionValue(0), { stiffness: 140, damping: 16 });
   const lightX = useMotionValue(50);
   const lightY = useMotionValue(0);
-  const light = useMotionTemplate`radial-gradient(420px circle at ${lightX}% ${lightY}%, rgba(255,255,255,0.9), transparent 65%)`;
+  const light = useMotionTemplate`radial-gradient(420px circle at ${lightX}% ${lightY}%, rgba(242,238,230,0.07), transparent 65%)`;
 
   function onMove(e: React.PointerEvent<HTMLLIElement>) {
     if (e.pointerType !== "mouse") return;

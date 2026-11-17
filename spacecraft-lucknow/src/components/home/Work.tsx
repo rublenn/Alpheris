@@ -65,15 +65,15 @@ export function Work() {
                     swatch={swatch}
                     className="pointer-events-none transition-transform duration-[1200ms] ease-luxe group-hover:scale-[1.06]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
                   <span className="absolute left-4 top-4 bg-white/90 px-2.5 py-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-ink">
                     Sample project
                   </span>
-                  <div className="absolute inset-x-5 bottom-5 text-white">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/75">
+                  <div className="absolute inset-x-5 bottom-5 text-[#fff]">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#fff]/75">
                       {String(i + 1).padStart(2, "0")} · Photos coming soon
                     </p>
-                    <h3 className="display mt-2 text-[1.9rem] leading-tight !text-white">{project.type}</h3>
+                    <h3 className="display mt-2 text-[1.9rem] leading-tight !text-[#fff]">{project.type}</h3>
                   </div>
                 </div>
               </motion.li>

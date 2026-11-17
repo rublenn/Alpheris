@@ -1,20 +1,22 @@
 @import "tailwindcss";
 
 /*
- * SPACE CRAFT DESIGN SYSTEM
- * Bright futuristic luxury: ~70% white/ivory, ~20% beige/warm grey, ~10% accent.
+ * SPACE CRAFT DESIGN SYSTEM — "Charcoal Lounge" (dark charcoal + gold).
  * Change a colour here and it updates across the whole site.
+ * The names are kept from the original light theme so components need no
+ * changes: "ivory" is now the page background, "ink" the main text colour,
+ * "white" the raised card surface and "beige" the alternate section band.
  */
 @theme {
-  --color-white: #ffffff;
-  --color-ivory: #faf9f6;
-  --color-beige: #e8e3da;
-  --color-accent: #b58b60;
-  /* Darker accent for small text, so it stays readable on white. */
-  --color-accent-deep: #8a6540;
-  --color-ink: #252525;
-  --color-muted: #6f6a62;
-  --color-line: #ddd7cd;
+  --color-white: #252321;
+  --color-ivory: #1e1d1b;
+  --color-beige: #2a2826;
+  --color-accent: #c9a06a;
+  /* Lighter gold for small text, so it stays readable on charcoal. */
+  --color-accent-deep: #d6b27e;
+  --color-ink: #f2eee6;
+  --color-muted: #a8a196;
+  --color-line: #3a3734;
 
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-instrument), ui-serif, Georgia, serif;
@@ -31,6 +33,7 @@
 }
 
 html {
+  color-scheme: dark;
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
 }
@@ -74,8 +77,8 @@ body {
   /* Fine technical grid used as a subtle "futuristic" backdrop. */
   .blueprint {
     background-image:
-      linear-gradient(to right, rgb(37 37 37 / 0.045) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(37 37 37 / 0.045) 1px, transparent 1px);
+      linear-gradient(to right, rgb(242 238 230 / 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(242 238 230 / 0.04) 1px, transparent 1px);
     background-size: 72px 72px;
   }
 }
