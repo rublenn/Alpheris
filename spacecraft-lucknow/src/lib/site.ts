@@ -48,5 +48,5 @@ export const navLinks = [
   { label: "Products", href: "/#products" },
   { label: "Why Space Craft", href: "/#why" },
   { label: "About", href: "/#about" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Enquire now", href: "/#contact" },
 ] as const;

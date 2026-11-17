@@ -1,7 +1,8 @@
 "use client";
 
-import { motion, useMotionValue, useSpring } from "framer-motion";
-import { categories } from "@/lib/catalog";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
+import { categories, type Swatch } from "@/lib/catalog";
 import { MaterialSwatch } from "@/components/ui/MaterialSwatch";
 
 const glide = { duration: 0.95, ease: [0.22, 1, 0.36, 1] } as const;
@@ -52,7 +53,11 @@ export function CategoryDeck({ active, compact = false }: { active: number; comp
               transition={{ ...glide, opacity: { duration: 0.5, delay: visible ? 0.2 : 0.1 } }}
               className="absolute inset-0 overflow-hidden bg-beige shadow-[0_30px_60px_-30px_rgba(37,37,37,0.35)] will-change-transform"
             >
-              <MaterialSwatch swatch={category.swatch} />
+              <LookCycler
+                key={`${category.slug}-${place === 0}`}
+                looks={[category.swatch, ...(category.variants ?? [])]}
+                cycle={place === 0}
+              />
               {/* Boards waiting behind are veiled so the front one stands out. */}
               <motion.span
                 aria-hidden="true"
@@ -72,5 +77,47 @@ export function CategoryDeck({ active, compact = false }: { active: number; comp
         </span>
       </motion.div>
     </div>
+  );
+}
+
+/**
+ * Shows one category's different looks in turn (only on the front board):
+ * each new look wipes in over the last, with small markers for which is showing.
+ */
+function LookCycler({ looks, cycle }: { looks: Swatch[]; cycle: boolean }) {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (!cycle || looks.length < 2) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setInterval(() => setIndex((i) => (i + 1) % looks.length), 1700);
+    return () => window.clearInterval(timer);
+  }, [cycle, looks.length]);
+
+  return (
+    <>
+      <AnimatePresence initial={false}>
+        <motion.div
+          key={index}
+          className="absolute inset-0"
+          initial={{ clipPath: "inset(0 0 0 100%)", zIndex: 1 }}
+          animate={{ clipPath: "inset(0 0 0 0%)", zIndex: 1 }}
+          exit={{ zIndex: 0, transition: { duration: 0.9 } }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <MaterialSwatch swatch={looks[index]} />
+        </motion.div>
+      </AnimatePresence>
+      {cycle && looks.length > 1 && (
+        <div className="absolute bottom-4 right-4 z-[2] flex items-center gap-1.5 bg-white/90 px-2.5 py-2">
+          {looks.map((_, i) => (
+            <span
+              key={i}
+              className={`h-1 w-4 transition-colors duration-500 ${i === index ? "bg-accent-deep" : "bg-ink/20"}`}
+            />
+          ))}
+        </div>
+      )}
+    </>
   );
 }

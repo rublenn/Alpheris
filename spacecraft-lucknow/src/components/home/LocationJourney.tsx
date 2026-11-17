@@ -287,7 +287,7 @@ export default function LocationJourney() {
           </p>
         )}
 
-        <div className="shell pointer-events-none absolute inset-x-0 bottom-0 pb-10 sm:pb-12">
+        <div className="shell pointer-events-none absolute inset-x-0 bottom-0 pb-16 sm:pb-20">
           <div className="pointer-events-auto max-w-lg border border-line bg-white/95 p-6 shadow-[0_30px_60px_-30px_rgba(37,37,37,0.45)] sm:p-8">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div

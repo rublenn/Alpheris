@@ -37,7 +37,7 @@ export function Enquiry() {
         <div className="lg:col-span-5">
           <Reveal>
             <p className="eyebrow flex items-center gap-4">
-              <span className="text-muted">06</span>
+              <span className="text-muted">07</span>
               <span className="h-px w-10 bg-accent" />
               Contact & enquiry
             </p>

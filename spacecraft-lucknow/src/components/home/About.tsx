@@ -57,7 +57,7 @@ export function About() {
         <div className="lg:col-span-6 lg:col-start-7">
           <Reveal>
             <p className="eyebrow flex items-center gap-4">
-              <span className="text-muted">05</span>
+              <span className="text-muted">06</span>
               <span className="h-px w-10 bg-accent" />
               About Space Craft
             </p>

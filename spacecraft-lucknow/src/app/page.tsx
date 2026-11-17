@@ -1,10 +1,10 @@
 import { SceneBackground } from "@/components/home/SceneBackground";
 import { Hero } from "@/components/home/Hero";
-import { Marquee } from "@/components/home/Marquee";
 import { Categories } from "@/components/home/Categories";
 import { Brands } from "@/components/home/Brands";
 import { Products } from "@/components/home/Products";
 import { WhySpaceCraft } from "@/components/home/WhySpaceCraft";
+import { Work } from "@/components/home/Work";
 import { About } from "@/components/home/About";
 import { Location } from "@/components/home/Location";
 import { Enquiry } from "@/components/home/Enquiry";
@@ -41,11 +41,11 @@ export default function HomePage() {
       />
       <SceneBackground />
       <Hero />
-      <Marquee />
       <Categories />
       <Brands />
       <Products />
       <WhySpaceCraft />
+      <Work />
       <About />
       <Location />
       <Enquiry />
