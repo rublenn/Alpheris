@@ -3,16 +3,16 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { categories } from "@/lib/catalog";
+import type { Category } from "@/lib/catalog";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Arrow } from "@/components/ui/Button";
 import { CategoryDeck } from "./CategoryDeck";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-export function Categories() {
+export function Categories({ categories }: { categories: Category[] }) {
   const [active, setActive] = useState(0);
-  const current = categories[active];
+  const current = categories[Math.min(active, categories.length - 1)];
   const list = useRef<HTMLUListElement>(null);
   const track = useRef<HTMLDivElement>(null);
 
@@ -37,7 +37,7 @@ export function Categories() {
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [categories.length]);
 
   // Scrolling through the list also leafs through the boards: whichever row
   // sits near the middle of the screen becomes the active category.
@@ -68,7 +68,9 @@ export function Categories() {
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [categories.length]);
+
+  if (!current) return null;
 
   return (
     <section id="categories" className="py-24 lg:py-36">
@@ -83,7 +85,7 @@ export function Categories() {
             {categories.map((category, i) => (
               <li key={category.slug} className="border-b border-line">
                 <Link
-                  href="/categories"
+                  href={`/categories/${category.slug}`}
                   onMouseEnter={() => setActive(i)}
                   onFocus={() => setActive(i)}
                   data-cursor="View"
@@ -111,7 +113,7 @@ export function Categories() {
 
           <div className="lg:col-span-5">
             <div className="sticky top-[72px]">
-              <CategoryDeck active={active} />
+              <CategoryDeck categories={categories} active={active} />
               <div className="mt-6 flex items-start justify-between gap-6">
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.p
@@ -137,7 +139,7 @@ export function Categories() {
         {/* Mobile & tablet: the same 3D stack, pinned and driven by scrolling. */}
         <div ref={track} className="relative mt-6 h-[320svh] lg:hidden">
           <div className="sticky top-[72px] flex h-[calc(100svh-72px)] flex-col justify-center pb-6">
-            <CategoryDeck active={active} compact />
+            <CategoryDeck categories={categories} active={active} compact />
             <div className="mt-6 flex items-end justify-between gap-4">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
@@ -167,10 +169,10 @@ export function Categories() {
               ))}
             </div>
             <Link
-              href="/categories"
+              href={`/categories/${current.slug}`}
               className="mt-5 inline-flex items-center gap-3 self-start text-[12px] font-semibold uppercase tracking-[0.2em] text-ink"
             >
-              View all categories
+              View {current.name}
               <Arrow />
             </Link>
           </div>

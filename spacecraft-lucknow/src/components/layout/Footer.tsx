@@ -26,7 +26,7 @@ export function Footer() {
         <FooterColumn title="Materials" className="lg:col-span-3">
           <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 md:grid-cols-1 xl:grid-cols-2">
             {categories.map((c) => (
-              <FooterLink key={c.slug} href="/categories">
+              <FooterLink key={c.slug} href={`/categories/${c.slug}`}>
                 {c.name}
               </FooterLink>
             ))}

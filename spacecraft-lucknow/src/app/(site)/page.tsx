@@ -9,6 +9,11 @@ import { About } from "@/components/home/About";
 import { Location } from "@/components/home/Location";
 import { Enquiry } from "@/components/home/Enquiry";
 import { site } from "@/lib/site";
+import { getCatalog } from "@/lib/shop";
+import type { Category, Swatch } from "@/lib/catalog";
+import type { BrandTeaser } from "@/components/home/Brands";
+
+const neutral: Swatch = { kind: "panel", base: "#3a3734", shade: "#2a2826", light: "#4a4642" };
 
 // Structured data helps Google understand the business. Only confirmed facts.
 const jsonLd = {
@@ -32,7 +37,32 @@ const jsonLd = {
   openingHours: "Mo-Su 09:00-21:00",
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const catalog = await getCatalog();
+
+  // Categories from the database, shaped for the animated sample-board stack.
+  const categories: Category[] = catalog.categories.map((c) => {
+    const { looks, ...swatch } = c.swatch ?? { ...neutral, looks: [] };
+    return { slug: c.slug, name: c.name, blurb: c.blurb, swatch: swatch as Swatch, variants: looks ?? [] };
+  });
+
+  // Each brand with the categories and a few products it has in the shop.
+  const brands: BrandTeaser[] = catalog.brands.map((b) => {
+    const items = catalog.products.filter((p) => p.brand?.slug === b.slug);
+    return {
+      slug: b.slug,
+      name: b.name,
+      isSample: b.isSample,
+      categoryNames: [...new Set(items.map((p) => p.category.name))],
+      products: items.slice(0, 3).map((p) => ({
+        slug: p.slug,
+        name: p.name,
+        swatch: p.swatch ?? p.category.swatch,
+        image: p.images[0]?.url ?? null,
+      })),
+    };
+  });
+
   return (
     <>
       <script
@@ -41,8 +71,8 @@ export default function HomePage() {
       />
       <SceneBackground />
       <Hero />
-      <Categories />
-      <Brands />
+      <Categories categories={categories} />
+      <Brands brands={brands} />
       <Products />
       <WhySpaceCraft />
       <Work />

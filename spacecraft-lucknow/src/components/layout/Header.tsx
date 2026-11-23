@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { navLinks, site } from "@/lib/site";
 import { Logo } from "./Logo";
+import { useCart } from "@/components/shop/CartProvider";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -13,6 +14,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
+  const { count } = useCart();
 
   // Frosted background after a little scrolling; tuck away while scrolling down.
   useMotionValueEvent(scrollY, "change", (y) => {
@@ -60,9 +62,14 @@ export function Header() {
           <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/cart"
-              aria-label="Shopping cart"
-              className="flex h-11 w-11 items-center justify-center text-ink transition-colors hover:text-accent-deep"
+              aria-label={count ? `Shopping cart, ${count} items` : "Shopping cart"}
+              className="relative flex h-11 w-11 items-center justify-center text-ink transition-colors hover:text-accent-deep"
             >
+              {count > 0 && (
+                <span className="absolute right-0.5 top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-ivory">
+                  {count > 99 ? "99+" : count}
+                </span>
+              )}
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                 <path d="M3 6h14l-1.2 11H4.2L3 6Z" stroke="currentColor" strokeWidth="1.3" />
                 <path d="M7 8V5a3 3 0 0 1 6 0v3" stroke="currentColor" strokeWidth="1.3" />

@@ -1,24 +1,32 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  brands,
-  getBrandProducts,
-  getCategory,
-  type Brand,
-} from "@/lib/catalog";
-import { MaterialSwatch } from "@/components/ui/MaterialSwatch";
+import type { Swatch } from "@/lib/catalog";
+import { ProductVisual } from "@/components/shop/bits";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { useTouchReveal } from "@/components/ui/useTouchReveal";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-export function Brands() {
+/** What the homepage needs to know about each brand (built on the server from the database). */
+export type BrandTeaser = {
+  slug: string;
+  name: string;
+  isSample: boolean;
+  categoryNames: string[];
+  products: { slug: string; name: string; swatch: Swatch | null; image: string | null }[];
+};
+
+export function Brands({ brands }: { brands: BrandTeaser[] }) {
   const [open, setOpen] = useState(0);
-  // Two rows of three; in each row the open card takes the extra width.
-  const rows = [brands.slice(0, 3), brands.slice(3, 6)];
+  // Rows of three (up to six brands); in each row the open card takes the extra width.
+  const shown = brands.slice(0, 6);
+  const rows = [shown.slice(0, 3), shown.slice(3, 6)].filter((r) => r.length);
+  if (!shown.length) return null;
+  const anySample = shown.some((b) => b.isSample);
 
   return (
     <section
@@ -32,10 +40,12 @@ export function Brands() {
           title="Trusted names, *one roof.*"
         >
           Hover or tap a brand to see what we stock from it.
-          <span className="mt-3 block text-[13px] text-accent-deep">
-            Placeholder brands and example products shown — real ones will
-            appear here once confirmed.
-          </span>
+          {anySample && (
+            <span className="mt-3 block text-[13px] text-accent-deep">
+              Placeholder brands and example products shown — real ones will
+              appear here once confirmed.
+            </span>
+          )}
         </SectionHeader>
 
         <Reveal delay={0.1}>
@@ -74,11 +84,11 @@ function BrandCard({
   onOpen,
 }: {
   index: number;
-  brand: Brand;
+  brand: BrandTeaser;
   open: boolean;
   onOpen: () => void;
 }) {
-  const items = getBrandProducts(brand.slug).slice(0, 3);
+  const items = brand.products.slice(0, 3);
   const item = useRef<HTMLLIElement>(null);
   // On phones the card opens by itself as it scrolls in, and tilts with the scroll.
   const { touch, seen, tilt } = useTouchReveal(item);
@@ -133,10 +143,16 @@ function BrandCard({
               </button>
             </h3>
             <p className="mt-2 text-[11px] uppercase tracking-[0.16em] text-muted">
-              {brand.categorySlugs
-                .map((slug) => getCategory(slug)?.name)
-                .join(" · ")}
+              {brand.categoryNames.join(" · ")}
             </p>
+            {expanded && (
+              <Link
+                href={`/brands/${brand.slug}`}
+                className="mt-3 inline-block text-[11px] font-semibold uppercase tracking-[0.18em] text-accent-deep hover:text-ink"
+              >
+                All {brand.name} products →
+              </Link>
+            )}
           </div>
 
           <AnimatePresence initial={false}>
@@ -162,12 +178,18 @@ function BrandCard({
                         ease,
                       }}
                     >
-                      <div className="aspect-[4/5] overflow-hidden bg-beige">
-                        <MaterialSwatch swatch={product.swatch} />
-                      </div>
-                      <p className="mt-2 text-[12px] leading-snug text-ink">
-                        {product.name}
-                      </p>
+                      <Link href={`/products/${product.slug}`} className="block">
+                        <div className="aspect-[4/5] overflow-hidden bg-beige">
+                          <ProductVisual
+                            image={product.image ? { url: product.image } : null}
+                            swatch={product.swatch}
+                            alt={product.name}
+                          />
+                        </div>
+                        <p className="mt-2 text-[12px] leading-snug text-ink">
+                          {product.name}
+                        </p>
+                      </Link>
                     </motion.li>
                   ))}
                 </ul>

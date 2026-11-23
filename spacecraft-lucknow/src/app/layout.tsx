@@ -1,13 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Header } from "@/components/layout/Header";
-import { MotionProvider } from "@/components/layout/MotionProvider";
-import { SmoothScroll } from "@/components/layout/SmoothScroll";
-import { Cursor } from "@/components/layout/Cursor";
-import { Marquee } from "@/components/home/Marquee";
-import { SideRails } from "@/components/layout/SideRails";
-import { Footer } from "@/components/layout/Footer";
 import { site } from "@/lib/site";
 
 // Fonts are stored inside the project, so the site never calls a font CDN.
@@ -65,25 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={`${manrope.variable} ${instrument.variable} antialiased`}
     >
-      <body className="flex min-h-screen flex-col overflow-x-clip pb-[46px]">
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-ink focus:px-4 focus:py-2 focus:text-white"
-        >
-          Skip to content
-        </a>
-        <MotionProvider>
-          <SmoothScroll />
-          <Cursor />
-          <Header />
-          <main id="main" className="relative z-10 flex-1">
-            {children}
-          </main>
-          <Footer />
-          <Marquee />
-          <SideRails />
-        </MotionProvider>
-      </body>
+      <body className="flex min-h-screen flex-col overflow-x-clip">{children}</body>
     </html>
   );
 }

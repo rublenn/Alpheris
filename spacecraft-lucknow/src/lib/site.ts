@@ -43,10 +43,10 @@ export function whatsappLink(message: string) {
 }
 
 export const navLinks = [
-  { label: "Categories", href: "/#categories" },
-  { label: "Brands", href: "/#brands" },
-  { label: "Products", href: "/#products" },
+  { label: "Shop", href: "/search" },
+  { label: "Categories", href: "/categories" },
+  { label: "Brands", href: "/brands" },
   { label: "Why Space Craft", href: "/#why" },
-  { label: "About", href: "/#about" },
+  { label: "Track order", href: "/track" },
   { label: "Enquire now", href: "/#contact" },
 ] as const;

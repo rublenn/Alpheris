@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
-import { categories, type Swatch } from "@/lib/catalog";
+import type { Category, Swatch } from "@/lib/catalog";
 import { MaterialSwatch } from "@/components/ui/MaterialSwatch";
 
 const glide = { duration: 0.95, ease: [0.22, 1, 0.36, 1] } as const;
-const count = categories.length;
 
 /**
  * A 3D stack of material sample boards. The active category is at the front
@@ -16,7 +15,16 @@ const count = categories.length;
  *
  * The stack is sized from the screen height, so a board is never cut off.
  */
-export function CategoryDeck({ active, compact = false }: { active: number; compact?: boolean }) {
+export function CategoryDeck({
+  categories,
+  active,
+  compact = false,
+}: {
+  categories: Category[];
+  active: number;
+  compact?: boolean;
+}) {
+  const count = categories.length;
   const tiltX = useSpring(useMotionValue(0), { stiffness: 120, damping: 16 });
   const tiltY = useSpring(useMotionValue(0), { stiffness: 120, damping: 16 });
 
