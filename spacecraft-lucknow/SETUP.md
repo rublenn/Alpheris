@@ -50,6 +50,8 @@ Names are listed in `.env.example`:
 | `RAZORPAY_KEY_SECRET` | Shown once when you generate the key — keep private |
 | `RAZORPAY_WEBHOOK_SECRET` | The secret you choose in step 4 |
 | `DELIVERY_FEE_PAISE` | Optional. `0` = no delivery charge |
+| `RESEND_API_KEY` | resend.com → API Keys (for new-order emails) |
+| `ORDER_ALERT_EMAIL` | Who receives new-order emails |
 
 After changing variables, **redeploy** — some pages read them at build time.
 
@@ -69,7 +71,21 @@ add a live webhook, swap the variables and redeploy. Before that, confirm GST
 display, delivery charges, refund/cancellation policy and terms — Razorpay asks for
 these pages on the website.
 
-## 5. Daily use (admin panel)
+## 5. New-order email alert
+
+1. Make a free account at resend.com **with the email that should receive the alerts**
+   (e.g. the shop's email), and create an API key.
+2. Put it in `RESEND_API_KEY`, and that same email in `ORDER_ALERT_EMAIL`. Redeploy.
+3. Every paid order then sends one email with the items, customer, address and a link to the admin page.
+
+Until a domain (e.g. spacecraftlucknow.com) is verified in Resend, it can only email the
+account's own address. To send to several people, verify the domain and set `ORDER_ALERT_FROM`
+(e.g. `Space Craft Orders <orders@spacecraftlucknow.com>`).
+
+## 6. Daily use (admin panel)
+
+Staff guide (Hinglish): [`STAFF-GUIDE.md`](STAFF-GUIDE.md).
+
 
 - **Products & stock** → New product → save → add photos → add options (size/colour) with price and stock.
   Empty price = "price on request" (not sold online).

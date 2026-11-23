@@ -12,6 +12,7 @@ import {
   verifyPaymentSignature,
 } from "@/lib/razorpay";
 import { unitPrice } from "@/lib/shop-types";
+import { notifyNewOrder } from "@/lib/notify";
 
 export type CartLine = {
   variantId: string;
@@ -185,6 +186,7 @@ export async function confirmPayment(input: {
     return { ok: false, error: "Payment received, but we could not update the order. Please contact us — your money is safe." };
   }
   revalidateTag(CATALOG_TAG, "max"); // stock changed
+  await notifyNewOrder(order.id);
   return { ok: true, orderNumber: order.order_number, token: order.access_token };
 }
 

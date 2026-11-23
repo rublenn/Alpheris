@@ -2,6 +2,7 @@ import { revalidateTag } from "next/cache";
 import { adminDb } from "@/lib/supabase";
 import { verifyWebhookSignature } from "@/lib/razorpay";
 import { CATALOG_TAG } from "@/lib/shop";
+import { notifyNewOrder } from "@/lib/notify";
 
 /**
  * Backup confirmation from Razorpay's servers. If the customer closes the tab
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
   if (event.event === "payment.captured" || event.event === "order.paid") {
     const payment = event.payload?.payment?.entity;
     if (payment?.order_id && payment.id) {
-      const { error } = await adminDb().rpc("mark_order_paid", {
+      const { data: order, error } = await adminDb().rpc("mark_order_paid", {
         p_razorpay_order_id: payment.order_id,
         p_payment_id: payment.id,
       });
@@ -36,6 +37,7 @@ export async function POST(request: Request) {
         return new Response("Retry later", { status: 500 });
       }
       revalidateTag(CATALOG_TAG, "max");
+      if (order?.id) await notifyNewOrder(order.id);
     }
   }
   return new Response("ok");
