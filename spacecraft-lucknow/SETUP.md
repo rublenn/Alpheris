@@ -25,6 +25,11 @@ admin changes need the server's secret key. Public sign-up is switched off.
 
 ## 2. Create the admin login
 
+Admins so far: amittranslite@gmail.com, purvanchalpanels@gmail.com (created 25 Nov 2026 with
+one-time "set your password" links; links last 24 hours).
+
+To add someone later, the simplest way is to ask the developer to create an invite link. Or by hand:
+
 1. Supabase Dashboard → **Authentication → Users → Add user → Create new user**.
    Enter the admin's email and a strong password, tick **Auto Confirm User**.
 2. Copy the new user's **UID**.
@@ -70,6 +75,17 @@ After changing variables, **redeploy** — some pages read them at build time.
 add a live webhook, swap the variables and redeploy. Before that, confirm GST
 display, delivery charges, refund/cancellation policy and terms — Razorpay asks for
 these pages on the website.
+
+## GST, delivery and policies
+
+- Prices include GST. Each product has a GST rate and HSN code (admin → product). Paid orders get a GST
+  tax invoice numbered `SC/<financial year>/0001…` (CGST + SGST, since delivery is only inside Lucknow).
+  **Have your CA check the invoice format once.** (E-invoicing rules apply above certain turnover limits.)
+- Checkout accepts only Lucknow PIN codes (226xxx / 227xxx). Delivery is by Porter, paid separately.
+- Policy pages: `/legal/returns`, `/legal/shipping`, `/legal/terms`, `/legal/privacy`, `/legal/contact`
+  (text in `src/lib/legal.tsx`).
+- "Forgot password" emails need an email sender: in Supabase → Authentication → Emails → SMTP,
+  use Resend (host `smtp.resend.com`, port 465, user `resend`, password = the Resend API key).
 
 ## 5. New-order email alert
 

@@ -29,15 +29,20 @@ function loadRazorpay(): Promise<boolean> {
   });
 }
 
-const fieldsList: { name: keyof CustomerInput; label: string; type?: string; autoComplete: string; span?: boolean; optional?: boolean; inputMode?: "numeric" | "tel" | "email" }[] = [
+const fieldsList: { name: keyof CustomerInput; label: string; type?: string; autoComplete: string; span?: boolean; optional?: boolean; readOnly?: boolean; inputMode?: "numeric" | "tel" | "email" }[] = [
   { name: "name", label: "Full name", autoComplete: "name", span: true },
   { name: "phone", label: "Mobile number", type: "tel", autoComplete: "tel-national", inputMode: "tel" },
   { name: "email", label: "Email", type: "email", autoComplete: "email", inputMode: "email" },
   { name: "address_line1", label: "House / flat no., building, street", autoComplete: "address-line1", span: true },
   { name: "address_line2", label: "Area, landmark", autoComplete: "address-line2", span: true, optional: true },
-  { name: "city", label: "City", autoComplete: "address-level2" },
-  { name: "pincode", label: "PIN code", autoComplete: "postal-code", inputMode: "numeric" },
-  { name: "state", label: "State", autoComplete: "address-level1", span: true },
+  { name: "pincode", label: "PIN code (Lucknow)", autoComplete: "postal-code", inputMode: "numeric" },
+  { name: "city", label: "City", autoComplete: "address-level2", readOnly: true },
+  { name: "state", label: "State", autoComplete: "address-level1", span: true, readOnly: true },
+];
+
+const businessFields: typeof fieldsList = [
+  { name: "business_name", label: "Business name (as on GST certificate)", autoComplete: "organization", span: true },
+  { name: "gstin", label: "GSTIN", autoComplete: "off", span: true },
 ];
 
 export function CheckoutForm({ deliveryPaise, paymentsEnabled }: { deliveryPaise: number; paymentsEnabled: boolean }) {
@@ -139,10 +144,11 @@ export function CheckoutForm({ deliveryPaise, paymentsEnabled }: { deliveryPaise
                 autoComplete={f.autoComplete}
                 inputMode={f.inputMode}
                 required={!f.optional}
+                readOnly={f.readOnly}
                 defaultValue={f.name === "city" ? "Lucknow" : f.name === "state" ? "Uttar Pradesh" : undefined}
                 aria-invalid={Boolean(errors[f.name])}
                 aria-describedby={errors[f.name] ? `${f.name}-error` : undefined}
-                className={`${inputClass} ${errors[f.name] ? "border-red-400" : ""}`}
+                className={`${inputClass} ${errors[f.name] ? "border-red-400" : ""} ${f.readOnly ? "cursor-not-allowed text-muted" : ""}`}
               />
               {errors[f.name] && <p id={`${f.name}-error`} className="mt-2 text-[12px] text-red-300">{errors[f.name]}</p>}
             </div>
@@ -154,6 +160,33 @@ export function CheckoutForm({ deliveryPaise, paymentsEnabled }: { deliveryPaise
             <textarea id="notes" name="notes" rows={3} maxLength={500} className={`${inputClass} h-auto py-3`} />
           </div>
         </div>
+        <p className="mt-4 text-[13px] text-muted">
+          We deliver only inside Lucknow, through {site.deliveryPartner}. The delivery charge is set by {site.deliveryPartner} by
+          distance and vehicle, and is paid separately — our team confirms it with you before dispatch.
+        </p>
+
+        <details className="mt-8 border border-line p-5" open={Boolean(errors.gstin || errors.business_name)}>
+          <summary className="cursor-pointer text-[13px] font-semibold text-ink">
+            Buying for a business? Add your GSTIN for a GST invoice <span className="font-normal text-muted">(optional)</span>
+          </summary>
+          <div className="mt-5 grid gap-5">
+            {businessFields.map((f) => (
+              <div key={f.name}>
+                <label htmlFor={f.name} className={labelClass}>{f.label}</label>
+                <input
+                  id={f.name}
+                  name={f.name}
+                  autoComplete={f.autoComplete}
+                  maxLength={f.name === "gstin" ? 15 : 120}
+                  aria-invalid={Boolean(errors[f.name])}
+                  aria-describedby={errors[f.name] ? `${f.name}-error` : undefined}
+                  className={`${inputClass} ${f.name === "gstin" ? "uppercase" : ""} ${errors[f.name] ? "border-red-400" : ""}`}
+                />
+                {errors[f.name] && <p id={`${f.name}-error`} className="mt-2 text-[12px] text-red-300">{errors[f.name]}</p>}
+              </div>
+            ))}
+          </div>
+        </details>
       </div>
 
       <aside className="lg:col-span-5">
@@ -173,8 +206,11 @@ export function CheckoutForm({ deliveryPaise, paymentsEnabled }: { deliveryPaise
           </ul>
           <dl className="mt-4 space-y-2 text-[14px]">
             <div className="flex justify-between"><dt className="text-muted">Subtotal</dt><dd>{formatINR(subtotal)}</dd></div>
-            <div className="flex justify-between"><dt className="text-muted">Delivery</dt><dd>{formatINR(deliveryPaise)}</dd></div>
-            <div className="flex justify-between border-t border-line pt-3 text-[17px]"><dt>Total</dt><dd>{formatINR(total)}</dd></div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted">Delivery ({site.deliveryPartner})</dt>
+              <dd className="text-right">{deliveryPaise ? formatINR(deliveryPaise) : <span className="text-muted">Paid separately</span>}</dd>
+            </div>
+            <div className="flex justify-between border-t border-line pt-3 text-[17px]"><dt>Total <span className="text-[12px] text-muted">(incl. GST)</span></dt><dd>{formatINR(total)}</dd></div>
           </dl>
 
           {message && (
@@ -211,6 +247,12 @@ export function CheckoutForm({ deliveryPaise, paymentsEnabled }: { deliveryPaise
           {hasProblems && <p className="mt-3 text-[12px] text-red-300"><Link href="/cart" className="underline">Go back to the cart</Link> to fix the marked items.</p>}
           {paymentsEnabled && (
             <p className="mt-4 text-[12px] leading-relaxed text-muted">
+              By paying you agree to our <Link href="/legal/terms" className="underline">Terms</Link> and{" "}
+              <Link href="/legal/returns" className="underline">Return &amp; Refund Policy</Link>.
+            </p>
+          )}
+          {paymentsEnabled && (
+            <p className="mt-2 text-[12px] leading-relaxed text-muted">
               Payments are processed securely by Razorpay (UPI, cards, net banking). We never see your card details.
               {testMode && " TEST MODE: no real money is charged."}
             </p>

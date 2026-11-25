@@ -6,6 +6,7 @@ export type PublicOrder = {
   orderNumber: string;
   status: OrderStatus;
   statusText: string;
+  invoiceNumber: string | null;
   createdAt: string;
   customerName: string;
   address: string[];
@@ -80,8 +81,8 @@ export function OrderDetails({ order, showAddress = true }: { order: PublicOrder
           </ul>
           <dl className="mt-4 space-y-2 text-[14px]">
             <div className="flex justify-between"><dt className="text-muted">Subtotal</dt><dd>{formatINR(order.subtotalPaise)}</dd></div>
-            <div className="flex justify-between"><dt className="text-muted">Delivery</dt><dd>{formatINR(order.shippingPaise)}</dd></div>
-            <div className="flex justify-between border-t border-line pt-3 text-[17px]"><dt>Total</dt><dd>{formatINR(order.totalPaise)}</dd></div>
+            <div className="flex justify-between"><dt className="text-muted">Delivery (Porter)</dt><dd>{order.shippingPaise ? formatINR(order.shippingPaise) : <span className="text-muted">Paid separately</span>}</dd></div>
+            <div className="flex justify-between border-t border-line pt-3 text-[17px]"><dt>Total <span className="text-[12px] text-muted">(incl. GST)</span></dt><dd>{formatINR(order.totalPaise)}</dd></div>
           </dl>
           {showAddress && (
             <div className="mt-6 border-t border-line pt-4 text-[14px] leading-relaxed">

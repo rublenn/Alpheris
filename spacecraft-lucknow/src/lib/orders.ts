@@ -55,14 +55,31 @@ export type OrderView = {
   paidAt: string | null;
   razorpayOrderId: string | null;
   razorpayPaymentId: string | null;
-  items: { id: string; productName: string; variantLabel: string; sku: string; unitPricePaise: number; quantity: number; lineTotalPaise: number }[];
+  customerGstin: string | null;
+  customerBusinessName: string | null;
+  invoiceNumber: string | null;
+  invoiceDate: string | null;
+  city: string;
+  pincode: string;
+  items: {
+    id: string;
+    productName: string;
+    variantLabel: string;
+    sku: string;
+    unitPricePaise: number;
+    quantity: number;
+    lineTotalPaise: number;
+    gstRate: number;
+    hsnCode: string | null;
+  }[];
   history: { status: string; note: string | null; createdAt: string }[];
 };
 
 const SELECT = `id, order_number, status, customer_name, customer_phone, customer_email,
   address_line1, address_line2, city, state, pincode, notes, subtotal_paise, shipping_paise, total_paise,
   created_at, paid_at, razorpay_order_id, razorpay_payment_id, access_token,
-  order_items(id, product_name, variant_label, sku, unit_price_paise, quantity, line_total_paise),
+  customer_gstin, customer_business_name, invoice_number, invoice_date,
+  order_items(id, product_name, variant_label, sku, unit_price_paise, quantity, line_total_paise, gst_rate, hsn_code),
   order_status_history(status, note, created_at)`;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -83,6 +100,12 @@ function toView(o: any): OrderView {
     paidAt: o.paid_at,
     razorpayOrderId: o.razorpay_order_id,
     razorpayPaymentId: o.razorpay_payment_id,
+    customerGstin: o.customer_gstin,
+    customerBusinessName: o.customer_business_name,
+    invoiceNumber: o.invoice_number,
+    invoiceDate: o.invoice_date,
+    city: o.city,
+    pincode: o.pincode,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     items: (o.order_items ?? []).map((i: any) => ({
       id: i.id,
@@ -92,6 +115,8 @@ function toView(o: any): OrderView {
       unitPricePaise: i.unit_price_paise,
       quantity: i.quantity,
       lineTotalPaise: i.line_total_paise,
+      gstRate: Number(i.gst_rate),
+      hsnCode: i.hsn_code,
     })),
     history: [...(o.order_status_history ?? [])]
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -146,6 +171,7 @@ export function toPublicOrder(o: OrderView, opts: { hideAddress?: boolean } = {}
     orderNumber: o.orderNumber,
     status: o.status,
     statusText: statusLabel[o.status],
+    invoiceNumber: o.invoiceNumber,
     createdAt: o.createdAt,
     customerName: opts.hideAddress ? o.customerName.split(" ")[0] : o.customerName,
     address: opts.hideAddress ? [o.address[o.address.length - 1]] : o.address,

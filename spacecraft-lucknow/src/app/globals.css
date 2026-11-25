@@ -95,3 +95,32 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Policy pages: readable long-form text. */
+@layer components {
+  .legal {
+    @apply text-[15px] leading-relaxed text-ink/85;
+  }
+  .legal h2 {
+    @apply mb-3 mt-10 font-display text-[1.9rem] leading-tight text-ink first:mt-0;
+  }
+  .legal p,
+  .legal ul {
+    @apply mb-4;
+  }
+  .legal ul {
+    @apply list-disc space-y-2 pl-5;
+  }
+  .legal ul ul {
+    @apply mt-2 list-[circle];
+  }
+  .legal a {
+    @apply text-accent-deep underline underline-offset-4;
+  }
+  .legal dl {
+    @apply grid gap-x-8 gap-y-3 sm:grid-cols-[180px_1fr];
+  }
+  .legal dt {
+    @apply text-[12px] font-semibold uppercase tracking-[0.16em] text-muted;
+  }
+}

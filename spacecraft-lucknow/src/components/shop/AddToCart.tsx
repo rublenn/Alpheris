@@ -38,6 +38,7 @@ export function AddToCart({ productName, variants }: { productName: string; vari
       <p className="text-[2rem] leading-none">
         <Price paise={variant.pricePaise} salePaise={variant.salePricePaise} />
       </p>
+      {variant.pricePaise != null && <p className="mt-2 text-[12px] text-muted">Price includes GST</p>}
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <AvailabilityBadge value={availability} />
         <span className="text-[12px] text-muted">SKU {variant.sku}</span>

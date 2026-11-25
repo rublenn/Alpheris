@@ -1,8 +1,8 @@
 /**
  * Business details for Space Craft Lucknow.
  *
- * Everything here was taken from the existing public website
- * (spacecraftlucknow.com). Please confirm each value before launch.
+ * Legal name, GSTIN and address were confirmed by the business (Nov 2026).
+ * Phone, email, hours and map were taken from the existing public website.
  * Change a value here and it updates everywhere on the site.
  */
 export const site = {
@@ -16,8 +16,16 @@ export const site = {
   phoneHref: "tel:+918882226272",
   whatsappNumber: "918882226272",
   email: "amittranslite@gmail.com",
-  // TO CONFIRM: the full written address (street, area, PIN code).
-  address: "At Purvanchal Panels, near Phoenix Palassio, Lucknow, Uttar Pradesh",
+  address: "Saffron Villa, Saidata Road, Roberts Lines, Sarsawan, Lucknow, Uttar Pradesh 226002",
+  /** The company that runs the shop — shown on invoices, policies and the footer. */
+  legalName: "Purvanchal Panels Private Limited",
+  gstin: "09AANCP9203E1ZP",
+  /** GST state code for Uttar Pradesh (first two digits of the GSTIN). */
+  stateCode: "09",
+  stateName: "Uttar Pradesh",
+  /** Online orders are delivered only inside Lucknow, by Porter. */
+  deliveryArea: "Lucknow",
+  deliveryPartner: "Porter",
   /** Where the "Find us" map flies to. Coordinates are [longitude, latitude]. */
   location: {
     label: "Space Craft Interior",

@@ -40,6 +40,8 @@ export async function notifyNewOrder(orderId: string) {
     ...items,
     "",
     `Customer: ${order.customerName}, +91 ${order.customerPhone}, ${order.customerEmail}`,
+    order.customerGstin ? `Business: ${order.customerBusinessName} — GSTIN ${order.customerGstin}` : "",
+    `Invoice: ${order.invoiceNumber ?? "—"}`,
     `Address: ${order.address.join(", ")}`,
     order.notes ? `Notes: ${order.notes}` : "",
     "",

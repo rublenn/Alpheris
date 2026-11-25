@@ -17,6 +17,11 @@ export default async function AdminOrder({ params }: PageProps<"/admin/orders/[i
     <>
       <AdminHeader title={`Order ${order.orderNumber}`} back={{ href: "/admin/orders", label: "Orders" }}>
         <Pill tone={statusTone[order.status]}>{statusLabel[order.status]}</Pill>
+        {order.invoiceNumber && (
+          <a href={`/admin/invoice/${order.id}`} target="_blank" className="text-[12px] font-semibold text-accent-deep hover:underline">
+            Invoice {order.invoiceNumber} ↗
+          </a>
+        )}
       </AdminHeader>
 
       <div className="grid gap-8 xl:grid-cols-[1fr_400px]">
@@ -36,13 +41,15 @@ export default async function AdminOrder({ params }: PageProps<"/admin/orders/[i
             </table>
             <dl className="mt-4 space-y-1 border-t border-line pt-4 text-[14px]">
               <div className="flex justify-between"><dt className="text-muted">Subtotal</dt><dd>{formatINR(order.subtotalPaise)}</dd></div>
-              <div className="flex justify-between"><dt className="text-muted">Delivery</dt><dd>{formatINR(order.shippingPaise)}</dd></div>
+              <div className="flex justify-between"><dt className="text-muted">Delivery (Porter)</dt><dd>{order.shippingPaise ? formatINR(order.shippingPaise) : "Paid separately"}</dd></div>
               <div className="flex justify-between text-[16px]"><dt>Total</dt><dd>{formatINR(order.totalPaise)}</dd></div>
             </dl>
           </section>
 
           <section className={card}>
             <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">Customer & delivery address</h2>
+            {order.customerBusinessName && <p className="mt-3 text-[15px] font-semibold">{order.customerBusinessName}</p>}
+            {order.customerGstin && <p className="text-[13px] text-accent-deep">GSTIN {order.customerGstin}</p>}
             <p className="mt-3 text-[15px]">{order.customerName}</p>
             <p className="text-[14px]"><a href={`tel:${phone}`} className="text-accent-deep">{phone}</a> · <a href={`mailto:${order.customerEmail}`} className="text-accent-deep">{order.customerEmail}</a></p>
             <address className="mt-3 text-[14px] not-italic leading-relaxed text-muted">{order.address.map((l) => <span key={l} className="block">{l}</span>)}</address>

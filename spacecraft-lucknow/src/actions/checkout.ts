@@ -60,6 +60,9 @@ export type CustomerInput = {
   state: string;
   pincode: string;
   notes: string;
+  /** Optional, for a GST invoice in the business's name. */
+  gstin: string;
+  business_name: string;
 };
 
 export type CheckoutResult =
@@ -90,6 +93,8 @@ function validate(c: CustomerInput) {
     state: t(c.state),
     pincode: t(c.pincode),
     notes: t(c.notes).slice(0, 500),
+    gstin: t(c.gstin).toUpperCase().replace(/\s/g, ""),
+    business_name: t(c.business_name),
   };
   if (clean.name.length < 2 || clean.name.length > 80) fields.name = "Please enter your full name.";
   if (!/^[6-9]\d{9}$/.test(clean.phone)) fields.phone = "Please enter a 10-digit Indian mobile number.";
@@ -98,9 +103,14 @@ function validate(c: CustomerInput) {
   if (clean.address_line1.length < 5 || clean.address_line1.length > 200)
     fields.address_line1 = "Please enter the house / flat number and street.";
   if (clean.address_line2.length > 200) fields.address_line2 = "This line is too long.";
-  if (clean.city.length < 2 || clean.city.length > 60) fields.city = "Please enter the city.";
-  if (clean.state.length < 2 || clean.state.length > 60) fields.state = "Please enter the state.";
-  if (!/^[1-9]\d{5}$/.test(clean.pincode)) fields.pincode = "Please enter a 6-digit PIN code.";
+  // Online orders are delivered only inside Lucknow.
+  clean.city = "Lucknow";
+  clean.state = "Uttar Pradesh";
+  if (!/^22[67]\d{3}$/.test(clean.pincode)) fields.pincode = "We deliver only inside Lucknow. Please enter a Lucknow PIN code (226xxx).";
+  if (clean.gstin && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(clean.gstin))
+    fields.gstin = "This GSTIN does not look right (15 characters, e.g. 09ABCDE1234F1Z5).";
+  if (clean.gstin && clean.business_name.length < 2) fields.business_name = "Please enter the business name as on the GST certificate.";
+  if (clean.business_name.length > 120) fields.business_name = "This name is too long.";
   return { clean, fields };
 }
 

@@ -80,12 +80,12 @@ export function CartView() {
           <h2 className="display text-[2rem]">Summary</h2>
           <dl className="mt-6 space-y-3 text-[14px]">
             <div className="flex justify-between">
-              <dt className="text-muted">Subtotal</dt>
+              <dt className="text-muted">Subtotal <span className="text-[12px]">(incl. GST)</span></dt>
               <dd>{formatINR(subtotal)}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-muted">Delivery</dt>
-              <dd className="text-muted">Shown at checkout</dd>
+              <dt className="text-muted">Delivery (Porter)</dt>
+              <dd className="text-muted">Paid separately</dd>
             </div>
           </dl>
           {hasProblems && (

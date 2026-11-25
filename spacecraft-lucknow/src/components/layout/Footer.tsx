@@ -2,6 +2,7 @@ import Link from "next/link";
 import { categories } from "@/lib/catalog";
 import { navLinks, site, whatsappLink } from "@/lib/site";
 import { Logo } from "./Logo";
+import { legalPages } from "@/lib/legal";
 
 export function Footer() {
   return (
@@ -74,9 +75,15 @@ export function Footer() {
       <div className="border-t border-line">
         <div className="shell flex flex-col gap-2 py-6 text-[12px] text-muted sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {site.copyrightYear} {site.fullName}. All rights reserved.
+            © {site.copyrightYear} {site.legalName} · {site.fullName} · GSTIN {site.gstin}
           </p>
-          <p>Preview build — sample products shown, online ordering not yet active.</p>
+          <nav aria-label="Policies" className="flex flex-wrap gap-x-5 gap-y-1">
+            {legalPages.map((p) => (
+              <Link key={p.slug} href={`/legal/${p.slug}`} className="hover:text-ink">
+                {p.title.replace(" Policy", "").replace("Terms & Conditions", "Terms")}
+              </Link>
+            ))}
+          </nav>
         </div>
       </div>
     </footer>

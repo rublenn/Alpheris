@@ -2,8 +2,9 @@
 
 import { refresh, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { requireAdmin, signInAdmin, signOutAdmin } from "@/lib/admin-auth";
-import { adminDb, PRODUCT_IMAGE_BUCKET } from "@/lib/supabase";
+import { adminDb, publicDb, PRODUCT_IMAGE_BUCKET } from "@/lib/supabase";
 import { CATALOG_TAG } from "@/lib/shop";
 import { rupeesToPaise } from "@/lib/money";
 import { ORDER_STATUSES } from "@/lib/orders";
@@ -55,6 +56,40 @@ export async function loginAction(_prev: FormState, fd: FormData): Promise<FormS
   const error = await signInAdmin(text(fd, "email"), String(fd.get("password") ?? ""));
   if (error) return { error };
   redirect("/admin");
+}
+
+/** Base address of this website, for links in emails. */
+async function siteOrigin() {
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host");
+  const proto = h.get("x-forwarded-proto") ?? "https";
+  return host ? `${proto}://${host}` : (process.env.URL ?? "https://spacecraft-lucknow-preview.netlify.app");
+}
+
+/** "Forgot password": emails a reset link, but only to admins. Same answer either way. */
+export async function forgotPasswordAction(_prev: FormState, fd: FormData): Promise<FormState> {
+  const email = text(fd, "email").toLowerCase();
+  const generic = { ok: "If this email has admin access, a link to set a new password has been sent. Check spam too." };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: "Please enter a valid email." };
+  const { data: isAdmin } = await adminDb().rpc("is_admin_email", { p_email: email });
+  if (!isAdmin) return generic;
+  const { error } = await publicDb().auth.resetPasswordForEmail(email, { redirectTo: `${await siteOrigin()}/admin/set-password` });
+  if (error) {
+    console.error("Password reset email failed", error.message);
+    return { error: "The email could not be sent right now. Ask the owner for a new set-password link." };
+  }
+  return generic;
+}
+
+/** Sets a new password using the one-time token from an invite / reset link. */
+export async function setPasswordAction(accessToken: string, password: string): Promise<FormState> {
+  if (password.length < 10) return { error: "Use at least 10 characters." };
+  if (password.length > 72) return { error: "Use at most 72 characters." };
+  const { data, error } = await publicDb().auth.getUser(accessToken);
+  if (error || !data.user) return { error: "This link has expired or was already used. Ask for a new one." };
+  const { error: updateError } = await adminDb().auth.admin.updateUserById(data.user.id, { password });
+  if (updateError) return { error: `Could not save the password: ${updateError.message}` };
+  return { ok: "Password saved. You can log in now." };
 }
 
 export async function logoutAction() {
@@ -154,7 +189,11 @@ export async function saveProduct(_prev: FormState, fd: FormData): Promise<FormS
     is_active: flag(fd, "is_active"),
     is_featured: flag(fd, "is_featured"),
     is_sample: flag(fd, "is_sample"),
+    gst_rate: Number(text(fd, "gst_rate")),
+    hsn_code: text(fd, "hsn_code") || null,
   };
+  if (!Number.isFinite(row.gst_rate) || row.gst_rate < 0 || row.gst_rate > 40) return { error: "GST rate must be between 0 and 40." };
+  if (row.hsn_code && !/^\d{4,8}$/.test(row.hsn_code)) return { error: "HSN code must be 4 to 8 digits." };
   const db = adminDb();
   if (id) {
     const { error } = await db.from("products").update(row).eq("id", id);

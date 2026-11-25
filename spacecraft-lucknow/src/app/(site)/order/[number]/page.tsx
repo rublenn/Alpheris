@@ -50,6 +50,17 @@ async function Content({ params, searchParams }: Pick<PageProps<"/order/[number]
         )}
       </PageIntro>
       <section className="shell py-12 lg:py-16">
+        {order.invoiceNumber && (
+          <p className="mb-10">
+            <a
+              href={`/invoice/${order.orderNumber}?t=${typeof t === "string" ? t : ""}`}
+              target="_blank"
+              className="inline-flex h-11 items-center border border-accent/60 px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-accent-deep hover:bg-accent/10"
+            >
+              GST invoice {order.invoiceNumber} ↗
+            </a>
+          </p>
+        )}
         <OrderDetails order={toPublicOrder(order)} />
       </section>
     </>
