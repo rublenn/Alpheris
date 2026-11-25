@@ -7,7 +7,7 @@ Products daalne aur orders sambhalne ka tareeka. Website kharab hone ka darr mat
 **Pehli baar:** aapko ek link milega. Use kholke apna password set kijiye (kam se kam 10 akshar). Link 24 ghante chalta hai.
 Password bhool gaye? Login page par **Forgot password?** dabaiye.
 
-1. Browser mein kholiye: **`<website>/admin`**
+1. Browser mein kholiye: **`spacecraft-lucknow-preview.netlify.app/admin`**
 2. Apna email aur password daaliye. (Har staff ka alag login hota hai — password kisi se share mat kijiye.)
 3. Kaam khatam ho toh **Log out** dabaiye, khaas kar shop ke shared computer par.
 
@@ -69,7 +69,7 @@ Naya paid order aane par email aata hai (agar alert set hai). Phir:
 
 "Unpaid / abandoned" tab mein woh orders hain jinka payment poora nahi hua — inka maal mat bhejiye.
 
-Customer apna order **`<website>/track`** par order number + mobile number se dekh sakta hai.
+Customer apna order **`spacecraft-lucknow-preview.netlify.app/track`** par order number + mobile number se dekh sakta hai.
 
 ## Mat kijiye
 
