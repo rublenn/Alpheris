@@ -9,6 +9,8 @@ export const site = {
   name: "Space Craft",
   city: "Lucknow",
   fullName: "Space Craft Lucknow",
+  /** The public web address (used for Google, sitemaps and links in emails). */
+  url: "https://spacecraftlucknow.com",
   tagline: "Interior & architectural materials",
   description:
     "Space Craft Lucknow supplies interior and architectural materials — louvers, wall panels, laminates, UV marble sheets, plywood, doors and hardware — for homes and commercial spaces across Lucknow and nearby areas.",
