@@ -1,0 +1,256 @@
+{
+ "product": {
+  "slug": "dspl-self-adhesive-foam-wall-sticker",
+  "name": "DSPL Self-adhesive Foam Wall Sticker",
+  "category": "wall-panels",
+  "brand": {
+   "slug": "dspl",
+   "name": "DSPL"
+  },
+  "description": "Self-adhesive foam wall stickers in marble designs from DSPL. Each roll is 1.2 \u00d7 3 m. Choose a design below. Price includes GST.",
+  "material": "Self-adhesive foam",
+  "specifications": {
+   "Roll size": "1.2 \u00d7 3 m",
+   "Type": "Self-adhesive",
+   "Designs": "21"
+  },
+  "hsn": "3920"
+ },
+ "price_rupees": 599,
+ "sku_prefix": "DSPL",
+ "page_image": "<extracted-pages>/foam-img/pg-{p:03d}-{i:03d}.jpg",
+ "clean_text_band": false,
+ "items": [
+  {
+   "label": "CSK-Y-G01",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 3,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-GB02",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 4,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-GB03",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 5,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-GB06",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 6,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-GB07",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 7,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-GB08",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 8,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-GB11",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 9,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-GB12",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 10,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-GB13",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 11,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-GB16",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 12,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-GB23",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 13,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-G06",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 14,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-G08",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 15,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-G11",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 16,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-G18",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 17,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-G27",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 18,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-G33",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 19,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-G40",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 20,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-G43",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 21,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-G35",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 22,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  },
+  {
+   "label": "CSK-Y-GB15",
+   "dimensions": "1.2 \u00d7 3 m roll",
+   "page": 23,
+   "box": [
+    46,
+    33,
+    450,
+    440
+   ]
+  }
+ ]
+}

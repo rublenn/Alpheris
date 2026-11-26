@@ -1,0 +1,986 @@
+{
+ "product": {
+  "slug": "gm-glass-mosaic",
+  "name": "GM Glass Mosaic",
+  "category": "wall-panels",
+  "brand": {
+   "slug": "gm-glass-mosaic",
+   "name": "GM Glass Mosaic"
+  },
+  "description": "Glass mirror mosaic tiles from GM Glass Mosaic in gold, rose gold, copper and silver. Choose a design below \u2014 pieces per box are shown for each design. Price includes GST.",
+  "material": "Glass mosaic",
+  "specifications": {
+   "Colours": "Gold, Rose Gold, Copper, Silver (some matt / two-tone)",
+   "Designs": "74"
+  },
+  "hsn": "3920"
+ },
+ "price_rupees": 299,
+ "sku_prefix": "GM",
+ "page_image": "<extracted-pages>/mosaic-img/pg-{p:03d}-{i:03d}.jpg",
+ "clean_text_band": false,
+ "items": [
+  {
+   "label": "GL-5000 \u00b7 Rose Gold",
+   "colour": "Rose Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5000",
+   "page": 1,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5001 \u00b7 Silver",
+   "colour": "Silver",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5001",
+   "page": 2,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5002 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5002",
+   "page": 3,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5003 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5003",
+   "page": 4,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5018 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5018",
+   "page": 5,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5019 \u00b7 Rose Gold",
+   "colour": "Rose Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5019",
+   "page": 6,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5020 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5020",
+   "page": 7,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5024 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5024",
+   "page": 8,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5025 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5025-GOLD",
+   "page": 9,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5013 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5013",
+   "page": 10,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5014 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5014",
+   "page": 11,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5015 \u00b7 Copper+Silver",
+   "colour": "Copper+Silver",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5015",
+   "page": 12,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-02 \u00b7 Gold+Silver",
+   "colour": "Gold+Silver",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-02",
+   "page": 13,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5025 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5025-COPPER",
+   "page": 14,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5026 \u00b7 Rose Gold",
+   "colour": "Rose Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5026",
+   "page": 15,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5027 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5027",
+   "page": 16,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5028 \u00b7 Silver",
+   "colour": "Silver",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5028",
+   "page": 17,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5031 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5031",
+   "page": 18,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5035 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5035",
+   "page": 19,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5037 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5037",
+   "page": 20,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5038 \u00b7 Rose Gold",
+   "colour": "Rose Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5038",
+   "page": 21,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5044 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5044",
+   "page": 22,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5045 \u00b7 Silver",
+   "colour": "Silver",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5045",
+   "page": 23,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5046 \u00b7 Rose Gold",
+   "colour": "Rose Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5046",
+   "page": 24,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5047 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5047",
+   "page": 25,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5048 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5048",
+   "page": 26,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5049 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5049",
+   "page": 27,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5050 \u00b7 Rose Gold",
+   "colour": "Rose Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5050",
+   "page": 28,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5051 \u00b7 Silver",
+   "colour": "Silver",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5051",
+   "page": 29,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5061 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5061",
+   "page": 30,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5063 \u00b7 Rose Gold",
+   "colour": "Rose Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5063",
+   "page": 31,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5064 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5064",
+   "page": 32,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5068 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5068",
+   "page": 33,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5069 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5069",
+   "page": 34,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5070 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5070",
+   "page": 35,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5071 \u00b7 Silver",
+   "colour": "Silver",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5071",
+   "page": 36,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5073 \u00b7 Silver",
+   "colour": "Silver",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5073",
+   "page": 37,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5074 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5074",
+   "page": 38,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5075 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5075",
+   "page": 39,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5076 \u00b7 Rose Gold",
+   "colour": "Rose Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5076",
+   "page": 40,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5077 \u00b7 Copper+Silver",
+   "colour": "Copper+Silver",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5077",
+   "page": 41,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5078 \u00b7 Gold+Silver",
+   "colour": "Gold+Silver",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5078",
+   "page": 42,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5105 \u00b7 Copper Matt",
+   "colour": "Copper Matt",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5105",
+   "page": 43,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5091 \u00b7 Silver Matt",
+   "colour": "Silver Matt",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5091",
+   "page": 44,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5092 \u00b7 Gold Matt",
+   "colour": "Gold Matt",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5092",
+   "page": 45,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5093 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5093",
+   "page": 46,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5094 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5094",
+   "page": 47,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5095 \u00b7 Rose Gold",
+   "colour": "Rose Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5095",
+   "page": 48,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5096 \u00b7 Silver",
+   "colour": "Silver",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5096",
+   "page": 49,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5097 \u00b7 Silver",
+   "colour": "Silver",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5097",
+   "page": 50,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5099 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5099",
+   "page": 51,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5100 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5100",
+   "page": 52,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5101 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5101",
+   "page": 53,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5052 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "11 pcs per box",
+   "sku": "GL-5052",
+   "page": 54,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5053 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "11 pcs per box",
+   "sku": "GL-5053",
+   "page": 55,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5054 \u00b7 Silver",
+   "colour": "Silver",
+   "dimensions": "11 pcs per box",
+   "sku": "GL-5054",
+   "page": 56,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5033 \u00b7 Silver",
+   "colour": "Silver",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5033",
+   "page": 57,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5034 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5034",
+   "page": 58,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5032 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5032",
+   "page": 59,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5056 \u00b7 Silver",
+   "colour": "Silver",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5056",
+   "page": 60,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5057 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5057",
+   "page": 61,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5055 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "22 pcs per box",
+   "sku": "GL-5055",
+   "page": 62,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-6001 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "33 pcs per box",
+   "sku": "GL-6001",
+   "page": 63,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-6003 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "33 pcs per box",
+   "sku": "GL-6003",
+   "page": 64,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-6004 \u00b7 Rose Gold",
+   "colour": "Rose Gold",
+   "dimensions": "33 pcs per box",
+   "sku": "GL-6004",
+   "page": 65,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-6005 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "33 pcs per box",
+   "sku": "GL-6005",
+   "page": 66,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-6007 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "33 pcs per box",
+   "sku": "GL-6007",
+   "page": 67,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-6008 \u00b7 Rose Gold",
+   "colour": "Rose Gold",
+   "dimensions": "33 pcs per box",
+   "sku": "GL-6008",
+   "page": 68,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-6009 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "33 pcs per box",
+   "sku": "GL-6009",
+   "page": 69,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-6010 \u00b7 Silver",
+   "colour": "Silver",
+   "dimensions": "33 pcs per box",
+   "sku": "GL-6010",
+   "page": 70,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-6011 \u00b7 Copper",
+   "colour": "Copper",
+   "dimensions": "33 pcs per box",
+   "sku": "GL-6011",
+   "page": 71,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-6012 \u00b7 Rose Gold",
+   "colour": "Rose Gold",
+   "dimensions": "33 pcs per box",
+   "sku": "GL-6012",
+   "page": 72,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5008 \u00b7 Gold",
+   "colour": "Gold",
+   "dimensions": "56 pcs per box",
+   "sku": "GL-5008",
+   "page": 73,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  },
+  {
+   "label": "GL-5012 \u00b7 Silver",
+   "colour": "Silver",
+   "dimensions": "60 pcs per box",
+   "sku": "GL-5012",
+   "page": 74,
+   "fbox": [
+    0.0,
+    0.21,
+    1.0,
+    0.82
+   ]
+  }
+ ]
+}
