@@ -54,7 +54,8 @@ export function whatsappLink(message: string) {
 
 export const navLinks = [
   { label: "Shop", href: "/search" },
-  { label: "Categories", href: "/categories" },
+  { label: "Products", href: "/categories" },
+  { label: "Services", href: "/services" },
   { label: "Brands", href: "/brands" },
   { label: "Why Space Craft", href: "/#why" },
   { label: "Track order", href: "/track" },

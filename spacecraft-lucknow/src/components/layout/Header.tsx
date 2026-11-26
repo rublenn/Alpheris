@@ -46,7 +46,7 @@ export function Header() {
         <div className="shell flex h-[72px] items-center justify-between">
           <Logo onClick={() => setOpen(false)} />
 
-          <nav aria-label="Main" className="hidden items-center gap-8 xl:flex">
+          <nav aria-label="Main" className="hidden items-center gap-5 xl:flex 2xl:gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -79,7 +79,7 @@ export function Header() {
               href={site.phoneHref}
               className="hidden h-11 items-center border border-ink/20 px-5 text-[12px] font-semibold uppercase tracking-[0.16em] text-ink transition-colors duration-300 hover:border-ink hover:bg-ink hover:text-white md:flex"
             >
-              Call {site.phoneDisplay}
+              Call<span className="xl:hidden 2xl:inline"> {site.phoneDisplay}</span>
             </a>
             <button
               type="button"
