@@ -13,7 +13,7 @@ export function ImageUploader({
   multiple = true,
   label = "Upload photos",
 }: {
-  target: { kind: "product" | "category"; id: string };
+  target: { kind: "product" | "category" | "variant"; id: string };
   multiple?: boolean;
   label?: string;
 }) {

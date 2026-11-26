@@ -35,6 +35,8 @@ export type ShopVariant = {
   pricePaise: number | null;
   salePricePaise: number | null;
   stock: number;
+  /** Photo of this option (e.g. one design), if it has its own. */
+  imageUrl: string | null;
 };
 
 export type ShopProduct = {
@@ -55,6 +57,13 @@ export type ShopProduct = {
 };
 
 export const LOW_STOCK = 5;
+
+/** The photo to show for a product in lists: its own first photo, else the first option photo. */
+export function coverImage(p: Pick<ShopProduct, "images" | "variants" | "name">): { url: string; alt: string } | null {
+  if (p.images[0]) return p.images[0];
+  const v = p.variants.find((x) => x.imageUrl);
+  return v?.imageUrl ? { url: v.imageUrl, alt: `${p.name} — ${v.label}` } : null;
+}
 
 /** What the customer actually pays for one unit. */
 export function unitPrice(v: Pick<ShopVariant, "pricePaise" | "salePricePaise">) {

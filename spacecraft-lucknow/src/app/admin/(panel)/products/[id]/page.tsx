@@ -78,7 +78,18 @@ export default async function EditProduct({ params, searchParams }: PageProps<"/
           {(variants as VariantRow[] | null)?.map((v) => (
             <div key={v.id} className={card}>
               <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-                <p className="text-[14px] text-ink">{v.label} <span className="text-muted">· {v.sku}</span></p>
+                <div className="flex items-center gap-4">
+                  {v.image_url && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={v.image_url} alt="" className="h-16 w-16 border border-line object-cover" />
+                  )}
+                  <div>
+                    <p className="text-[14px] text-ink">{v.label} <span className="text-muted">· {v.sku}</span></p>
+                    <div className="mt-2">
+                      <ImageUploader target={{ kind: "variant", id: v.id }} multiple={false} label={v.image_url ? "Change option photo" : "Add option photo"} />
+                    </div>
+                  </div>
+                </div>
                 <ActionButton action={deleteVariant} fields={{ id: v.id }} label="Delete option" confirmText={`Delete option “${v.label}”?`} variant="danger" />
               </div>
               <VariantForm productId={product.id} variant={v} />

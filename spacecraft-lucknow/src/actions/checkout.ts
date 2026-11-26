@@ -42,7 +42,7 @@ export async function getCartLines(variantIds: string[]): Promise<CartLine[]> {
         sku: v.sku,
         unitPricePaise: unitPrice(v),
         stock: v.stock,
-        image: p.images[0]?.url ?? null,
+        image: v.imageUrl ?? p.images[0]?.url ?? null,
         swatch: p.swatch ?? p.category.swatch,
       });
     }

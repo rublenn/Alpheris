@@ -10,6 +10,7 @@ import { Location } from "@/components/home/Location";
 import { Enquiry } from "@/components/home/Enquiry";
 import { site } from "@/lib/site";
 import { getCatalog } from "@/lib/shop";
+import { coverImage } from "@/lib/shop-types";
 import type { Category, Swatch } from "@/lib/catalog";
 import type { BrandTeaser } from "@/components/home/Brands";
 
@@ -58,7 +59,7 @@ export default async function HomePage() {
         slug: p.slug,
         name: p.name,
         swatch: p.swatch ?? p.category.swatch,
-        image: p.images[0]?.url ?? null,
+        image: coverImage(p)?.url ?? null,
       })),
     };
   });

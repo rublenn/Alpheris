@@ -5,6 +5,8 @@ import { Suspense } from "react";
 import { getCatalog, getProduct } from "@/lib/shop";
 import { ProductGallery } from "@/components/shop/ProductGallery";
 import { AddToCart } from "@/components/shop/AddToCart";
+import { VariantSelection } from "@/components/shop/VariantContext";
+import { variantAvailability } from "@/lib/shop-types";
 import { GridSkeleton, ProductGrid } from "@/components/shop/ProductGrid";
 import { site } from "@/lib/site";
 import { PageIntro } from "@/components/shop/bits";
@@ -61,10 +63,16 @@ async function ProductPageContent({ params }: PageProps<"/products/[slug]">) {
           </ol>
         </nav>
 
+        <VariantSelection
+          initial={
+            (product.variants.find((v) => ["in-stock", "low-stock"].includes(variantAvailability(v))) ?? product.variants[0]).id
+          }
+        >
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-6">
             <ProductGallery
               images={product.images}
+              variants={product.variants}
               swatch={product.swatch ?? product.category.swatch}
               name={product.name}
               isSample={product.isSample}
@@ -102,6 +110,7 @@ async function ProductPageContent({ params }: PageProps<"/products/[slug]">) {
             </p>
           </div>
         </div>
+        </VariantSelection>
       </section>
 
       {related.length > 0 && (

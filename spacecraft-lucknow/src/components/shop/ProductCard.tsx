@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion, useMotionTemplate, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { Arrow } from "@/components/ui/Button";
 import { formatINR } from "@/lib/money";
-import { fromPrice, productAvailability, type ShopProduct } from "@/lib/shop-types";
+import { coverImage, fromPrice, productAvailability, type ShopProduct } from "@/lib/shop-types";
 import { AvailabilityBadge, ProductVisual } from "./bits";
 
 /**
@@ -49,7 +49,7 @@ export function ProductCard({ product }: { product: ShopProduct }) {
           className="relative aspect-[4/5] overflow-hidden bg-beige will-change-transform"
         >
           <ProductVisual
-            image={product.images[0]}
+            image={coverImage(product)}
             swatch={product.swatch ?? product.category.swatch}
             alt={product.name}
             sizes="(min-width: 1024px) 25vw, 50vw"

@@ -1,21 +1,33 @@
 "use client";
 
 import { useState } from "react";
+import type { ShopVariant } from "@/lib/shop-types";
+import { useSelectedVariant } from "./VariantContext";
 import type { Swatch } from "@/lib/catalog";
 import { ProductVisual } from "./bits";
 
 export function ProductGallery({
-  images,
+  images: productImages,
+  variants,
   swatch,
   name,
   isSample,
 }: {
   images: { url: string; alt: string }[];
+  variants: ShopVariant[];
   swatch: Swatch | null;
   name: string;
   isSample: boolean;
 }) {
-  const [index, setIndex] = useState(0);
+  const { selected } = useSelectedVariant();
+  const chosen = variants.find((v) => v.id === selected);
+  // The chosen option's own photo comes first, then the product photos.
+  const images = [
+    ...(chosen?.imageUrl ? [{ url: chosen.imageUrl, alt: `${name} — ${chosen.label}` }] : []),
+    ...productImages,
+  ];
+  const [picked, setIndex] = useState<{ variant: string; index: number }>({ variant: selected, index: 0 });
+  const index = picked.variant === selected ? Math.min(picked.index, images.length - 1) : 0;
   const current = images[index] ?? null;
 
   return (
@@ -39,7 +51,7 @@ export function ProductGallery({
             <li key={img.url}>
               <button
                 type="button"
-                onClick={() => setIndex(i)}
+                onClick={() => setIndex({ variant: selected, index: i })}
                 aria-label={`Show photo ${i + 1}`}
                 aria-current={i === index}
                 className={`block aspect-square w-full overflow-hidden border-2 transition-colors ${

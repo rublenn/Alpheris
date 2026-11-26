@@ -43,7 +43,7 @@ export async function getCatalog(): Promise<Catalog> {
          category:categories!inner(slug, name, swatch, is_active),
          brand:brands(slug, name, is_active),
          images:product_images(url, alt, sort_order),
-         variants(id, sku, label, colour, finish, dimensions, price_paise, sale_price_paise, stock, sort_order)`,
+         variants(id, sku, label, colour, finish, dimensions, price_paise, sale_price_paise, stock, sort_order, image_url)`,
       )
       .order("created_at", { ascending: false }),
   ]);
@@ -101,6 +101,7 @@ export async function getCatalog(): Promise<Catalog> {
               pricePaise: v.price_paise,
               salePricePaise: v.sale_price_paise,
               stock: v.stock,
+              imageUrl: v.image_url,
             })),
         } satisfies ShopProduct;
       })

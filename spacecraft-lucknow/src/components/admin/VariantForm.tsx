@@ -15,6 +15,7 @@ export type VariantRow = {
   stock: number;
   is_active: boolean;
   sort_order: number;
+  image_url?: string | null;
 };
 
 /** Edit one option (size/colour/finish) of a product: its price and stock. */

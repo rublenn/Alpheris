@@ -6,16 +6,14 @@ import { variantAvailability, type ShopVariant } from "@/lib/shop-types";
 import { whatsappLink } from "@/lib/site";
 import { Arrow } from "@/components/ui/Button";
 import { useCart } from "./CartProvider";
+import { useSelectedVariant } from "./VariantContext";
 import { AvailabilityBadge, Price } from "./bits";
 
 /** Pick a variant + quantity and add it to the cart. Unpriced variants show "Enquire". */
 export function AddToCart({ productName, variants }: { productName: string; variants: ShopVariant[] }) {
   const { add } = useCart();
-  const firstBuyable = variants.find((v) => {
-    const a = variantAvailability(v);
-    return a === "in-stock" || a === "low-stock";
-  });
-  const [variantId, setVariantId] = useState((firstBuyable ?? variants[0]).id);
+  const { selected: variantId, select: setVariantId } = useSelectedVariant();
+  const withPhotos = variants.some((v) => v.imageUrl);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 
@@ -46,12 +44,13 @@ export function AddToCart({ productName, variants }: { productName: string; vari
 
       {variants.length > 1 && (
         <fieldset className="mt-8">
-          <legend className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">Choose an option</legend>
-          <div className="flex flex-wrap gap-2">
+          <legend className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">{withPhotos ? `Choose a design (${variants.length})` : "Choose an option"}</legend>
+          <div className={withPhotos ? "grid max-h-[420px] grid-cols-4 gap-2 overflow-y-auto pr-1 sm:grid-cols-6" : "flex flex-wrap gap-2"} data-lenis-prevent>
             {variants.map((v) => (
               <label
                 key={v.id}
-                className={`cursor-pointer border px-4 py-3 text-[13px] transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent-deep ${
+                title={v.label}
+                className={`cursor-pointer border ${withPhotos ? "p-1 text-[10px] leading-tight" : "px-4 py-3 text-[13px]"} transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent-deep ${
                   v.id === variantId ? "border-accent bg-white text-ink" : "border-line text-muted hover:border-ink/40 hover:text-ink"
                 }`}
               >
@@ -67,7 +66,11 @@ export function AddToCart({ productName, variants }: { productName: string; vari
                   }}
                   className="sr-only"
                 />
-                {v.label}
+                {withPhotos && v.imageUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={v.imageUrl} alt="" loading="lazy" className="mb-1 aspect-square w-full object-cover" />
+                )}
+                <span className={withPhotos ? "block truncate" : ""}>{v.label}</span>
               </label>
             ))}
           </div>

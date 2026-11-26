@@ -281,8 +281,10 @@ export async function saveVariant(_prev: FormState, fd: FormData): Promise<FormS
 
 export async function deleteVariant(fd: FormData) {
   await requireAdmin();
-  const { error } = await adminDb().from("variants").delete().eq("id", text(fd, "id"));
+  const db = adminDb();
+  const { data, error } = await db.from("variants").delete().eq("id", text(fd, "id")).select("image_path").maybeSingle();
   if (error) throw new Error(dbError(error.message));
+  if (data?.image_path) await db.storage.from(PRODUCT_IMAGE_BUCKET).remove([data.image_path]);
   catalogChanged();
 }
 
@@ -300,7 +302,7 @@ const IMAGE_TYPES: Record<string, string> = {
  * the browser sends the file straight to Supabase Storage (no size limits on
  * our server, and the secret key never reaches the browser).
  */
-export async function createImageUpload(target: { kind: "product" | "category"; id: string }, contentType: string, size: number) {
+export async function createImageUpload(target: { kind: "product" | "category" | "variant"; id: string }, contentType: string, size: number) {
   await requireAdmin();
   const ext = IMAGE_TYPES[contentType];
   if (!ext) return { error: "Please upload a JPG, PNG, WebP or AVIF image." };
@@ -312,13 +314,17 @@ export async function createImageUpload(target: { kind: "product" | "category"; 
 }
 
 /** Step 2: the file is uploaded — record it. */
-export async function finishImageUpload(target: { kind: "product" | "category"; id: string }, path: string, alt: string) {
+export async function finishImageUpload(target: { kind: "product" | "category" | "variant"; id: string }, path: string, alt: string) {
   await requireAdmin();
   if (!path.startsWith(`${target.kind}/${target.id}/`)) return { error: "Bad upload path." };
   const db = adminDb();
   const url = db.storage.from(PRODUCT_IMAGE_BUCKET).getPublicUrl(path).data.publicUrl;
 
-  if (target.kind === "category") {
+  if (target.kind === "variant") {
+    const { data: old } = await db.from("variants").select("image_path").eq("id", target.id).single();
+    await db.from("variants").update({ image_url: url, image_path: path }).eq("id", target.id);
+    if (old?.image_path) await db.storage.from(PRODUCT_IMAGE_BUCKET).remove([old.image_path]);
+  } else if (target.kind === "category") {
     const { data: old } = await db.from("categories").select("image_url").eq("id", target.id).single();
     await db.from("categories").update({ image_url: url }).eq("id", target.id);
     const oldPath = old?.image_url?.split(`/${PRODUCT_IMAGE_BUCKET}/`)[1];
