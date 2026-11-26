@@ -41,14 +41,13 @@ export function useCartLines() {
           stock: 0,
           image: null,
           swatch: null,
+          priceUnit: null,
           quantity: item.quantity,
           problem: "This item was removed from the shop. Please remove it from your cart.",
         };
       }
       let problem: string | null = null;
       if (line.unitPricePaise == null) problem = "Price on request — cannot be paid online.";
-      else if (line.stock <= 0) problem = "Out of stock.";
-      else if (item.quantity > line.stock) problem = `Only ${line.stock} available.`;
       return { ...line, quantity: item.quantity, problem };
     });
 

@@ -191,6 +191,7 @@ export async function saveProduct(_prev: FormState, fd: FormData): Promise<FormS
     is_sample: flag(fd, "is_sample"),
     gst_rate: Number(text(fd, "gst_rate")),
     hsn_code: text(fd, "hsn_code") || null,
+    price_unit: text(fd, "price_unit") || null,
   };
   if (!Number.isFinite(row.gst_rate) || row.gst_rate < 0 || row.gst_rate > 40) return { error: "GST rate must be between 0 and 40." };
   if (row.hsn_code && !/^\d{4,8}$/.test(row.hsn_code)) return { error: "HSN code must be 4 to 8 digits." };
@@ -241,9 +242,6 @@ export async function saveVariant(_prev: FormState, fd: FormData): Promise<FormS
   if (sale != null && price == null) return { error: "Add a normal price before a sale price." };
   if (sale != null && price != null && sale >= price) return { error: "Sale price must be lower than the normal price." };
 
-  const stock = int(fd, "stock", -1);
-  if (stock < 0 || stock > 1_000_000) return { error: "Stock must be 0 or more." };
-
   const row = {
     product_id: productId,
     label,
@@ -258,23 +256,11 @@ export async function saveVariant(_prev: FormState, fd: FormData): Promise<FormS
   };
   const db = adminDb();
 
-  if (id) {
-    const { error } = await db.from("variants").update(row).eq("id", id);
-    if (error) return { error: dbError(error.message) };
-    // Stock goes through a function so every change is written to the stock log.
-    const { error: stockError } = await db.rpc("set_variant_stock", {
-      p_variant_id: id,
-      p_stock: stock,
-      p_note: text(fd, "stock_note") || null,
-    });
-    if (stockError) return { error: dbError(stockError.message) };
-  } else {
-    const { data, error } = await db.from("variants").insert({ ...row, stock }).select("id").single();
-    if (error) return { error: dbError(error.message) };
-    if (stock > 0) {
-      await db.from("stock_movements").insert({ variant_id: data.id, change: stock, stock_after: stock, reason: "initial" });
-    }
-  }
+  // The shop does not track stock, so only the option details and price are saved.
+  const { error } = id
+    ? await db.from("variants").update(row).eq("id", id)
+    : await db.from("variants").insert(row);
+  if (error) return { error: dbError(error.message) };
   catalogChanged();
   return { ok: id ? `Saved “${label}”.` : `Added “${label}”.` };
 }

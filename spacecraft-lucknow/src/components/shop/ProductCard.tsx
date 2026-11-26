@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion, useMotionTemplate, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { Arrow } from "@/components/ui/Button";
 import { formatINR } from "@/lib/money";
-import { coverImage, fromPrice, productAvailability, type ShopProduct } from "@/lib/shop-types";
+import { coverImage, fromPrice, perUnit, productAvailability, type ShopProduct } from "@/lib/shop-types";
 import { AvailabilityBadge, ProductVisual } from "./bits";
 
 /**
@@ -87,6 +87,7 @@ export function ProductCard({ product }: { product: ShopProduct }) {
               <>
                 {priced.length > 1 && "From "}
                 <span className="text-ink">{formatINR(price)}</span>
+                {perUnit(product.priceUnit)}
               </>
             )}
           </span>

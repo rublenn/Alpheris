@@ -3,7 +3,6 @@ import { requireAdmin } from "@/lib/admin-auth";
 import { adminDb } from "@/lib/supabase";
 import { formatINR } from "@/lib/money";
 import { statusLabel, type OrderStatus } from "@/lib/orders";
-import { LOW_STOCK } from "@/lib/shop-types";
 import { isRazorpayConfigured, isTestMode } from "@/lib/razorpay";
 import { AdminHeader, Pill, card } from "@/components/admin/ui";
 import { dateTime } from "@/components/shop/OrderDetails";
@@ -13,9 +12,8 @@ export const metadata = { title: "Dashboard" };
 export default async function AdminHome() {
   const admin = await requireAdmin();
   const db = adminDb();
-  const [products, lowStock, toShip, recent] = await Promise.all([
+  const [products, toShip, recent] = await Promise.all([
     db.from("products").select("id", { count: "exact", head: true }),
-    db.from("variants").select("id, sku, label, stock, product:products(id, name)").not("price_paise", "is", null).lte("stock", LOW_STOCK).eq("is_active", true).order("stock").limit(10),
     db.from("orders").select("id", { count: "exact", head: true }).in("status", ["paid", "processing"]),
     db.from("orders").select("id, order_number, status, customer_name, total_paise, created_at").order("created_at", { ascending: false }).limit(8),
   ]);
@@ -36,13 +34,12 @@ export default async function AdminHome() {
         </p>
       ) : null}
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Stat label="Orders to prepare / ship" value={toShip.count ?? 0} href="/admin/orders?status=paid" />
         <Stat label="Products" value={products.count ?? 0} href="/admin/products" />
-        <Stat label="Low or no stock (priced options)" value={lowStock.data?.length ?? 0} href="/admin/products" />
       </div>
 
-      <div className="mt-10 grid gap-8 xl:grid-cols-2">
+      <div className="mt-10 grid gap-8">
         <section className={card}>
           <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">Latest orders</h2>
           {recent.data?.length ? (
@@ -67,29 +64,6 @@ export default async function AdminHome() {
           )}
         </section>
 
-        <section className={card}>
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">Running low (≤ {LOW_STOCK})</h2>
-          {lowStock.data?.length ? (
-            <ul className="mt-4 divide-y divide-line">
-              {lowStock.data.map((v) => {
-                const product = v.product as unknown as { id: string; name: string } | null;
-                return (
-                  <li key={v.id}>
-                    <Link href={`/admin/products/${product?.id}`} className="flex justify-between gap-3 py-3 hover:text-accent-deep">
-                      <span>
-                        {product?.name} — {v.label}
-                        <span className="block text-[12px] text-muted">{v.sku}</span>
-                      </span>
-                      <Pill tone={v.stock === 0 ? "bad" : "warn"}>{v.stock} left</Pill>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          ) : (
-            <p className="mt-4 text-[14px] text-muted">Nothing is running low.</p>
-          )}
-        </section>
       </div>
     </>
   );

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { requireAdmin } from "@/lib/admin-auth";
 import { adminDb } from "@/lib/supabase";
 import { formatINR } from "@/lib/money";
-import { LOW_STOCK } from "@/lib/shop-types";
 import { AdminHeader, Pill, inputClass } from "@/components/admin/ui";
 
 export const metadata = { title: "Products" };
@@ -21,7 +20,7 @@ export default async function AdminProducts({ searchParams }: PageProps<"/admin/
 
   return (
     <>
-      <AdminHeader title="Products & stock">
+      <AdminHeader title="Products">
         <Link href="/admin/products/new" className="flex h-10 items-center bg-accent px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-ivory hover:bg-accent-deep">
           + New product
         </Link>
@@ -35,14 +34,13 @@ export default async function AdminProducts({ searchParams }: PageProps<"/admin/
           <thead className="bg-beige text-[11px] uppercase tracking-[0.14em] text-muted">
             <tr>
               <th className="p-3">Product</th><th className="p-3">Category / brand</th><th className="p-3">Price</th>
-              <th className="p-3">Stock</th><th className="p-3">Photos</th><th className="p-3">Status</th>
+<th className="p-3">Photos</th><th className="p-3">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-line">
             {(products ?? []).map((p) => {
               const variants = (p.variants ?? []).filter((v) => v.is_active);
               const prices = variants.map((v) => v.sale_price_paise ?? v.price_paise).filter((n): n is number => n != null);
-              const stock = variants.reduce((s, v) => s + v.stock, 0);
               const lowest = prices.length ? Math.min(...prices) : null;
               const photos = (p.product_images as unknown as { count: number }[])[0]?.count ?? 0;
               return (
@@ -56,9 +54,6 @@ export default async function AdminProducts({ searchParams }: PageProps<"/admin/
                     <span className="block text-[12px]">{(p.brand as unknown as { name: string } | null)?.name ?? "—"}</span>
                   </td>
                   <td className="p-3">{lowest != null ? formatINR(lowest) : <span className="text-muted">On request</span>}</td>
-                  <td className="p-3">
-                    {prices.length ? <Pill tone={stock === 0 ? "bad" : stock <= LOW_STOCK ? "warn" : "good"}>{stock}</Pill> : <span className="text-muted">—</span>}
-                  </td>
                   <td className="p-3">{photos || <span className="text-muted">0</span>}</td>
                   <td className="space-x-1 p-3">
                     {p.is_active ? <Pill tone="good">Visible</Pill> : <Pill>Hidden</Pill>}

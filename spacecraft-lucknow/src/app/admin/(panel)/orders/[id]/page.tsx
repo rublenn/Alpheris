@@ -94,7 +94,7 @@ export default async function AdminOrder({ params }: PageProps<"/admin/orders/[i
                   <label htmlFor="note" className={labelClass}>Note (optional, customer can see it)</label>
                   <input id="note" name="note" maxLength={200} placeholder="e.g. Delivery on Saturday morning" className={`${inputClass} h-11`} />
                 </div>
-                <p className="text-[12px] text-muted">Cancelling a paid order puts its stock back. Refund the money separately in Razorpay.</p>
+                <p className="text-[12px] text-muted">Cancelling does not refund the money — refund it separately in the Razorpay Dashboard.</p>
               </AdminForm>
             )}
           </section>

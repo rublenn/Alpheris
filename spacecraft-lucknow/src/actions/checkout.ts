@@ -24,6 +24,7 @@ export type CartLine = {
   stock: number;
   image: string | null;
   swatch: import("@/lib/catalog").Swatch | null;
+  priceUnit: string | null;
 };
 
 /** Fresh prices and stock for the variants in the cart (the browser copy may be old). */
@@ -44,6 +45,7 @@ export async function getCartLines(variantIds: string[]): Promise<CartLine[]> {
         stock: v.stock,
         image: v.imageUrl ?? p.images[0]?.url ?? null,
         swatch: p.swatch ?? p.category.swatch,
+        priceUnit: p.priceUnit,
       });
     }
   }

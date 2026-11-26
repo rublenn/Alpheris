@@ -39,7 +39,7 @@ export async function getCatalog(): Promise<Catalog> {
     db
       .from("products")
       .select(
-        `id, slug, name, description, material, specifications, swatch, is_featured, is_sample, created_at,
+        `id, slug, name, description, material, specifications, swatch, is_featured, is_sample, created_at, price_unit,
          category:categories!inner(slug, name, swatch, is_active),
          brand:brands(slug, name, is_active),
          images:product_images(url, alt, sort_order),
@@ -84,6 +84,7 @@ export async function getCatalog(): Promise<Catalog> {
           isFeatured: p.is_featured,
           isSample: p.is_sample,
           createdAt: p.created_at,
+          priceUnit: p.price_unit,
           category: { slug: category.slug, name: category.name, swatch: category.swatch },
           brand: brand ? { slug: brand.slug, name: brand.name } : null,
           images: [...(p.images ?? [])]

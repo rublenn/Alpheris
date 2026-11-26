@@ -18,7 +18,7 @@ export type VariantRow = {
   image_url?: string | null;
 };
 
-/** Edit one option (size/colour/finish) of a product: its price and stock. */
+/** Edit one option (size/colour/finish/design) of a product and its price. */
 export function VariantForm({ productId, variant, nextSort }: { productId: string; variant?: VariantRow; nextSort?: number }) {
   // Several of these forms sit on one page, so each needs its own input ids.
   const idPrefix = variant ? `v-${variant.id.slice(0, 8)}-` : "new-";
@@ -35,8 +35,6 @@ export function VariantForm({ productId, variant, nextSort }: { productId: strin
         <Field idPrefix={idPrefix} label="Size / dimensions" name="dimensions" defaultValue={variant?.dimensions} className="xl:col-span-2" />
         <Field idPrefix={idPrefix} label="Price (₹)" name="price" inputMode="decimal" defaultValue={paiseToRupeesInput(variant?.price_paise)} hint="Empty = “price on request” (cannot be bought online)." />
         <Field idPrefix={idPrefix} label="Sale price (₹)" name="sale_price" inputMode="decimal" defaultValue={paiseToRupeesInput(variant?.sale_price_paise)} hint="Optional. Lower than price." />
-        <Field idPrefix={idPrefix} label="Stock (units)" name="stock" type="number" required defaultValue={variant?.stock ?? 0} />
-        {variant && <Field idPrefix={idPrefix} label="Reason for stock change" name="stock_note" placeholder="e.g. new delivery" />}
       </div>
       <div className="mt-4">
         <Check label="Show this option" name="is_active" defaultChecked={variant?.is_active ?? true} />

@@ -10,7 +10,7 @@ import { useSelectedVariant } from "./VariantContext";
 import { AvailabilityBadge, Price } from "./bits";
 
 /** Pick a variant + quantity and add it to the cart. Unpriced variants show "Enquire". */
-export function AddToCart({ productName, variants }: { productName: string; variants: ShopVariant[] }) {
+export function AddToCart({ productName, variants, priceUnit }: { productName: string; variants: ShopVariant[]; priceUnit?: string | null }) {
   const { add } = useCart();
   const { selected: variantId, select: setVariantId } = useSelectedVariant();
   const withPhotos = variants.some((v) => v.imageUrl);
@@ -20,7 +20,7 @@ export function AddToCart({ productName, variants }: { productName: string; vari
   const variant = variants.find((v) => v.id === variantId) ?? variants[0];
   const availability = variantAvailability(variant);
   const buyable = availability === "in-stock" || availability === "low-stock";
-  const maxQty = Math.min(variant.stock, 999);
+  const maxQty = 999;
 
   function onAdd() {
     add(variant.id, Math.min(quantity, maxQty));
@@ -35,6 +35,7 @@ export function AddToCart({ productName, variants }: { productName: string; vari
     <div>
       <p className="text-[2rem] leading-none">
         <Price paise={variant.pricePaise} salePaise={variant.salePricePaise} />
+        {variant.pricePaise != null && priceUnit && <span className="ml-2 text-[1rem] text-muted">per {priceUnit}</span>}
       </p>
       {variant.pricePaise != null && <p className="mt-2 text-[12px] text-muted">Price includes GST</p>}
       <div className="mt-3 flex flex-wrap items-center gap-3">
@@ -104,9 +105,7 @@ export function AddToCart({ productName, variants }: { productName: string; vari
         </div>
       ) : (
         <p className="mt-8 text-[14px] text-muted">
-          {availability === "out-of-stock"
-            ? "This option is out of stock right now. Message us and we will tell you when it is back."
-            : "This option is sold on request. Message us for a price and availability."}
+          This option is sold on request. Message us for a price.
         </p>
       )}
 

@@ -50,6 +50,8 @@ export type ShopProduct = {
   isFeatured: boolean;
   isSample: boolean;
   createdAt: string;
+  /** What one price buys: "sheet", "roll", "piece", "set of 2"… */
+  priceUnit: string | null;
   category: { slug: string; name: string; swatch: CategorySwatch | null };
   brand: { slug: string; name: string } | null;
   images: { url: string; alt: string }[];
@@ -70,11 +72,14 @@ export function unitPrice(v: Pick<ShopVariant, "pricePaise" | "salePricePaise">)
   return v.salePricePaise ?? v.pricePaise;
 }
 
+/** The shop does not track stock: anything with a price can be ordered. */
 export function variantAvailability(v: ShopVariant): Availability {
-  if (unitPrice(v) == null) return "on-request";
-  if (v.stock <= 0) return "out-of-stock";
-  if (v.stock <= LOW_STOCK) return "low-stock";
-  return "in-stock";
+  return unitPrice(v) == null ? "on-request" : "in-stock";
+}
+
+/** " / sheet", " / set of 2" — shown after a price. */
+export function perUnit(unit: string | null | undefined) {
+  return unit ? ` / ${unit}` : "";
 }
 
 export function productAvailability(p: ShopProduct): Availability {

@@ -10,7 +10,7 @@ import { CartProvider } from "@/components/shop/CartProvider";
 /** The public website: header, footer, smooth scrolling, cart. (The admin panel has its own layout.) */
 export default function SiteLayout({ children }: LayoutProps<"/">) {
   return (
-    <div className="flex min-h-screen flex-col pb-[46px]">
+    <div className="flex min-h-screen flex-col pb-[58px]">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-ink focus:px-4 focus:py-2 focus:text-white"

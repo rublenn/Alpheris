@@ -42,6 +42,9 @@ export function CartView() {
                     <p className="display text-[1.4rem] leading-tight">{l.productName}</p>
                   )}
                   {l.variantLabel && <p className="mt-1 text-[13px] text-muted">{l.variantLabel} · SKU {l.sku}</p>}
+                  {l.unitPricePaise != null && (
+                    <p className="text-[12px] text-muted">{formatINR(l.unitPricePaise)}{l.priceUnit ? ` per ${l.priceUnit}` : " each"} × {l.quantity}</p>
+                  )}
                 </div>
                 <p className="text-[15px] text-ink">
                   {l.unitPricePaise != null ? formatINR(l.unitPricePaise * l.quantity) : "—"}
@@ -55,7 +58,6 @@ export function CartView() {
                   <button
                     type="button"
                     aria-label={`One more ${l.productName}`}
-                    disabled={l.quantity >= l.stock}
                     onClick={() => setQuantity(l.variantId, l.quantity + 1)}
                     className="w-10 text-ink hover:bg-white disabled:opacity-30"
                   >

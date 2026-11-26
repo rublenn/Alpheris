@@ -17,6 +17,7 @@ export type ProductRow = {
   is_sample: boolean;
   gst_rate: number;
   hsn_code: string | null;
+  price_unit: string | null;
 };
 
 export function ProductForm({ product, categories, brands }: { product?: ProductRow; categories: Option[]; brands: Option[] }) {
@@ -44,6 +45,13 @@ export function ProductForm({ product, categories, brands }: { product?: Product
       <Field label="URL name (optional)" name="slug" defaultValue={product?.slug} hint="Made from the name if left empty. Page address: /products/<url-name>" />
       <TextArea label="Description" name="description" defaultValue={product?.description} rows={5} />
       <Field label="Material" name="material" defaultValue={product?.material} placeholder="e.g. WPC, HDHMR, PVC" />
+      <Field
+        label="Price is per"
+        name="price_unit"
+        defaultValue={product?.price_unit}
+        placeholder="sheet, roll, piece, set of 2, panel…"
+        hint="Shown next to every price, e.g. “₹950 / sheet”."
+      />
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="GST rate (%)" name="gst_rate" type="number" required defaultValue={product?.gst_rate ?? 18} hint="Prices you enter include this GST. Check the rate on the supplier bill." />
         <Field label="HSN code" name="hsn_code" inputMode="numeric" defaultValue={product?.hsn_code} placeholder="e.g. 4412" hint="4–8 digits, from the supplier bill. Shown on the GST invoice." />

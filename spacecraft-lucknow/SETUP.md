@@ -103,11 +103,11 @@ account's own address. To send to several people, verify the domain and set `ORD
 Staff guide (Hinglish): [`STAFF-GUIDE.md`](STAFF-GUIDE.md).
 
 
-- **Products & stock** → New product → save → add photos → add options (size/colour) with price and stock.
-  Empty price = "price on request" (not sold online).
+- **Products** → New product → save → add photos → add options (size/colour/design) with a price.
+  Empty price = "price on request" (not sold online). Set "Price is per" (sheet, roll, piece, set of 2…).
 - **Orders** → open an order → change status (Paid → Being prepared → Out for delivery → Delivered).
-  Cancelling a paid order puts the stock back; refund the money in the Razorpay Dashboard.
-- Stock goes down automatically when an order is paid. Every change is logged on the product page.
+  Refund cancelled orders in the Razorpay Dashboard.
+- Stock is not tracked: every priced option can always be ordered. Hide an option to stop selling it.
 
 ## How payment is verified
 
@@ -115,8 +115,6 @@ Staff guide (Hinglish): [`STAFF-GUIDE.md`](STAFF-GUIDE.md).
    saves the order as "waiting for payment" and creates a Razorpay order for that exact amount.
 2. The Razorpay window takes the payment and returns `order_id`, `payment_id` and `signature`.
 3. The server checks `HMAC-SHA256(order_id|payment_id, key_secret) == signature`. Only then is the order
-   marked paid and the stock reduced (once — a repeat does nothing).
+   marked paid (once — a repeat does nothing).
 4. Backup: Razorpay's webhook does the same check with the webhook secret, in case the customer closes the tab.
 
-Known limit: two customers can pay for the last unit at the same moment; stock then stops at 0 and the
-team sorts it out manually.

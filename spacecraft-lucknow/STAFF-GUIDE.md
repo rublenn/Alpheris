@@ -14,14 +14,15 @@ Password bhool gaye? Login page par **Forgot password?** dabaiye.
 ## Naya product daalna
 
 Ek product = ek design / item (jaise "Fluted Louver — Oak Tone").
-Uske **options** = alag size, colour ya finish, har ek ka apna price aur stock.
+Uske **options** = alag size, colour ya finish, har ek ka apna price aur photo.
 
-1. Left menu → **Products & stock** → **+ New product**
+1. Left menu → **Products** → **+ New product**
 2. Bhariye:
    - **Product name** — jo customer ko dikhega
    - **Category** — zaroori (Louvers, Laminates…)
    - **Brand** — agar hai
    - **Description** — 2–4 line, simple bhasha mein
+   - **Price is per** — price kis cheez ka hai: `sheet`, `roll`, `piece`, `set of 2`, `panel`… (website par "₹950 / sheet" dikhega)
    - **GST rate (%)** aur **HSN code** — supplier ke bill par likhe hote hain. Ye GST invoice par chhapte hain, isliye sahi bhariye.
      Jo price aap daalenge, woh **GST ke saath** wala price hai.
    - **Specifications** — har line mein `Naam: value`, jaise `Thickness: 8 mm`.
@@ -35,22 +36,16 @@ Uske **options** = alag size, colour ya finish, har ek ka apna price aur stock.
    - **SKU** — aapka apna code, har option ka alag (jaise `LV-OAK-8X4`)
    - **Price (₹)** — khaali chhodenge toh "Price on request" dikhega, online nahi bikega
    - **Sale price** — sirf offer ho tab, normal price se kam
-   - **Stock** — kitne piece abhi shop mein hain
    - **Add option** dabaiye
 6. **View on site ↗** dabake check kar lijiye.
 
 **Product chhupana ho** (delete nahi karna): "Show on website" ka tick hata ke Save.
 **Homepage par dikhana ho**: "Feature on homepage" tick.
 
-## Stock update karna
+## Stock
 
-Products & stock → product kholiye → option mein **Stock** number badaliye →
-"Reason for stock change" mein likhiye (jaise "naya maal aaya") → **Save option**.
-
-- Order **paid** hote hi stock apne aap kam ho jaata hai.
-- Paid order **cancel** karne par stock apne aap wapas aa jaata hai.
-- Product page ke neeche "Recent stock changes" mein har badlav dikhta hai.
-- Dashboard par "Running low" mein 5 ya kam stock wale items dikhte hain.
+Website stock **track nahi karti** — jis option ka price daala hai, woh hamesha order ho sakta hai.
+Koi cheez nahi mil rahi ho toh us option ka **"Show this option"** tick hata dijiye (ya poore product ka "Show on website").
 
 ## Orders
 
@@ -73,7 +68,7 @@ Customer apna order **`spacecraft-lucknow-preview.netlify.app/track`** par order
 
 ## Mat kijiye
 
-- Price ya stock andaaze se mat daaliye — galat price par bhi customer pay kar sakta hai.
+- Price andaaze se mat daaliye — galat price par bhi customer pay kar sakta hai.
 - Brand ke naam ya specification mein jhooti / bina confirm baat mat likhiye.
 - Category tab tak delete nahi hoti jab tak usme product hain — pehle products move kijiye.
 - Paise wale order ka maal bhejne se pehle check kijiye ki status **Paid** hai.

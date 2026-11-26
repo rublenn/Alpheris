@@ -95,7 +95,7 @@ async function ProductPageContent({ params }: PageProps<"/products/[slug]">) {
             )}
 
             <div className="mt-10 border-t border-line pt-8">
-              <AddToCart productName={product.name} variants={product.variants} />
+              <AddToCart productName={product.name} variants={product.variants} priceUnit={product.priceUnit} />
             </div>
 
             {(specs.length > 0 || product.material) && (

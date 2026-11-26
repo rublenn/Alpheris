@@ -8,7 +8,6 @@ import { ImageUploader } from "@/components/admin/ImageUploader";
 import { ProductForm, type ProductRow } from "@/components/admin/ProductForm";
 import { VariantForm, type VariantRow } from "@/components/admin/VariantForm";
 import { AdminHeader, Pill, card } from "@/components/admin/ui";
-import { dateTime } from "@/components/shop/OrderDetails";
 
 export default async function EditProduct({ params, searchParams }: PageProps<"/admin/products/[id]">) {
   await requireAdmin();
@@ -24,12 +23,6 @@ export default async function EditProduct({ params, searchParams }: PageProps<"/
   ]);
   if (!product) notFound();
 
-  const variantIds = (variants ?? []).map((v) => v.id);
-  const { data: movements } = variantIds.length
-    ? await db.from("stock_movements").select("variant_id, change, stock_after, reason, note, created_at").in("variant_id", variantIds).order("created_at", { ascending: false }).limit(15)
-    : { data: [] };
-  const sku = (vid: string) => variants?.find((v) => v.id === vid)?.sku ?? "";
-
   return (
     <>
       <AdminHeader title={product.name} back={{ href: "/admin/products", label: "Products" }}>
@@ -37,7 +30,7 @@ export default async function EditProduct({ params, searchParams }: PageProps<"/
           View on site ↗
         </Link>
       </AdminHeader>
-      {sp.created && <p className="mb-6 border border-emerald-400/40 p-4 text-[14px] text-emerald-200">Product created. Now add photos and at least one option with a price and stock.</p>}
+      {sp.created && <p className="mb-6 border border-emerald-400/40 p-4 text-[14px] text-emerald-200">Product created. Now add photos and at least one option with a price.</p>}
       {typeof sp.error === "string" && <p role="alert" className="mb-6 text-[14px] text-red-300">{sp.error}</p>}
       {!variants?.length && <p className="mb-6 border border-amber-400/40 p-4 text-[14px] text-amber-200">This product has no options yet, so it is not shown on the website. Add one below.</p>}
 
@@ -69,10 +62,10 @@ export default async function EditProduct({ params, searchParams }: PageProps<"/
       </div>
 
       <section className="mt-10">
-        <h2 className="display text-[2rem]">Options, prices & stock</h2>
+        <h2 className="display text-[2rem]">Options & prices</h2>
         <p className="mt-2 max-w-2xl text-[14px] text-muted">
-          Each option is one thing a customer can buy (a size, colour or finish), with its own price and stock. Stock goes down
-          automatically when an order is paid, and back up if you cancel a paid order.
+          Each option is one thing a customer can buy (a size, colour, finish or design), with its own price and photo.
+          Every priced option can always be ordered — stock is not tracked.
         </p>
         <div className="mt-6 space-y-5">
           {(variants as VariantRow[] | null)?.map((v) => (
@@ -102,21 +95,6 @@ export default async function EditProduct({ params, searchParams }: PageProps<"/
         </div>
       </section>
 
-      {movements && movements.length > 0 && (
-        <section className={`${card} mt-10`}>
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">Recent stock changes</h2>
-          <ul className="mt-3 divide-y divide-line text-[13px]">
-            {movements.map((m, i) => (
-              <li key={i} className="flex flex-wrap justify-between gap-3 py-2">
-                <span>{sku(m.variant_id)} · {m.reason.replace("_", " ")}{m.note ? ` — ${m.note}` : ""}</span>
-                <span className="text-muted">
-                  <span className={m.change < 0 ? "text-red-300" : "text-emerald-300"}>{m.change > 0 ? `+${m.change}` : m.change}</span> → {m.stock_after} · {dateTime(m.created_at)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
 
       <section className={`${card} mt-10`}>
         <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">Delete product</h2>
