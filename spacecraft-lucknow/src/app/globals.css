@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+/*
+ * SPACE CRAFT DESIGN SYSTEM — "Charcoal Lounge" (dark charcoal + gold).
+ * Change a colour here and it updates across the whole site.
+ * The names are kept from the original light theme so components need no
+ * changes: "ivory" is now the page background, "ink" the main text colour,
+ * "white" the raised card surface and "beige" the alternate section band.
+ */
+@theme {
+  --color-white: #252321;
+  --color-ivory: #1e1d1b;
+  --color-beige: #2a2826;
+  --color-accent: #c9a06a;
+  /* Lighter gold for small text, so it stays readable on charcoal. */
+  --color-accent-deep: #d6b27e;
+  --color-ink: #f2eee6;
+  --color-muted: #a8a196;
+  --color-line: #3a3734;
+
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-instrument), ui-serif, Georgia, serif;
+
+  --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-marquee: marquee 40s linear infinite;
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+/* When the smooth-scroll script is active it handles easing itself. */
+html.lenis {
+  scroll-behavior: auto;
+}
+
+body {
+  background: var(--color-ivory);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-white);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent-deep);
+  outline-offset: 3px;
+}
+
+@layer components {
+  /* Page gutter + max width used by every section. */
+  .shell {
+    @apply mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-14;
+  }
+
+  /* Small uppercase label that sits above headings. */
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.28em] text-accent-deep;
+  }
+
+  .display {
+    @apply font-display font-normal leading-[0.98] tracking-[-0.015em] text-ink;
+  }
+
+  /* Fine technical grid used as a subtle "futuristic" backdrop. */
+  .blueprint {
+    background-image:
+      linear-gradient(to right, rgb(242 238 230 / 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(242 238 230 / 0.04) 1px, transparent 1px);
+    background-size: 72px 72px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Policy pages: readable long-form text. */
+@layer components {
+  .legal {
+    @apply text-[15px] leading-relaxed text-ink/85;
+  }
+  .legal h2 {
+    @apply mb-3 mt-10 font-display text-[1.9rem] leading-tight text-ink first:mt-0;
+  }
+  .legal p,
+  .legal ul {
+    @apply mb-4;
+  }
+  .legal ul {
+    @apply list-disc space-y-2 pl-5;
+  }
+  .legal ul ul {
+    @apply mt-2 list-[circle];
+  }
+  .legal a {
+    @apply text-accent-deep underline underline-offset-4;
+  }
+  .legal dl {
+    @apply grid gap-x-8 gap-y-3 sm:grid-cols-[180px_1fr];
+  }
+  .legal dt {
+    @apply text-[12px] font-semibold uppercase tracking-[0.16em] text-muted;
+  }
+}

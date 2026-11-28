@@ -1,0 +1,12 @@
+# Netlify settings for the Space Craft preview site.
+# In Netlify, set "Base directory" to: spacecraft-lucknow
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Lets Netlify run this Next.js site (pages, images, caching).
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

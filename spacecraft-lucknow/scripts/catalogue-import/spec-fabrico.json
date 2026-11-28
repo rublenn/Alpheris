@@ -1,0 +1,348 @@
+{
+ "product": {
+  "slug": "fabrico-3d-emboss-sheet",
+  "name": "Fabrico 3D Emboss Sheet",
+  "category": "wall-panels",
+  "brand": {
+   "slug": "aesthetic-panels-fabrico",
+   "name": "Aesthetic Panels (Fabrico)"
+  },
+  "description": "Fabrico 3D emboss wall sheets by Aesthetic Panels. Each design shows its size (for example 8\u00d74 ft set of 2, or 8\u00d72 ft). Choose a design below. Price includes GST.",
+  "material": "3D emboss sheet",
+  "specifications": {
+   "Code format": "S/N design/colour, e.g. 2001/15",
+   "Designs": "27"
+  },
+  "hsn": "3920"
+ },
+ "price_rupees": 11999,
+ "sku_prefix": "FAB",
+ "page_image": "<extracted-pages>/fab-hi/p-{p:02d}.jpg",
+ "clean_text_band": false,
+ "items": [
+  {
+   "label": "S/N 2001/15 \u00b7 bronze wings",
+   "dimensions": "8\u00d74 ft, set of 2",
+   "sku": "2001-15-BRONZE",
+   "page": 3,
+   "box": [
+    139,
+    138,
+    1615,
+    1566
+   ]
+  },
+  {
+   "label": "S/N 2001/15 \u00b7 gold wings",
+   "dimensions": "8\u00d74 ft, set of 2",
+   "sku": "2001-15-GOLD",
+   "page": 4,
+   "box": [
+    130,
+    138,
+    1624,
+    1566
+   ]
+  },
+  {
+   "label": "S/N 2001/13",
+   "dimensions": "8\u00d74 ft, set of 2",
+   "sku": "2001-13",
+   "page": 5,
+   "box": [
+    130,
+    138,
+    1624,
+    1566
+   ]
+  },
+  {
+   "label": "S/N 2002/15",
+   "dimensions": "8\u00d74 ft, set of 2",
+   "sku": "2002-15",
+   "page": 6,
+   "box": [
+    178,
+    138,
+    1576,
+    1566
+   ]
+  },
+  {
+   "label": "S/N 2003/16",
+   "dimensions": "8\u00d74 ft, set of 2",
+   "sku": "2003-16",
+   "page": 7,
+   "box": [
+    132,
+    138,
+    1621,
+    1566
+   ]
+  },
+  {
+   "label": "S/N 2004/14",
+   "dimensions": "8\u00d74 ft",
+   "sku": "2004-14",
+   "page": 8,
+   "box": [
+    96,
+    182,
+    835,
+    1536
+   ]
+  },
+  {
+   "label": "S/N 2004/17",
+   "dimensions": "8\u00d74 ft",
+   "sku": "2004-17",
+   "page": 8,
+   "box": [
+    916,
+    184,
+    1654,
+    1538
+   ]
+  },
+  {
+   "label": "S/N 2005/GREY",
+   "dimensions": "8\u00d74 ft, set of 2",
+   "sku": "2005-GREY",
+   "page": 9,
+   "box": [
+    217,
+    205,
+    1535,
+    1554
+   ]
+  },
+  {
+   "label": "S/N 2005/16",
+   "dimensions": "8\u00d74 ft, set of 2",
+   "sku": "2005-16",
+   "page": 10,
+   "box": [
+    239,
+    202,
+    1515,
+    1551
+   ]
+  },
+  {
+   "label": "S/N 2006/18",
+   "dimensions": "8\u00d74 + 8\u00d72 ft, set of 3",
+   "sku": "2006-18",
+   "page": 11,
+   "box": [
+    206,
+    198,
+    1526,
+    1556
+   ]
+  },
+  {
+   "label": "S/N 2007/202",
+   "dimensions": "8\u00d74 ft, set of 2",
+   "sku": "2007-202",
+   "page": 12,
+   "box": [
+    232,
+    200,
+    1522,
+    1539
+   ]
+  },
+  {
+   "label": "S/N 2008/11",
+   "dimensions": "8\u00d74 ft",
+   "sku": "2008-11",
+   "page": 13,
+   "box": [
+    536,
+    206,
+    1212,
+    1556
+   ]
+  },
+  {
+   "label": "S/N 2009/16",
+   "dimensions": "8\u00d74 ft, set of 2",
+   "sku": "2009-16",
+   "page": 14,
+   "box": [
+    205,
+    198,
+    1549,
+    1552
+   ]
+  },
+  {
+   "label": "S/N 2003/18",
+   "dimensions": "8\u00d74 ft, set of 2",
+   "sku": "2003-18",
+   "page": 15,
+   "box": [
+    217,
+    198,
+    1537,
+    1556
+   ]
+  },
+  {
+   "label": "S/N 2010/12",
+   "dimensions": "8\u00d74 ft",
+   "sku": "2010-12",
+   "page": 16,
+   "box": [
+    278,
+    200,
+    947,
+    1556
+   ]
+  },
+  {
+   "label": "S/N 2011/15",
+   "dimensions": "8\u00d72 ft",
+   "sku": "2011-15",
+   "page": 17,
+   "box": [
+    276,
+    188,
+    608,
+    1547
+   ]
+  },
+  {
+   "label": "S/N 2012/15",
+   "dimensions": "8\u00d72 ft",
+   "sku": "2012-15",
+   "page": 17,
+   "box": [
+    1104,
+    190,
+    1436,
+    1549
+   ]
+  },
+  {
+   "label": "S/N 2013/GREY",
+   "dimensions": "8\u00d72 ft",
+   "sku": "2013-GREY",
+   "page": 18,
+   "box": [
+    279,
+    184,
+    607,
+    1547
+   ]
+  },
+  {
+   "label": "S/N 2014/14",
+   "dimensions": "8\u00d72 ft",
+   "sku": "2014-14",
+   "page": 18,
+   "box": [
+    1137,
+    189,
+    1476,
+    1548
+   ]
+  },
+  {
+   "label": "S/N 2015/17",
+   "dimensions": "8\u00d72 ft",
+   "sku": "2015-17",
+   "page": 19,
+   "box": [
+    1205,
+    200,
+    1535,
+    1556
+   ]
+  },
+  {
+   "label": "S/N 2016/17",
+   "dimensions": "8\u00d72 ft",
+   "sku": "2016-17",
+   "page": 20,
+   "box": [
+    309,
+    197,
+    625,
+    1546
+   ]
+  },
+  {
+   "label": "S/N 2017/13",
+   "dimensions": "8\u00d72 ft",
+   "sku": "2017-13",
+   "page": 20,
+   "box": [
+    1120,
+    192,
+    1456,
+    1551
+   ]
+  },
+  {
+   "label": "S/N 2018/GREY",
+   "dimensions": "8\u00d72 ft",
+   "sku": "2018-GREY",
+   "page": 21,
+   "box": [
+    287,
+    184,
+    625,
+    1538
+   ]
+  },
+  {
+   "label": "S/N 2019/15",
+   "dimensions": "8\u00d72 ft",
+   "sku": "2019-15",
+   "page": 21,
+   "box": [
+    1129,
+    193,
+    1465,
+    1545
+   ]
+  },
+  {
+   "label": "S/N 2020/201",
+   "dimensions": "8\u00d74 ft",
+   "sku": "2020-201",
+   "page": 22,
+   "box": [
+    514,
+    157,
+    1188,
+    1515
+   ]
+  },
+  {
+   "label": "S/N 2021/110",
+   "dimensions": "8\u00d78 ft set",
+   "sku": "2021-110",
+   "page": 23,
+   "box": [
+    198,
+    198,
+    1545,
+    1556
+   ]
+  },
+  {
+   "label": "S/N 2022/105",
+   "dimensions": "8\u00d74 ft",
+   "sku": "2022-105",
+   "page": 24,
+   "box": [
+    537,
+    198,
+    1205,
+    1556
+   ]
+  }
+ ]
+}

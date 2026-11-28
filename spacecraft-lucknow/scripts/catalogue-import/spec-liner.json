@@ -1,0 +1,553 @@
+{
+ "product": {
+  "slug": "asian-liner-laminates",
+  "name": "Asian Liner Laminates",
+  "category": "laminates",
+  "brand": {
+   "slug": "asian-laminates",
+   "name": "Asian Laminates"
+  },
+  "description": "Liner laminates from Asian Decorative Laminates in wooden, fabric, marble and solid colour finishes. Choose a design below. Price includes GST.",
+  "material": "Decorative liner laminate",
+  "specifications": {
+   "Brand": "Asian Decorative Laminates",
+   "Finishes": "MT = Matt, HG = High gloss, GL = Gloss",
+   "Designs": "48"
+  },
+  "hsn": "3920"
+ },
+ "price_rupees": 499,
+ "sku_prefix": "ASL",
+ "page_image": "<extracted-pages>/liner-img/pg-{p:03d}-{i:03d}.jpg",
+ "clean_text_band": true,
+ "items": [
+  {
+   "label": "151 MT \u00b7 Wooden",
+   "finish": "Matt",
+   "page": 3,
+   "box": [
+    212,
+    308,
+    768,
+    1536
+   ]
+  },
+  {
+   "label": "136 MT \u00b7 Wooden",
+   "finish": "Matt",
+   "page": 3,
+   "box": [
+    808,
+    308,
+    1364,
+    1536
+   ]
+  },
+  {
+   "label": "134 MT \u00b7 Wooden",
+   "finish": "Matt",
+   "page": 3,
+   "box": [
+    1484,
+    308,
+    2040,
+    1536
+   ]
+  },
+  {
+   "label": "152 MT \u00b7 Wooden",
+   "finish": "Matt",
+   "page": 3,
+   "box": [
+    2080,
+    308,
+    2636,
+    1536
+   ]
+  },
+  {
+   "label": "131 MT \u00b7 Wooden",
+   "finish": "Matt",
+   "page": 5,
+   "box": [
+    304,
+    328,
+    740,
+    880
+   ]
+  },
+  {
+   "label": "107 MT \u00b7 Wooden",
+   "finish": "Matt",
+   "page": 5,
+   "box": [
+    856,
+    328,
+    1292,
+    880
+   ]
+  },
+  {
+   "label": "109 MT \u00b7 Wooden",
+   "finish": "Matt",
+   "page": 5,
+   "box": [
+    1560,
+    328,
+    1996,
+    880
+   ]
+  },
+  {
+   "label": "112 MT \u00b7 Wooden",
+   "finish": "Matt",
+   "page": 5,
+   "box": [
+    2108,
+    328,
+    2544,
+    880
+   ]
+  },
+  {
+   "label": "205 MT \u00b7 Wooden",
+   "finish": "Matt",
+   "page": 5,
+   "box": [
+    304,
+    968,
+    740,
+    1520
+   ]
+  },
+  {
+   "label": "203 MT \u00b7 Wooden",
+   "finish": "Matt",
+   "page": 5,
+   "box": [
+    856,
+    968,
+    1292,
+    1520
+   ]
+  },
+  {
+   "label": "105 MT \u00b7 Wooden",
+   "finish": "Matt",
+   "page": 5,
+   "box": [
+    1560,
+    968,
+    1996,
+    1520
+   ]
+  },
+  {
+   "label": "111 MT \u00b7 Wooden",
+   "finish": "Matt",
+   "page": 5,
+   "box": [
+    2108,
+    968,
+    2544,
+    1520
+   ]
+  },
+  {
+   "label": "137 MT \u00b7 Fabric",
+   "finish": "Matt",
+   "page": 6,
+   "box": [
+    304,
+    328,
+    740,
+    880
+   ]
+  },
+  {
+   "label": "138 MT \u00b7 Fabric",
+   "finish": "Matt",
+   "page": 6,
+   "box": [
+    856,
+    328,
+    1292,
+    880
+   ]
+  },
+  {
+   "label": "145 MT \u00b7 Fabric",
+   "finish": "Matt",
+   "page": 6,
+   "box": [
+    1560,
+    328,
+    1996,
+    880
+   ]
+  },
+  {
+   "label": "146 MT \u00b7 Fabric",
+   "finish": "Matt",
+   "page": 6,
+   "box": [
+    2108,
+    328,
+    2544,
+    880
+   ]
+  },
+  {
+   "label": "139 MT \u00b7 Fabric",
+   "finish": "Matt",
+   "page": 6,
+   "box": [
+    304,
+    968,
+    740,
+    1520
+   ]
+  },
+  {
+   "label": "140 MT \u00b7 Fabric",
+   "finish": "Matt",
+   "page": 6,
+   "box": [
+    856,
+    968,
+    1292,
+    1520
+   ]
+  },
+  {
+   "label": "116 MT \u00b7 Fabric",
+   "finish": "Matt",
+   "page": 6,
+   "box": [
+    1560,
+    968,
+    1996,
+    1520
+   ]
+  },
+  {
+   "label": "141 MT \u00b7 Fabric",
+   "finish": "Matt",
+   "page": 6,
+   "box": [
+    2108,
+    968,
+    2544,
+    1520
+   ]
+  },
+  {
+   "label": "120 MT \u00b7 Fabric",
+   "finish": "Matt",
+   "page": 7,
+   "box": [
+    304,
+    328,
+    740,
+    880
+   ]
+  },
+  {
+   "label": "121 MT \u00b7 Fabric",
+   "finish": "Matt",
+   "page": 7,
+   "box": [
+    856,
+    328,
+    1292,
+    880
+   ]
+  },
+  {
+   "label": "211 MT \u00b7 Fabric",
+   "finish": "Matt",
+   "page": 7,
+   "box": [
+    304,
+    968,
+    740,
+    1520
+   ]
+  },
+  {
+   "label": "212 MT \u00b7 Fabric",
+   "finish": "Matt",
+   "page": 7,
+   "box": [
+    856,
+    968,
+    1292,
+    1520
+   ]
+  },
+  {
+   "label": "130 HG \u00b7 Marble",
+   "finish": "High gloss",
+   "page": 8,
+   "box": [
+    220,
+    308,
+    776,
+    1536
+   ]
+  },
+  {
+   "label": "132 HG \u00b7 Marble",
+   "finish": "High gloss",
+   "page": 8,
+   "box": [
+    2072,
+    308,
+    2628,
+    1536
+   ]
+  },
+  {
+   "label": "152 HG \u00b7 Wooden",
+   "finish": "High gloss",
+   "page": 9,
+   "box": [
+    304,
+    328,
+    740,
+    880
+   ]
+  },
+  {
+   "label": "136 HG \u00b7 Wooden",
+   "finish": "High gloss",
+   "page": 9,
+   "box": [
+    856,
+    328,
+    1292,
+    880
+   ]
+  },
+  {
+   "label": "205 HG \u00b7 Wooden",
+   "finish": "High gloss",
+   "page": 9,
+   "box": [
+    1560,
+    328,
+    1996,
+    880
+   ]
+  },
+  {
+   "label": "131 HG \u00b7 Wooden",
+   "finish": "High gloss",
+   "page": 9,
+   "box": [
+    2108,
+    328,
+    2544,
+    880
+   ]
+  },
+  {
+   "label": "134 HG \u00b7 Wooden",
+   "finish": "High gloss",
+   "page": 9,
+   "box": [
+    304,
+    968,
+    740,
+    1520
+   ]
+  },
+  {
+   "label": "133 HG \u00b7 Wooden",
+   "finish": "High gloss",
+   "page": 9,
+   "box": [
+    856,
+    968,
+    1292,
+    1520
+   ]
+  },
+  {
+   "label": "107 HG \u00b7 Wooden",
+   "finish": "High gloss",
+   "page": 9,
+   "box": [
+    1560,
+    968,
+    1996,
+    1520
+   ]
+  },
+  {
+   "label": "135 HG \u00b7 Wooden",
+   "finish": "High gloss",
+   "page": 9,
+   "box": [
+    2108,
+    968,
+    2544,
+    1520
+   ]
+  },
+  {
+   "label": "7003 HG \u00b7 Solid Premium",
+   "finish": "High gloss",
+   "page": 10,
+   "box": [
+    298,
+    470,
+    566,
+    738
+   ]
+  },
+  {
+   "label": "7006 HG \u00b7 Solid Premium",
+   "finish": "High gloss",
+   "page": 10,
+   "box": [
+    674,
+    470,
+    946,
+    738
+   ]
+  },
+  {
+   "label": "7009 HG \u00b7 Solid Premium",
+   "finish": "High gloss",
+   "page": 10,
+   "box": [
+    1054,
+    470,
+    1322,
+    738
+   ]
+  },
+  {
+   "label": "7014 HG \u00b7 Solid Premium",
+   "finish": "High gloss",
+   "page": 10,
+   "box": [
+    298,
+    846,
+    566,
+    1118
+   ]
+  },
+  {
+   "label": "7011 HG \u00b7 Solid Premium",
+   "finish": "High gloss",
+   "page": 10,
+   "box": [
+    674,
+    846,
+    946,
+    1118
+   ]
+  },
+  {
+   "label": "7005 HG \u00b7 Solid Premium",
+   "finish": "High gloss",
+   "page": 10,
+   "box": [
+    1054,
+    846,
+    1322,
+    1118
+   ]
+  },
+  {
+   "label": "101 MT \u00b7 Solid",
+   "finish": "Matt",
+   "page": 10,
+   "box": [
+    1609,
+    149,
+    1890,
+    430
+   ]
+  },
+  {
+   "label": "102 MT \u00b7 Solid",
+   "finish": "Matt",
+   "page": 10,
+   "box": [
+    1609,
+    510,
+    1890,
+    791
+   ]
+  },
+  {
+   "label": "114 MT \u00b7 Solid",
+   "finish": "Matt",
+   "page": 10,
+   "box": [
+    1609,
+    870,
+    1890,
+    1151
+   ]
+  },
+  {
+   "label": "115 MT \u00b7 Solid",
+   "finish": "Matt",
+   "page": 10,
+   "box": [
+    1609,
+    1230,
+    1890,
+    1511
+   ]
+  },
+  {
+   "label": "101 GL \u00b7 Solid",
+   "finish": "Gloss",
+   "page": 10,
+   "box": [
+    2077,
+    149,
+    2358,
+    430
+   ]
+  },
+  {
+   "label": "102 GL \u00b7 Solid",
+   "finish": "Gloss",
+   "page": 10,
+   "box": [
+    2077,
+    510,
+    2358,
+    791
+   ]
+  },
+  {
+   "label": "114 GL \u00b7 Solid",
+   "finish": "Gloss",
+   "page": 10,
+   "box": [
+    2077,
+    870,
+    2358,
+    1151
+   ]
+  },
+  {
+   "label": "115 GL \u00b7 Solid",
+   "finish": "Gloss",
+   "page": 10,
+   "box": [
+    2077,
+    1230,
+    2358,
+    1511
+   ]
+  }
+ ]
+}

@@ -1,0 +1,21 @@
+# (id, Hinglish caption, Devanagari text fed to TTS, pause_after_seconds)
+LINES = [
+ ("01","Ek sawaal hai.","एक सवाल है।",0.55),
+ ("02","Jis sabhyata ne duniya ko Ved, Upanishad, Gita aur Darshan diye...","जिस सभ्यता ने दुनिया को वेद, उपनिषद, गीता और दर्शन दिए,",0.15),
+ ("03","...aaj uske log apne hi dharm ko kitna jaante hain?","आज उसके लोग अपने ही धर्म को कितना जानते हैं?",0.5),
+ ("04","Humne hamle dekhe. Mandir toote. Nalanda jaise vidya-kendra ujad gaye.","हमने हमले देखे। मंदिर टूटे। नालंदा जैसे विद्या केंद्र उजड़ गए।",0.3),
+ ("05","Phir 1835: British raj ne sarkari paisa Sanskrit aur paramparik shiksha se hata kar English shiksha par laga diya.","फिर अठारह सौ पैंतीस। ब्रिटिश राज ने सरकारी पैसा संस्कृत और पारंपरिक शिक्षा से हटाकर, इंग्लिश शिक्षा पर लगा दिया।",0.3),
+ ("06","Aur hum dheere-dheere apne hi gyaan se door hote gaye.","और हम धीरे धीरे अपने ही ज्ञान से दूर होते गए।",0.5),
+ ("07","Aaj koi bina padhe hamare granthon ko myth keh deta hai...","आज कोई बिना पढ़े हमारे ग्रंथों को मिथ कह देता है,",0.15),
+ ("08","...aur koi bina samjhe, bina sawaal kiye, bas rasmein nibhata hai.","और कोई बिना समझे, बिना सवाल किए, बस रस्में निभाता है।",0.4),
+ ("09","Ram ka naam lete hain, par unke aadarsh bhool jaate hain.","राम का नाम लेते हैं, पर उनके आदर्श भूल जाते हैं।",0.25),
+ ("10","Gita ghar mein hai, par Karmayog jeevan mein nahi.","गीता घर में है, पर कर्मयोग जीवन में नहीं।",0.45),
+ ("11","Bas.","बस!",0.9),
+ ("12","Na andh-bhakti. Na andh-virodh.","ना अंधभक्ति। ना अंधविरोध।",0.25),
+ ("13","Padho. Sawaal karo. Samjho. Aur jiyo.","पढ़ो। सवाल करो। समझो। और जियो।",0.4),
+ ("14","Isi sankalp ke saath shuru hoti hai SATYA JANTA PARTY.","इसी संकल्प के साथ शुरू होती है, सत्य जनता पार्टी।",0.3),
+ ("15","Na paisa chahiye, na koi bada vaada.","ना पैसा चाहिए, ना कोई बड़ा वादा।",0.15),
+ ("16","Bas ek request: follow kijiye.","बस एक रिक्वेस्ट, फ़ॉलो कीजिए।",0.4),
+ ("17","Satya ko jaano. Satya ko jiyo.","सत्य को जानो। सत्य को जियो।",0.3),
+ ("18","Jai Hind. Jai Sanatan.","जय हिंद। जय सनातन।",0),
+]
